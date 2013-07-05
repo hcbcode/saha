@@ -7,9 +7,19 @@ buildscript {
     }
 }
 apply plugin: 'android'
+apply plugin: 'maven'
+
+repositories {
+    mavenCentral()
+    maven {url repoBugSense }
+    maven {url repoTemporary }
+}
 
 dependencies {
-
+    compile "com.google.guava:guava:$depGuavaVersion"
+    compile "com.squareup:otto:$depOttoVersion"
+    compile "org.roboguice:roboguice:$depRoboguiceVersion"
+    compile "com.bugsense:trace:$depBugsenseTraceVersion"
 }
 
 android {
