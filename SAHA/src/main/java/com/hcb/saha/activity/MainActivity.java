@@ -24,8 +24,7 @@ import roboguice.inject.InjectView;
  */
 public class MainActivity extends RoboActivity {
 
-    @InjectView(R.id.btn)
-    private Button btn;
+
     @Inject
     private Bus eventBus;
 
@@ -45,12 +44,6 @@ public class MainActivity extends RoboActivity {
             BugSenseHandler.initAndStartSession(this, SahaConfig.BUGSENSE_KEY);
         }
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                eventBus.post(new TestEvent());
-            }
-        });
     }
 
     @Subscribe
