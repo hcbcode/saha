@@ -1,19 +1,16 @@
 package com.hcb.saha.activity;
 
 import android.os.Bundle;
-import android.app.Activity;
-import android.text.method.CharacterPickerDialog;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.google.inject.Inject;
 import com.hcb.saha.R;
 import com.hcb.saha.SahaConfig;
+import com.hcb.saha.config.EnvConfig;
 import com.hcb.saha.event.TestEvent;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -44,7 +41,7 @@ public class MainActivity extends RoboActivity {
     protected void onStart() {
         super.onStart();
 
-        if (!SahaConfig.DEBUG) {
+        if (EnvConfig.USE_REPORTING) {
             BugSenseHandler.initAndStartSession(this, SahaConfig.BUGSENSE_KEY);
         }
 
@@ -64,7 +61,7 @@ public class MainActivity extends RoboActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (!SahaConfig.DEBUG) {
+        if (EnvConfig.USE_REPORTING) {
             BugSenseHandler.closeSession(this);
         }
     }

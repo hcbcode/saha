@@ -1,9 +1,12 @@
+// SAHA build script
+// @author Andreas Borglin
+
 buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.4'
+        classpath "com.android.tools.build:gradle:$depAndroidBuildVersion"
     }
 }
 apply plugin: 'android'
@@ -11,23 +14,68 @@ apply plugin: 'maven'
 
 repositories {
     mavenCentral()
-    maven {url repoBugSense }
-    maven {url repoTemporary }
+    maven {url repoNexusThirdParty }
 }
 
 dependencies {
     compile "com.google.guava:guava:$depGuavaVersion"
     compile "com.squareup:otto:$depOttoVersion"
     compile "org.roboguice:roboguice:$depRoboguiceVersion"
-    compile "com.bugsense:trace:$depBugsenseTraceVersion"
+    compile "com.bugsense.trace:bugsense:$depBugsenseTraceVersion"
 }
 
 android {
-    compileSdkVersion 17
-    buildToolsVersion "17.0.0"
+    compileSdkVersion propCompileSdkVersion.toInteger()
+    buildToolsVersion propBuildToolsVersion
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 17
+        packageName = propPublishGroup
+        versionCode = propPublishVersionCode.toInteger()
+        versionName = propPublishVersion
+        minSdkVersion propMinSdkVersion.toInteger()
+        targetSdkVersion propTargetSdkVersion.toInteger()
+    }
+
+    signingConfigs {
+        // Debug key
+        debug {
+            storeFile file("$propDebugStore")
+            storePassword "$propDebugStorePassword"
+            keyAlias "$propDebugKeyAlias"
+            keyPassword "$propDebugKeyPassword"
+        }
+
+        // Production key
+        release {
+            storeFile file("$propReleaseStore")
+            storePassword "$propReleaseStorePassword"
+            keyAlias "$propReleaseKeyAlias"
+            keyPassword "$propReleaseKeyPassword"
+        }
+    }
+
+    // Build types
+    buildTypes {
+
+        // Development debug type
+        debug {
+            debuggable = true
+            runProguard = false
+            signingConfig signingConfigs.debug
+        }
+
+        // Internal/external testing type
+        staging {
+            debuggable = true
+            runProguard = false
+            signingConfig signingConfigs.debug
+        }
+
+        // Production type
+        release {
+            debuggable = false
+            runProguard = true
+            signingConfig signingConfigs.release
+        }
     }
 }
