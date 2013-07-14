@@ -1,8 +1,7 @@
 package com.hcb.saha;
 
-import android.app.Application;
-
 import roboguice.RoboGuice;
+import android.app.Application;
 
 /**
  * Saha Application instance

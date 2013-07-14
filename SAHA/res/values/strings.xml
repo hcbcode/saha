@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SAHA</string>
+    <string name="title_activity_face_detection">FaceDetectionActivity</string>
+    <string name="action_settings">Whatever</string>
+    <string name="register">Register</string>
+    <string name="recognize">Recognize</string>
+    <string name="list_users">List users</string>
+
+</resources>

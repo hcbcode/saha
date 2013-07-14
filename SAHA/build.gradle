@@ -11,6 +11,7 @@ buildscript {
 }
 apply plugin: 'android'
 apply plugin: 'maven'
+apply plugin: 'eclipse'
 
 repositories {
     mavenCentral()
@@ -22,6 +23,7 @@ dependencies {
     compile "com.squareup:otto:$depOttoVersion"
     compile "org.roboguice:roboguice:$depRoboguiceVersion"
     compile "com.bugsense.trace:bugsense:$depBugsenseTraceVersion"
+    //compile project(':libProjects:OpenCVAndroid')
 }
 
 android {
@@ -78,4 +80,56 @@ android {
             signingConfig signingConfigs.release
         }
     }
+}
+
+// Eclipse IDE settings
+// Build configurations defined above
+eclipse.classpath.plusConfigurations += configurations.compile
+eclipse.classpath.plusConfigurations += configurations.instrumentTestCompile
+
+// Modifying .classpath file for Eclipse
+eclipse.classpath.file {
+
+    // Direct XML manipulation after merge
+    withXml {
+        def node = it.asNode()
+
+        // Main source
+        node.appendNode('classpathentry kind="src" path="src/main/java"')
+        // Instrument test
+        node.appendNode('classpathentry kind="src" path="src/instrumentTest/java"')
+        // Debug type
+        node.appendNode('classpathentry kind="src" path="src/debug/java"')
+        // Generated classes
+        node.appendNode('classpathentry kind="src" path="gen"')
+
+        // Remove entries causing Eclipse conflicts
+        node.children().removeAll() { c ->
+            def path = c.attribute("path")
+            path != null && (
+                    path.contains("/org.sonatype.sisu.inject/cglib") ||
+                    path.contains("/com.google.android/support-v4")
+                    )
+        }
+    }
+
+    // Manipulation before merging raw XML with automatic generation
+    beforeMerged { classpath ->
+        // Remove all 'src' entries before merge so that there are no duplicates
+        classpath.entries.removeAll() { c -> c.kind == 'src' }
+    }
+}
+
+// Modifying .project file for Eclipse
+eclipse.project {
+    // Display name
+    name = 'SAHA'
+
+    // Android nature
+    natures 'com.android.ide.eclipse.adt.AndroidNature'
+
+    // ADT builders
+    buildCommand 'com.android.ide.eclipse.adt.ResourceManagerBuilder'
+    buildCommand 'com.android.ide.eclipse.adt.PreCompilerBuilder'
+    buildCommand 'com.android.ide.eclipse.adt.ApkBuilder'
 }

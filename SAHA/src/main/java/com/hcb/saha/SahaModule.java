@@ -2,7 +2,6 @@ package com.hcb.saha;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
-import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.squareup.otto.Bus;
