@@ -1,6 +1,8 @@
 SAHA/bin
 SAHA/gen
 SAHA/build
+SAHA/obj
+SAHA/libs/armeabi-v7a
 .gradle
 local.properties
 .classpath

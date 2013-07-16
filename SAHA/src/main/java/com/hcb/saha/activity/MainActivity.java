@@ -18,9 +18,11 @@ import com.google.inject.Inject;
 import com.hcb.saha.R;
 import com.hcb.saha.SahaConfig;
 import com.hcb.saha.config.EnvConfig;
+import com.hcb.saha.data.SahaFileManager;
 import com.hcb.saha.data.SahaUserDatabase;
 import com.hcb.saha.data.model.User;
 import com.hcb.saha.event.TestEvent;
+import com.hcb.saha.jni.NativeFaceRecognizer;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -39,6 +41,14 @@ public class MainActivity extends RoboActivity {
 	private Button recognize;
 	@InjectView(R.id.listUsers)
 	private Button listUsers;
+	@Inject
+	NativeFaceRecognizer faceRecognizer;
+
+	// TODO This should prob live somewhere else
+	static {
+		// Load the face recognizer library
+		System.loadLibrary("facerec");
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,17 +68,32 @@ public class MainActivity extends RoboActivity {
 
 			@Override
 			public void onClick(View v) {
-
+				// SahaFileManager.createFaceRecModelFile();
+				
+				// FIXME Temp test data until the cropping works
+				String[][] idImageArray = new String[2][];
+				idImageArray[0] = new String[] {
+						"/sdcard/face/train1.jpg", "/sdcard/face/train2.jpg" };
+				idImageArray[1] = new String[] {
+						"/sdcard/face/train3.jpg", "/sdcard/face/train4.jpg" };
+				
+				faceRecognizer.trainRecognizer(idImageArray);
+				
+				faceRecognizer.predictUserId("/sdcard/face/predict2.jpg");
 			}
 		});
-		
+
 		listUsers.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				List<User> users = SahaUserDatabase.getAllUsers(MainActivity.this);
-				for (User user: users) {
-					Log.e("SAHA", "User #" + user.getId() + ", name: " + user.getName() + ", dir: " + user.getDirectory());
+				List<User> users = SahaUserDatabase
+						.getAllUsers(MainActivity.this);
+				for (User user : users) {
+					Log.e("SAHA",
+							"User #" + user.getId() + ", name: "
+									+ user.getName() + ", dir: "
+									+ user.getDirectory());
 				}
 			}
 		});

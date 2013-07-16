@@ -1,20 +1,23 @@
 package com.hcb.saha.data;
 
-import static com.hcb.saha.SahaConfig.FileSystem;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.os.Environment;
+import android.util.Log;
 
+import com.hcb.saha.SahaConfig.FileSystem;
 import com.hcb.saha.data.model.User;
 
 /**
- * Manages the Saha file system directories and files 
+ * Manages the Saha file system directories and files
+ * 
  * @author Andreas Borglin
  */
 public final class SahaFileManager {
+
+	private static final String TAG = SahaFileManager.class.getSimpleName();
 
 	private SahaFileManager() {
 
@@ -60,6 +63,24 @@ public final class SahaFileManager {
 				+ String.valueOf(curNumFiles) + ".jpg");
 		newFace.createNewFile();
 		return new FileOutputStream(newFace);
+	}
+
+	public static void createFaceRecModelFile() {
+		File sahaRoot = getSahaRoot();
+		File userFile = new File(sahaRoot, FileSystem.SAHA_USERS + "/"
+				+ FileSystem.FACE_REC_MODEL);
+		if (!userFile.exists()) {
+			try {
+				userFile.createNewFile();
+			} catch (IOException e) {
+				Log.e(TAG, e.getMessage());
+			}
+		}
+	}
+
+	public static String getFaceRecModelPath() {
+		return String.format("%s/%s/%s", getSahaRoot().getAbsolutePath(),
+				FileSystem.SAHA_USERS, FileSystem.FACE_REC_MODEL);
 	}
 
 }

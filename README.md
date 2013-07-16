@@ -3,20 +3,17 @@ saha
 
 Smart Android Household Array
 
-about
-=====
-
-I just wanted to add some text
-
 setup
 ====
-Android Studio does not yet autogenerate a local.properties with your SDK location.
-This means you need to take a couple of steps before you open the project.
+You'll have to use Eclipse for now due to NDK dependencies.
 
-1. Install the Android SDK if you haven't already
-2. Make sure you have Android 17 and the latest build tools installed
-3. Go to the saha directory
-4. Do a "android list targets" and note the id of Android 17 (4.2.2)
-5. Run "android update project -p SAHA/src/main -t <id>
-6. Check that you have a local.properties in the saha folder (if not, may have to copy it from SAHA/src/main)
-7. Now you can import the project into Android studio!
+1. Run "gradle eclipse" to generate eclipse files to import to Eclipse
+2. You still need a local.properties that points to your SDK path
+3. You must have the Android NDK installed and on your path
+4. Do a "ndk-build" from the saha/SAHA folder
+5. Refresh project in Eclipse
+6. You can now run it
+
+Note that there are currently dependencies on hardcoded images on my device :)
+Also note that I have stripped all dependencies besides armeabi-v7a from OpenCV
+Cropping still doesn't work...
