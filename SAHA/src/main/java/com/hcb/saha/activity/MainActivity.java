@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.google.inject.Inject;
@@ -21,10 +20,11 @@ import com.hcb.saha.config.EnvConfig;
 import com.hcb.saha.data.SahaFileManager;
 import com.hcb.saha.data.SahaUserDatabase;
 import com.hcb.saha.data.model.User;
-import com.hcb.saha.event.TestEvent;
+import com.hcb.saha.data.model.UsersFaces;
+import com.hcb.saha.event.FaceRecognitionEvents;
+import com.hcb.saha.event.LifecycleEvents;
 import com.hcb.saha.jni.NativeFaceRecognizer;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 /**
  * Main activity
@@ -39,16 +39,14 @@ public class MainActivity extends RoboActivity {
 	private Button register;
 	@InjectView(R.id.recognize)
 	private Button recognize;
+	@InjectView(R.id.train)
+	private Button train;
 	@InjectView(R.id.listUsers)
 	private Button listUsers;
+	@InjectView(R.id.deleteUsers)
+	private Button deleteUsers;
 	@Inject
 	NativeFaceRecognizer faceRecognizer;
-
-	// TODO This should prob live somewhere else
-	static {
-		// Load the face recognizer library
-		System.loadLibrary("facerec");
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,16 +68,34 @@ public class MainActivity extends RoboActivity {
 			public void onClick(View v) {
 				// SahaFileManager.createFaceRecModelFile();
 				
+				startActivity(new Intent(MainActivity.this, IdentificationActivity.class));
+				
 				// FIXME Temp test data until the cropping works
-				String[][] idImageArray = new String[2][];
-				idImageArray[0] = new String[] {
-						"/sdcard/face/train1.jpg", "/sdcard/face/train2.jpg" };
-				idImageArray[1] = new String[] {
-						"/sdcard/face/train3.jpg", "/sdcard/face/train4.jpg" };
+
+				//faceRecognizer.initRecognizer();
+//				String[][] idImageArray = new String[2][];
+//				idImageArray[0] = new String[] {
+//						"/sdcard/face/andreas1.jpg", "/sdcard/face/andreas2.jpg", "/sdcard/face/andreas3.jpg" };
+//				idImageArray[1] = new String[] {
+//						"/sdcard/face/kate1.jpg", "/sdcard/face/kate2.jpg", "/sdcard/face/kate3.jpg" };
 				
-				faceRecognizer.trainRecognizer(idImageArray);
+				//faceRecognizer.trainRecognizer(idImageArray);
+				//eventBus.post(new FaceRecognitionEvents.TrainRecognizerRequest(idImageArray));
+				//eventBus.post(new FaceRecognitionEvents.PredictUserRequest("/sdcard/face/predict2.jpg"));
 				
-				faceRecognizer.predictUserId("/sdcard/face/predict2.jpg");
+				//faceRecognizer.closeRecognizer();
+				
+			}
+		});
+		
+		train.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				List<User> users = SahaUserDatabase
+						.getAllUsers(MainActivity.this);
+				UsersFaces uf = SahaFileManager.getAllUsersFaceImages(users);
+				eventBus.post(new FaceRecognitionEvents.TrainRecognizerRequest(uf));
 			}
 		});
 
@@ -89,6 +105,7 @@ public class MainActivity extends RoboActivity {
 			public void onClick(View v) {
 				List<User> users = SahaUserDatabase
 						.getAllUsers(MainActivity.this);
+				Log.d("SAHA", "users: " + users.size());
 				for (User user : users) {
 					Log.e("SAHA",
 							"User #" + user.getId() + ", name: "
@@ -97,10 +114,19 @@ public class MainActivity extends RoboActivity {
 				}
 			}
 		});
+		
+		deleteUsers.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				SahaUserDatabase.deleteAllUsers(MainActivity.this);
+			}
+		});
 
 		eventBus.register(this);
+		eventBus.post(new LifecycleEvents.MainActivityCreated());
 	}
-
+	
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -111,18 +137,19 @@ public class MainActivity extends RoboActivity {
 
 	}
 
-	@Subscribe
-	public void incomingEvent(TestEvent event) {
-		Toast.makeText(this, "Andrew, look! An event bus!", Toast.LENGTH_SHORT)
-				.show();
-	}
-
 	@Override
 	protected void onStop() {
 		super.onStop();
 		if (EnvConfig.USE_REPORTING) {
 			BugSenseHandler.closeSession(this);
 		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		eventBus.post(new LifecycleEvents.MainActivityDestroyed());
+		eventBus.unregister(this);
 	}
 
 	@Override

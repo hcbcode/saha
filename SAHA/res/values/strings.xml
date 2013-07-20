@@ -7,5 +7,7 @@
     <string name="register">Register</string>
     <string name="recognize">Recognize</string>
     <string name="list_users">List users</string>
+    <string name="delete_users">Delete users</string>
+    <string name="train">Train</string>
 
 </resources>

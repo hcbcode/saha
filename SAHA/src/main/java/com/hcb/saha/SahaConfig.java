@@ -20,9 +20,16 @@ public final class SahaConfig {
 
 	public static final class FileSystem {
 		public static final String SDCARD_ROOT = "SAHA";
+		public static final String SAHA_TMP = "tmp";
 		public static final String SAHA_USERS = "users";
 		public static final String SAHA_USER_FACES = "faces";
 		public static final String FACE_PREFIX = "face";
+		public static final String FACE_ID_IMAGE = "face_id.jpg";
+		public static final String FACE_IMAGE_EXT = ".jpg";
 		public static final String FACE_REC_MODEL = "facerec.xml";
+	}
+	
+	public static final class Registration {
+		public static final int NUM_FACE_PICS_REQUIRED = 3;
 	}
 }

@@ -23,7 +23,7 @@ OPENCV_LIB_TYPE:=STATIC
 include opencv/native/jni/OpenCV.mk
 
 LOCAL_MODULE    := facerec
-LOCAL_SRC_FILES := facerec.cpp
+LOCAL_SRC_FILES := facerecwrapper.cpp facerec.cpp
 LOCAL_LDLIBS +=  -llog -ldl
 
 include $(BUILD_SHARED_LIBRARY)

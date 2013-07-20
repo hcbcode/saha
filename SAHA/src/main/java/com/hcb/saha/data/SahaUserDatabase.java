@@ -48,17 +48,19 @@ public final class SahaUserDatabase {
     		more = cursor.moveToNext();
     	}
     	cursor.close();
+    	db.close();
     	return users;
     }
     
     public static User getUserFromId(Context context, int id) {
     	SQLiteDatabase db = getSahaOpenHelper(context).getReadableDatabase();
-    	Cursor cursor = db.query(USERS_TABLE, null, UsersColumns.NAME_FIELD + " = ?", new String[] {String.valueOf(id)}, null, null, null);
+    	Cursor cursor = db.query(USERS_TABLE, null, UsersColumns.ID_FIELD + " = ?", new String[] {String.valueOf(id)}, null, null, null);
     	User user = null;
     	if (cursor.moveToFirst()) {
     		user = getUserFromCursor(cursor);
     	}
     	cursor.close();
+    	db.close();
     	return user;
     }
     
@@ -69,7 +71,14 @@ public final class SahaUserDatabase {
     	values.put(UsersColumns.DIRECTORY_FIELD, user.getDirectory());
     	long id = db.insert(USERS_TABLE, null, values);
     	user.setId((int) id);
+    	db.close();
     	return id;
+    }
+    
+    public static void deleteAllUsers(Context context) {
+    	SQLiteDatabase db = getSahaOpenHelper(context).getWritableDatabase();
+    	db.execSQL("delete from " + USERS_TABLE + ";");
+    	db.close();
     }
     
     private static User getUserFromCursor(Cursor cursor) {
