@@ -23,6 +23,7 @@ dependencies {
     compile "com.squareup:otto:$depOttoVersion"
     compile "org.roboguice:roboguice:$depRoboguiceVersion"
     compile "com.bugsense.trace:bugsense:$depBugsenseTraceVersion"
+	compile files('libs/android-support-v4.jar')
     //compile project(':libProjects:OpenCVAndroid')
 }
 
@@ -37,6 +38,13 @@ android {
         minSdkVersion propMinSdkVersion.toInteger()
         targetSdkVersion propTargetSdkVersion.toInteger()
     }
+
+	sourceSets {
+		main {
+			manifest.srcFile 'AndroidManifest.xml'
+			res.srcDirs = ['res']
+		}
+	}
 
     signingConfigs {
         // Debug key
@@ -85,7 +93,7 @@ android {
 // Eclipse IDE settings
 // Build configurations defined above
 eclipse.classpath.plusConfigurations += configurations.compile
-eclipse.classpath.plusConfigurations += configurations.instrumentTestCompile
+//eclipse.classpath.plusConfigurations += configurations.instrumentTestCompile
 
 // Modifying .classpath file for Eclipse
 eclipse.classpath.file {
@@ -97,7 +105,7 @@ eclipse.classpath.file {
         // Main source
         node.appendNode('classpathentry kind="src" path="src/main/java"')
         // Instrument test
-        node.appendNode('classpathentry kind="src" path="src/instrumentTest/java"')
+        //node.appendNode('classpathentry kind="src" path="src/instrumentTest/java"')
         // Debug type
         node.appendNode('classpathentry kind="src" path="src/debug/java"')
         // Generated classes
