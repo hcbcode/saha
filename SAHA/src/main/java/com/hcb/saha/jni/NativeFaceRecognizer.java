@@ -5,6 +5,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.google.inject.Inject;
+import com.hcb.saha.SahaConfig;
 import com.hcb.saha.data.SahaFileManager;
 import com.hcb.saha.event.FaceRecognitionEvents;
 import com.hcb.saha.event.LifecycleEvents;
@@ -67,7 +68,8 @@ public class NativeFaceRecognizer {
 			public void run() {
 				Log.d(TAG, "Initialising recogniser");
 				SahaFileManager.createFaceRecModelFile();
-				wrapperRef = loadPersistedModel(FACE_REC_MODEL_PATH);
+				wrapperRef = loadPersistedModel(FACE_REC_MODEL_PATH,
+						SahaConfig.OpenCvParameters.class);
 			}
 		});
 	}
@@ -153,7 +155,8 @@ public class NativeFaceRecognizer {
 	/*
 	 * Load a persisted model into the face recognizer
 	 */
-	private native long loadPersistedModel(String modelFilePath);
+	private native long loadPersistedModel(String modelFilePath,
+			Class<SahaConfig.OpenCvParameters> params);
 
 	/*
 	 * Delete the native C++ face recognizer reference

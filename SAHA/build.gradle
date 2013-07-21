@@ -33,9 +33,9 @@ android {
     buildToolsVersion propBuildToolsVersion
 
     defaultConfig {
-        packageName = propPublishGroup
-        versionCode = propPublishVersionCode.toInteger()
-        versionName = propPublishVersion
+        packageName propPublishGroup
+        versionCode propPublishVersionCode.toInteger()
+        versionName propPublishVersion
         minSdkVersion propMinSdkVersion.toInteger()
         targetSdkVersion propTargetSdkVersion.toInteger()
     }
@@ -44,6 +44,7 @@ android {
 		main {
 			manifest.srcFile 'AndroidManifest.xml'
 			res.srcDirs = ['res']
+			assets.srcDirs = ['assets']
 		}
 	}
 

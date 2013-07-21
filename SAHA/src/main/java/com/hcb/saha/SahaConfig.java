@@ -39,4 +39,14 @@ public final class SahaConfig {
 	public static final class Registration {
 		public static final int NUM_FACE_PICS_REQUIRED = 3;
 	}
+	
+	// NOTE: If you change these, make sure to update facerec.cpp as well!
+	public static final class OpenCvParameters {
+		public static final int CASCADE_MIN_NEIGHBOURS = 3;
+		public static final float CASCADE_SCALE_FACTOR = 1.1f;
+		public static final int CASCADE_MIN_FACE_WIDTH = 40;
+		public static final int CASCADE_MIN_FACE_HEIGHT = 80;
+		public static final int CASCADE_OUTPUT_FACE_WIDTH = 200;
+		public static final int CASCADE_OUTPUT_FACE_HEIGHT = 200;
+	}
 }

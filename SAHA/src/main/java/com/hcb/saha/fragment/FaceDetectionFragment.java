@@ -68,6 +68,7 @@ public class FaceDetectionFragment extends RoboFragment implements
 	private User currentUser;
 	private int imageCount;
 	private boolean detectionActive;
+	private Toast toast;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -180,7 +181,7 @@ public class FaceDetectionFragment extends RoboFragment implements
 	@Override
 	public void onFaceDetection(Face[] faces, Camera camera) {
 
-		if (faces.length > 0) {
+		if (faces.length == 1) {
 			// Only care about one face for now
 			// FIXME: We need logic here to determine whether the rect is of
 			// appropriate
@@ -194,6 +195,14 @@ public class FaceDetectionFragment extends RoboFragment implements
 
 			camera.takePicture(null, null, FaceDetectionFragment.this);
 			detectionActive = false;
+		}
+		else if (faces.length > 1) {
+			if (toast != null) {
+				toast.cancel();
+			}
+			toast = Toast.makeText(getActivity(), "Multiple faces detected! Only one is supported.", Toast.LENGTH_SHORT);
+			toast.show();
+			overlay.clearRect();
 		}
 		// No face - clear the canvas
 		else {
