@@ -16,6 +16,7 @@
         android:background="@android:color/holo_blue_dark" >
 
         <TextView
+            android:id="@+id/email_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/home_screen_title_email" />

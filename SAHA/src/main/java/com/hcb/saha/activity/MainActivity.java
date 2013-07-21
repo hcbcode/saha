@@ -1,8 +1,11 @@
 package com.hcb.saha.activity;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectView;
+import android.accounts.Account;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -14,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
@@ -21,8 +25,10 @@ import com.google.inject.Inject;
 import com.hcb.saha.R;
 import com.hcb.saha.SahaConfig;
 import com.hcb.saha.config.EnvConfig;
+import com.hcb.saha.data.PhoneAccountObserver;
 import com.hcb.saha.data.SahaFileManager;
 import com.hcb.saha.data.SahaUserDatabase;
+import com.hcb.saha.data.PhoneAccountManager;
 import com.hcb.saha.data.model.User;
 import com.hcb.saha.data.model.UsersFaces;
 import com.hcb.saha.event.FaceRecognitionEvents;
@@ -37,13 +43,15 @@ import com.squareup.otto.Bus;
  * @author Steven Hadley
  */
 public class MainActivity extends RoboActivity {
-	
+
 	private static final String TAG = MainActivity.class.getSimpleName();
 
 	@Inject
 	private Bus eventBus;
 	@Inject
 	NativeFaceRecognizer faceRecognizer;
+	@InjectView(R.id.email_text)
+	TextView email;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +60,7 @@ public class MainActivity extends RoboActivity {
 		goFullScreen();
 		customiseActionBar();
 		setContentView(R.layout.activity_main);
-		
+
 		// OpenCV can't read assets, so need to copy over to sdcard
 		SahaFileManager.copyClassifierToSdCard(this.getAssets());
 
@@ -66,6 +74,28 @@ public class MainActivity extends RoboActivity {
 		if (EnvConfig.USE_REPORTING) {
 			BugSenseHandler.initAndStartSession(this, SahaConfig.BUGSENSE_KEY);
 		}
+
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		// FIXME: Should not use callbacks but use events instead.
+		email.setText("");
+		PhoneAccountManager.getGoogleAccounts(this,
+				new WeakReference<PhoneAccountObserver>(
+						new PhoneAccountObserver() {
+
+							@Override
+							public void onReadAccounts(Account[] accounts) {
+								for (Account account : accounts) {
+									email.setText(email.getText() + "\n "
+											+ account.name);
+								}
+
+							}
+						}));
 
 	}
 
@@ -100,15 +130,18 @@ public class MainActivity extends RoboActivity {
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 			dialog.setTitle(R.string.delete_users_title);
 			dialog.setMessage(R.string.delete_users_message);
-			dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					SahaUserDatabase.deleteAllUsers(MainActivity.this);
-					SahaFileManager.deleteUserDirs();
-					Toast.makeText(MainActivity.this, "All users deleted.", Toast.LENGTH_SHORT).show();
-				}
-			});
+			dialog.setPositiveButton(R.string.ok,
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							SahaUserDatabase.deleteAllUsers(MainActivity.this);
+							SahaFileManager.deleteUserDirs();
+							Toast.makeText(MainActivity.this,
+									"All users deleted.", Toast.LENGTH_SHORT)
+									.show();
+						}
+					});
 			dialog.setNegativeButton(R.string.cancel, null);
 			dialog.show();
 			return true;
