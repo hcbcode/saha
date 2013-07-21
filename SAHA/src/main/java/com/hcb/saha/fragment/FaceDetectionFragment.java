@@ -31,12 +31,11 @@ import com.hcb.saha.event.FaceRecognitionEvents;
 import com.hcb.saha.event.RegistrationEvents;
 import com.hcb.saha.view.FaceDetectionView;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 /**
- * This fragment is responsible for detecting faces from the camera preview,
- * and persist images to the file system. It support two modes, one for
- * face registration and one for face identification
+ * This fragment is responsible for detecting faces from the camera preview, and
+ * persist images to the file system. It support two modes, one for face
+ * registration and one for face identification
  * 
  * @author Andreas Borglin
  */
@@ -69,6 +68,7 @@ public class FaceDetectionFragment extends RoboFragment implements
 	private Mode mode;
 	private User currentUser;
 	private int imageCount;
+	private boolean detectionActive;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,10 +83,6 @@ public class FaceDetectionFragment extends RoboFragment implements
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
-		surfaceHolder = surfaceView.getHolder();
-		surfaceHolder.setSizeFromLayout();
-		surfaceHolder.addCallback(this);
 
 		// Find the front-facing camera
 		int frontFacingId = -1;
@@ -107,7 +103,18 @@ public class FaceDetectionFragment extends RoboFragment implements
 		}
 
 		camera = Camera.open(frontFacingId);
+		Camera.Parameters params = camera.getParameters();
+		// Is face detection supported?
+		if (params.getMaxNumDetectedFaces() == 0) {
+			Toast.makeText(getActivity(), "No face detection support!",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+
 		camera.setDisplayOrientation(PREVIEW_ROTATION);
+		surfaceHolder = surfaceView.getHolder();
+		surfaceHolder.setSizeFromLayout();
+		surfaceHolder.addCallback(this);
 	}
 
 	@Override
@@ -139,12 +146,18 @@ public class FaceDetectionFragment extends RoboFragment implements
 			int width, int height) {
 		try {
 
-			Log.d(TAG, "surface width: " + width + ", height: " + height);
-			Camera.Parameters params = camera.getParameters();
-			List<Camera.Size> sizes = params.getSupportedPreviewSizes();
-			for (Camera.Size size : sizes) {
-				Log.d(TAG, "size: " + size.width + ":" + size.height);
+			if (detectionActive) {
+				camera.stopFaceDetection();
+				camera.stopPreview();
+				detectionActive = false;
 			}
+
+			//Log.d(TAG, "surface width: " + width + ", height: " + height);
+			Camera.Parameters params = camera.getParameters();
+			//List<Camera.Size> sizes = params.getSupportedPreviewSizes();
+//			for (Camera.Size size : sizes) {
+//				Log.d(TAG, "size: " + size.width + ":" + size.height);
+//			}
 
 			// TODO: These should be calculated dynamically
 			params.setPreviewSize(640, 480);
@@ -152,13 +165,14 @@ public class FaceDetectionFragment extends RoboFragment implements
 
 			camera.setParameters(params);
 
-			Camera.Size size = camera.getParameters().getPreviewSize();
-			Log.d(TAG, "set size: " + size.width + ":" + size.height);
+			//Camera.Size size = camera.getParameters().getPreviewSize();
+			//Log.d(TAG, "set size: " + size.width + ":" + size.height);
 
 			camera.setPreviewDisplay(surfaceHolder);
 			camera.startPreview();
 			camera.setFaceDetectionListener(this);
 			camera.startFaceDetection();
+			detectionActive = true;
 		} catch (IOException e) {
 			Log.e("SAHA", e.toString());
 		}
@@ -169,7 +183,8 @@ public class FaceDetectionFragment extends RoboFragment implements
 
 		if (faces.length > 0) {
 			// Only care about one face for now
-			// FIXME: We need logic here to determine whether the rect is of appropriate
+			// FIXME: We need logic here to determine whether the rect is of
+			// appropriate
 			// size in relation to our opencv classifier settings
 			Camera.Face face = faces[0];
 			// Translate the face rect to our surfaceholder area
@@ -179,6 +194,7 @@ public class FaceDetectionFragment extends RoboFragment implements
 			overlay.updateRect(face.rect, matrix);
 
 			camera.takePicture(null, null, FaceDetectionFragment.this);
+			detectionActive = false;
 		}
 		// No face - clear the canvas
 		else {
@@ -190,6 +206,7 @@ public class FaceDetectionFragment extends RoboFragment implements
 	private void restartPreview() {
 		camera.startPreview();
 		camera.startFaceDetection();
+		detectionActive = true;
 	}
 
 	private void updateTranslationMatrix(int dstWidth, int dstHeight,
@@ -221,7 +238,6 @@ public class FaceDetectionFragment extends RoboFragment implements
 				boolean c = bitmap.compress(CompressFormat.JPEG, 100, fos);
 				fos.flush();
 				fos.close();
-				Log.d(TAG, "wrote bitmap: " + c);
 			} catch (IOException e) {
 				e.printStackTrace();
 				Log.e(TAG, e.getMessage());
@@ -242,13 +258,14 @@ public class FaceDetectionFragment extends RoboFragment implements
 		try {
 			if (mode == Mode.REGISTRATION) {
 				persistFaceBitmap(rotScaledBitmap,
-						SahaFileManager.getStreamForUserFaceImage(currentUser));
+						SahaFileManager.getStreamForNewFaceImage(currentUser));
 				// If we don't have enough pics yet, restart the preview
 				if (++imageCount < Registration.NUM_FACE_PICS_REQUIRED) {
-					Log.d(TAG, "image count: " + imageCount);
+					Log.d(TAG, "Image count: " + imageCount);
 					restartPreview();
 				}
-				// Otherwise, send an event to let client know we've done our job!
+				// Otherwise, send an event to let client know we've done our
+				// job!
 				else {
 					eventBus.post(new RegistrationEvents.FaceRegistrationCompleted());
 				}

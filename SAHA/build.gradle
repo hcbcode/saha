@@ -23,6 +23,7 @@ dependencies {
     compile "com.squareup:otto:$depOttoVersion"
     compile "org.roboguice:roboguice:$depRoboguiceVersion"
     compile "com.bugsense.trace:bugsense:$depBugsenseTraceVersion"
+	compile "commons-io:commons-io:$depCommonsIOVersion"
 	compile files('libs/android-support-v4.jar')
     //compile project(':libProjects:OpenCVAndroid')
 }

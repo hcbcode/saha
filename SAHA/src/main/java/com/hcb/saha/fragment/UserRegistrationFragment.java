@@ -2,7 +2,9 @@ package com.hcb.saha.fragment;
 
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +24,11 @@ import com.squareup.otto.Bus;
 
 /**
  * Fragment for allowing a user to create a new "account"
+ * 
  * @author Andreas Borglin
  */
 public class UserRegistrationFragment extends RoboFragment {
-	
+
 	@InjectView(R.id.namefield)
 	private EditText nameField;
 	@InjectView(R.id.create)
@@ -34,34 +37,56 @@ public class UserRegistrationFragment extends RoboFragment {
 	private Bus eventBus;
 
 	@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_user_registration, container, false);
-        return view;
-    }
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.fragment_user_registration,
+				container, false);
+		return view;
+	}
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        
-        createButton.setOnClickListener(new OnClickListener() {
-			
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+		nameField.requestFocus();
+		final InputMethodManager imm = (InputMethodManager) getActivity()
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.showSoftInput(nameField, InputMethodManager.SHOW_IMPLICIT);
+
+		createButton.setOnClickListener(new OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
-				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
-					      Context.INPUT_METHOD_SERVICE);
-					imm.hideSoftInputFromWindow(nameField.getWindowToken(), 0);
-				User user = new User();
+				
+				if (nameField.getText().length() < 2) {
+					Toast.makeText(getActivity(), "Name must be at least 2 characters", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
+				imm.hideSoftInputFromWindow(nameField.getWindowToken(), 0);
+				final User user = new User();
 				user.setName(nameField.getText().toString());
-				user.setDirectory(nameField.getText().toString().toLowerCase().trim());
+				user.setDirectory(nameField.getText().toString().toLowerCase()
+						.trim());
 				long userId = SahaUserDatabase.addUser(getActivity(), user);
 				if (userId >= 0) {
-					eventBus.post(new RegistrationEvents.UserCreated(user));
-				}
-				else {
-					Toast.makeText(getActivity(), "Failed to create user!", Toast.LENGTH_SHORT).show();
+					AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+					dialog.setMessage(R.string.face_reg_message);
+					dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							eventBus.post(new RegistrationEvents.UserCreated(user));
+						}
+					});
+					dialog.show();
+					
+				} else {
+					Toast.makeText(getActivity(), "Failed to create user!",
+							Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
-    }
-	
+	}
+
 }

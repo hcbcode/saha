@@ -32,8 +32,11 @@ import com.squareup.otto.Bus;
  * Main activity
  * 
  * @author Andreas Borglin
+ * @author Steven Hadley
  */
 public class MainActivity extends RoboActivity {
+	
+	private static final String TAG = MainActivity.class.getSimpleName();
 
 	@Inject
 	private Bus eventBus;
@@ -47,6 +50,9 @@ public class MainActivity extends RoboActivity {
 		goFullScreen();
 		customiseActionBar();
 		setContentView(R.layout.activity_main);
+		
+		// OpenCV can't read assets, so need to copy over to sdcard
+		SahaFileManager.copyClassifierToSdCard(this.getAssets());
 
 		eventBus.register(this);
 		eventBus.post(new LifecycleEvents.MainActivityCreated());
@@ -87,9 +93,9 @@ public class MainActivity extends RoboActivity {
 		switch (item.getItemId()) {
 		case R.id.action_list_users:
 			List<User> users = SahaUserDatabase.getAllUsers(MainActivity.this);
-			Log.d("SAHA", "users: " + users.size());
+			Log.d(TAG, "users: " + users.size());
 			for (User user : users) {
-				Log.e("SAHA",
+				Log.d(TAG,
 						"User #" + user.getId() + ", name: " + user.getName()
 								+ ", dir: " + user.getDirectory());
 			}
@@ -107,29 +113,10 @@ public class MainActivity extends RoboActivity {
 			eventBus.post(new FaceRecognitionEvents.TrainRecognizerRequest(uf));
 			return true;
 		case R.id.action_recognize:
-			// SahaFileManager.createFaceRecModelFile();
 
 			startActivity(new Intent(MainActivity.this,
 					IdentificationActivity.class));
 
-			// FIXME Temp test data until the cropping works
-
-			// faceRecognizer.initRecognizer();
-			// String[][] idImageArray = new String[2][];
-			// idImageArray[0] = new String[] {
-			// "/sdcard/face/andreas1.jpg", "/sdcard/face/andreas2.jpg",
-			// "/sdcard/face/andreas3.jpg" };
-			// idImageArray[1] = new String[] {
-			// "/sdcard/face/kate1.jpg", "/sdcard/face/kate2.jpg",
-			// "/sdcard/face/kate3.jpg" };
-
-			// faceRecognizer.trainRecognizer(idImageArray);
-			// eventBus.post(new
-			// FaceRecognitionEvents.TrainRecognizerRequest(idImageArray));
-			// eventBus.post(new
-			// FaceRecognitionEvents.PredictUserRequest("/sdcard/face/predict2.jpg"));
-
-			// faceRecognizer.closeRecognizer();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -166,7 +153,5 @@ public class MainActivity extends RoboActivity {
 					View.SYSTEM_UI_FLAG_LOW_PROFILE);
 
 		}
-
 	}
-
 }

@@ -28,25 +28,39 @@ using namespace cv;
 
 extern "C" {
 
+/*
+ * Load the persisted model file for the face recognizer
+ */
 JNIEXPORT jlong JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_loadPersistedModel(
 		JNIEnv* env, jobject thiz, jstring modelFilePath) {
 
+	// Create a new wrapper instance so that we can keep it alive across JNI calls
 	FaceRecWrapper* wrapper = new FaceRecWrapper();
 	Ptr<FaceRecognizer> model = createEigenFaceRecognizer();
 	// Load model from persisted model
 	const char* modelFile = env->GetStringUTFChars(modelFilePath, NULL);
 	LOGD("Reading model from file: %s", modelFile);
-	FileStorage fs(modelFile, FileStorage::READ);
-	if (fs.isOpened()) {
-		model->load(fs);
-		fs.release();
+
+	try {
+		FileStorage fs(modelFile, FileStorage::READ);
+		if (fs.isOpened()) {
+			model->load(fs);
+			fs.release();
+		}
+	}
+	catch (Exception e) {
+		LOGD("loadPersistedModel exception: %s", e.what());
+		// This likely means there are no data yet, which is fine
 	}
 
+	// Save the model to the wrapper
 	wrapper->setModel(model);
 	return (jlong) wrapper;
-
 }
 
+/*
+ * Delete the wrapper which will deallocate the face recognizer as well
+ */
 JNIEXPORT void JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_deleteWrapper(
 		JNIEnv* env, jobject thiz, jlong wrapperRef) {
 	FaceRecWrapper* wrapper = (FaceRecWrapper*) wrapperRef;
@@ -59,7 +73,7 @@ JNIEXPORT void JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_deleteWrapper(
 JNIEXPORT jboolean JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_nativeTrainRecognizer(
 		JNIEnv* env, jobject thiz, jintArray userIds,
 		jobjectArray usersImagePathArray, jstring modelFilePath,
-		jlong wrapperRef) {
+		jstring classifierPath, jlong wrapperRef) {
 
 	// Vectors to hold image data and corresponding label (user id)
 	vector<Mat> images;
@@ -69,6 +83,14 @@ JNIEXPORT jboolean JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_nativeTrai
 	int userCount = env->GetArrayLength(userIds);
 	jint *body = env->GetIntArrayElements(userIds, 0);
 
+	// Load face classifier
+	const char* classifier = env->GetStringUTFChars(classifierPath, NULL);
+	CascadeClassifier haar_cascade;
+	if (!haar_cascade.load(classifier)) {
+		LOGD("Failed to load classifier!");
+		return false;
+	}
+
 	// Loop over all users
 	for (int userIndex = 0; userIndex < userCount; userIndex++) {
 		int userId = body[userIndex];
@@ -77,31 +99,28 @@ JNIEXPORT jboolean JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_nativeTrai
 						userIndex);
 		int imageCount = env->GetArrayLength(imagePathsArray);
 
-		CascadeClassifier haar_cascade;
-		// FIXME Move path to Java and pass it down
-		if (haar_cascade.load(
-				"/sdcard/SAHA/users/haarcascade_frontalface_default.xml")) {
-			LOGD("Haar successfully loaded");
-		}
-
 		// Loop over all image paths for that user
 		for (int imageIndex = 0; imageIndex < imageCount; imageIndex++) {
+
 			jstring imagePath = (jstring) env->GetObjectArrayElement(
 					imagePathsArray, imageIndex);
 			const char* imagePathC = env->GetStringUTFChars(imagePath, NULL);
 			LOGD("User: %d, Image: %s", userId, imagePathC);
 
+			// Open image as RGB
 			Mat original = imread(imagePathC, 1);
 			Mat gray;
+			// Convert to grayscale
 			cvtColor(original, gray, CV_BGR2GRAY);
 			vector<Rect_<int> > faces;
 			// FIXME We need to figure out the size here based on camera res
-			haar_cascade.detectMultiScale(gray, faces, 1.1, 3, 0,
-					Size(40, 80));
-			LOGD("FACES : %d ", faces.size());
+			haar_cascade.detectMultiScale(gray, faces, 1.1, 3, 0, Size(40, 80));
+			LOGD("Faces detected in image: %d ", faces.size());
+			// We only care about the first case
 			if (faces.size() > 0) {
 				Rect face_i = faces[0];
 				Mat faceMat = gray(face_i);
+				// FIXME Move hardcoded size to Java
 				resize(faceMat, faceMat, Size(200, 200));
 				//imwrite("/sdcard/face/pig.jpg", faceMat);
 				labels.push_back(userId);
@@ -112,7 +131,7 @@ JNIEXPORT jboolean JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_nativeTrai
 	}
 
 	FaceRecWrapper* wrapper = (FaceRecWrapper*) wrapperRef;
-	// Create the recognizer
+	// Get the recognizer from the wrapper
 	Ptr<FaceRecognizer> model = wrapper->getModel();
 	// Train the recognizer
 	model->train(images, labels);
@@ -135,24 +154,27 @@ JNIEXPORT jboolean JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_nativeTrai
  */
 JNIEXPORT jint JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_nativePredictUserId(
 		JNIEnv* env, jobject thiz, jstring imagePath, jstring modelFilePath,
-		jlong wrapperRef) {
+		jstring classifierPath, jlong wrapperRef) {
 
 	FaceRecWrapper* wrapper = (FaceRecWrapper*) wrapperRef;
-	// Create the recognizer
+	// Get the recognizer from wrapper
 	Ptr<FaceRecognizer> model = wrapper->getModel();
 
-	const char* image = env->GetStringUTFChars(imagePath, NULL);
-
+	// Load the classifier
+	const char* classifier = env->GetStringUTFChars(classifierPath, NULL);
 	CascadeClassifier haar_cascade;
-	// FIXME Move path to Java and pass it down
-	if (haar_cascade.load(
-			"/sdcard/SAHA/users/haarcascade_frontalface_default.xml")) {
-		LOGD("Haar successfully loaded");
+	if (!haar_cascade.load(classifier)) {
+		LOGD("Failed to load classifier!");
+		return -1;
 	}
 
+	// Read the image to predict from
+	const char* image = env->GetStringUTFChars(imagePath, NULL);
 	LOGD("Predicting from image file: %s", image);
+
+	// FIXME Create a static method for the detection
 	Mat original = imread(image, 1);
-	Mat gray; //= original.clone();
+	Mat gray;
 	cvtColor(original, gray, CV_BGR2GRAY);
 	vector<Rect_<int> > faces;
 	haar_cascade.detectMultiScale(gray, faces, 1.1, 3, 0, Size(20, 60));

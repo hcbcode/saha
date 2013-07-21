@@ -12,7 +12,10 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 /**
- * Interface to native face recognizer class
+ * Interface to native face recognizer class. We execute all face recognition
+ * requests on a separate thread managed by a looper and a handler. Requests
+ * comes in via the event bus and are placed on the handler messaging queue for
+ * synchronous in-order request handling.
  * 
  * @author Andreas Borglin
  */
@@ -20,8 +23,10 @@ public class NativeFaceRecognizer {
 
 	private static final String TAG = NativeFaceRecognizer.class
 			.getSimpleName();
-	private static String FACE_REC_MODEL_PATH = SahaFileManager
+	private static final String FACE_REC_MODEL_PATH = SahaFileManager
 			.getFaceRecModelPath();
+	private static final String CLASSIFIER_PATH = SahaFileManager
+			.getFaceClassifierPath();
 
 	static {
 		// Load the face recognizer library
@@ -49,9 +54,11 @@ public class NativeFaceRecognizer {
 			}
 
 		}.start();
-		;
 	}
 
+	/**
+	 * Initialise the recogniser with a persisted data model
+	 */
 	@Subscribe
 	public void initRecognizer(LifecycleEvents.MainActivityCreated event) {
 		handler.post(new Runnable() {
@@ -65,6 +72,9 @@ public class NativeFaceRecognizer {
 		});
 	}
 
+	/**
+	 * Close the recognizer and delete any references to it
+	 */
 	@Subscribe
 	public void closeRecognizer(LifecycleEvents.MainActivityDestroyed event) {
 		handler.post(new Runnable() {
@@ -94,10 +104,10 @@ public class NativeFaceRecognizer {
 
 			@Override
 			public void run() {
-				Log.d(TAG, "Training recogniser");
+				Log.d(TAG, "Training recognizer...");
 				nativeTrainRecognizer(event.getUsersFaces().getUserIds(), event
 						.getUsersFaces().getUserImageFaces(),
-						FACE_REC_MODEL_PATH, wrapperRef);
+						FACE_REC_MODEL_PATH, CLASSIFIER_PATH, wrapperRef);
 			}
 		});
 	}
@@ -116,10 +126,10 @@ public class NativeFaceRecognizer {
 
 			@Override
 			public void run() {
-				Log.d(TAG, "Predicting user id");
+				Log.d(TAG, "Starting prediction...");
 				int predictedId = nativePredictUserId(event.getImagePath(),
-						FACE_REC_MODEL_PATH, wrapperRef);
-				Log.d(TAG, "Predicted: " + predictedId);
+						FACE_REC_MODEL_PATH, CLASSIFIER_PATH, wrapperRef);
+				Log.d(TAG, "Predicted user id: " + predictedId);
 				eventBus.post(new FaceRecognitionEvents.UserPredictionResult(
 						predictedId));
 			}
@@ -131,16 +141,23 @@ public class NativeFaceRecognizer {
 	 * Object[] to avoid confusing JNI
 	 */
 	private native boolean nativeTrainRecognizer(int[] userIds,
-			Object[] usersImagePaths, String modelFilePath, long wrapperRef);
+			Object[] usersImagePaths, String modelFilePath,
+			String classifierPath, long wrapperRef);
 
 	/*
 	 * Predict a user based on an image
 	 */
 	private native int nativePredictUserId(String faceImage,
-			String modelFilePath, long wrapperRef);
+			String modelFilePath, String classifierPath, long wrapperRef);
 
+	/*
+	 * Load a persisted model into the face recognizer
+	 */
 	private native long loadPersistedModel(String modelFilePath);
 
+	/*
+	 * Delete the native C++ face recognizer reference
+	 */
 	private native void deleteWrapper(long wrapperRef);
 
 }

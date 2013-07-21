@@ -28,7 +28,7 @@ public class IdentificationActivity extends RoboFragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_register);
+		setContentView(R.layout.activity_identification);
 		eventBus.register(this);
 
 		faceDetectionFragment = new FaceDetectionFragment();
@@ -36,7 +36,7 @@ public class IdentificationActivity extends RoboFragmentActivity {
 				.setMode(FaceDetectionFragment.Mode.IDENTIFICATION);
 
 		getSupportFragmentManager().beginTransaction()
-				.add(R.id.register_layout, faceDetectionFragment).commit();
+				.add(R.id.identification_layout, faceDetectionFragment).commit();
 	}
 
 	@Override

@@ -6,16 +6,17 @@
 
     <EditText
         android:id="@+id/namefield"
-        android:layout_width="100dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:hint="Your name"
-        android:inputType="textPersonName" />
+        android:hint="@string/first_name"
+        android:inputType="textPersonName"
+     	/>
     
     <Button 
         android:id="@+id/create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create"
+        android:text="@string/register"
         />
 
 </LinearLayout>

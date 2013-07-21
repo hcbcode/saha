@@ -11,6 +11,10 @@
     <string name="list_users">List users</string>
     <string name="delete_users">Delete users</string>
     <string name="train">Train</string>
+    <string name="face_reg_message">The application will now start the camera and take a series of pictures.</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="first_name">First name</string>
     <string name="action_train">Train</string>
     <string name="action_list_users">List users</string>
     <string name="action_delete_users">Delete users</string>

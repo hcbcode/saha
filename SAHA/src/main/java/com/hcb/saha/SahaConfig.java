@@ -19,14 +19,21 @@ public final class SahaConfig {
 	}
 
 	public static final class FileSystem {
-		public static final String SDCARD_ROOT = "SAHA";
-		public static final String SAHA_TMP = "tmp";
-		public static final String SAHA_USERS = "users";
-		public static final String SAHA_USER_FACES = "faces";
-		public static final String FACE_PREFIX = "face";
+		public static final String SAHA_ROOT_DIR = "SAHA";
+		public static final String TMP_DIR = "tmp";
+		public static final String HAAR_CLASSIFIERS_DIR = "haar";
+		public static final String USERS_DIR = "users";
+		public static final String USER_FACES_DIR = "faces";
+		public static final String FACE_IMAGE_PREFIX = "face";
 		public static final String FACE_ID_IMAGE = "face_id.jpg";
 		public static final String FACE_IMAGE_EXT = ".jpg";
 		public static final String FACE_REC_MODEL = "facerec.xml";
+		public static final String HAAR_FACE_CLASSIFIER = "faceclassifier.xml";
+	}
+	
+	public static final class Assets {
+		public static final String HAAR_CLASSIFIERS_DIR = "haarclassifiers";
+		public static final String HAAR_FACE_CLASSIFIER = "haarcascade_frontalface_default.xml";
 	}
 	
 	public static final class Registration {
