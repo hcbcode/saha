@@ -3,7 +3,8 @@ package com.hcb.saha.activity;
 import roboguice.activity.RoboFragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
-import android.widget.Toast;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.inject.Inject;
 import com.hcb.saha.R;
@@ -36,7 +37,8 @@ public class IdentificationActivity extends RoboFragmentActivity {
 				.setMode(FaceDetectionFragment.Mode.IDENTIFICATION);
 
 		getSupportFragmentManager().beginTransaction()
-				.add(R.id.identification_layout, faceDetectionFragment).commit();
+				.add(R.id.identification_layout, faceDetectionFragment)
+				.commit();
 	}
 
 	@Override
@@ -54,15 +56,25 @@ public class IdentificationActivity extends RoboFragmentActivity {
 
 	@Subscribe
 	public void onUserIdPredicted(
-			FaceRecognitionEvents.UserPredictionResult event) {
-		if (event.getUserId() >= 0) {
-			User user = SahaUserDatabase.getUserFromId(this, event.getUserId());
-			Toast.makeText(this, "User: " + user.getName(), Toast.LENGTH_SHORT)
-					.show();
-		}
-		else {
-			Toast.makeText(this, "User not recognized!", Toast.LENGTH_SHORT)
-			.show();
-		}
+			final FaceRecognitionEvents.UserPredictionResult event) {
+
+		runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				String userName = "N/A";
+				if (event.getUserId() >= 0) {
+					User user = SahaUserDatabase.getUserFromId(IdentificationActivity.this,
+							event.getUserId());
+					userName = user.getName();
+				}
+				getSupportFragmentManager().beginTransaction()
+						.remove(faceDetectionFragment).commit();
+				TextView userView = new TextView(IdentificationActivity.this);
+				userView.setText("Predicted user: " + userName);
+				ViewGroup layout = (ViewGroup) findViewById(R.id.identification_layout);
+				layout.addView(userView);
+			}
+		});
 	}
 }

@@ -14,6 +14,18 @@ You'll have to use Eclipse for now due to NDK dependencies.
 5. Refresh project in Eclipse
 6. You can now run it
 
-Note that there are currently dependencies on hardcoded images on my device :)
-Also note that I have stripped all dependencies besides armeabi-v7a from OpenCV
-Cropping still doesn't work...
+To test the face stuff,
+1. Press the add user icon in the action bar
+2. Enter your first name (lowercase, no spaces)
+3. Press Register
+4. Hold the front-facing camera straight in front of your face (~50 cm away)
+5. The app will take snapshots, persist and add it to the training model
+6. The face recognizer will re-train now (takes a few secs, but all requests are synchronous so no thread worries)
+7. Press Recognize in the options menu and do the same as in step #4
+8. It should pop a Toast with your name
+
+To list users
+1. Click the List users menu option
+2. To save more face images for a user, press the button for that user
+
+This has been tested with 3 people in the system and with ~75% accuracy. Need more input data for higher accuracy.

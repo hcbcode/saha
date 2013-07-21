@@ -4,15 +4,17 @@ import java.util.List;
 
 import roboguice.activity.RoboActivity;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.google.inject.Inject;
@@ -92,16 +94,23 @@ public class MainActivity extends RoboActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_list_users:
-			List<User> users = SahaUserDatabase.getAllUsers(MainActivity.this);
-			Log.d(TAG, "users: " + users.size());
-			for (User user : users) {
-				Log.d(TAG,
-						"User #" + user.getId() + ", name: " + user.getName()
-								+ ", dir: " + user.getDirectory());
-			}
+			startActivity(new Intent(MainActivity.this, UsersActivity.class));
 			return true;
 		case R.id.action_delete_users:
-			SahaUserDatabase.deleteAllUsers(MainActivity.this);
+			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+			dialog.setTitle(R.string.delete_users_title);
+			dialog.setMessage(R.string.delete_users_message);
+			dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					SahaUserDatabase.deleteAllUsers(MainActivity.this);
+					SahaFileManager.deleteUserDirs();
+					Toast.makeText(MainActivity.this, "All users deleted.", Toast.LENGTH_SHORT).show();
+				}
+			});
+			dialog.setNegativeButton(R.string.cancel, null);
+			dialog.show();
 			return true;
 		case R.id.action_add_user:
 			startActivity(new Intent(MainActivity.this, RegisterActivity.class));

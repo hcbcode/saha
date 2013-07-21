@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import android.content.res.AssetManager;
@@ -76,15 +77,20 @@ public final class SahaFileManager {
 	}
 
 	/**
+	 * Get the users directory
+	 */
+	public static File getUsersDir() {
+		return getTopLevelDir(FileSystem.USERS_DIR);
+	}
+
+	/**
 	 * Get the user directory for a user
 	 * 
 	 * @param user
 	 *            the user directory name
 	 */
 	public static File getUserDir(User user) {
-		File sahaRoot = getSahaRoot();
-		File userFile = new File(sahaRoot, FileSystem.USERS_DIR + "/"
-				+ user.getDirectory());
+		File userFile = new File(getUsersDir(), user.getDirectory());
 		if (!userFile.exists()) {
 			userFile.mkdirs();
 		}
@@ -136,12 +142,10 @@ public final class SahaFileManager {
 	 * Create the file used by the face recognizer to store models
 	 */
 	public static void createFaceRecModelFile() {
-		File sahaRoot = getSahaRoot();
-		File userFile = new File(sahaRoot, FileSystem.USERS_DIR + "/"
-				+ FileSystem.FACE_REC_MODEL);
+		File usersDir = getUsersDir();
+		File userFile = new File(usersDir, FileSystem.FACE_REC_MODEL);
 		if (!userFile.exists()) {
 			try {
-				userFile.mkdirs();
 				userFile.createNewFile();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -218,10 +222,25 @@ public final class SahaFileManager {
 		}
 	}
 
+	/**
+	 * Get the face classifier path
+	 */
 	public static String getFaceClassifierPath() {
 		return String.format("%s/%s/%s", getSahaRoot().getAbsolutePath(),
 				FileSystem.HAAR_CLASSIFIERS_DIR,
 				FileSystem.HAAR_FACE_CLASSIFIER);
+	}
+	
+	/**
+	 * Delete user directories. Note - this will delete all face images!
+	 */
+	public static void deleteUserDirs() {
+		File users = getUsersDir();
+		try {
+			FileUtils.cleanDirectory(users);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -25,6 +25,7 @@ import com.squareup.otto.Subscribe;
  */
 public class RegisterActivity extends RoboFragmentActivity {
 
+	public static final String USER_ID = "userId";
 	private UserRegistrationFragment userRegistrationFragment;
 	private FaceDetectionFragment faceDetectionFragment;
 	@Inject
@@ -36,10 +37,19 @@ public class RegisterActivity extends RoboFragmentActivity {
 		setContentView(R.layout.activity_register);
 		eventBus.register(this);
 
-		userRegistrationFragment = new UserRegistrationFragment();
-
-		getSupportFragmentManager().beginTransaction()
-				.add(R.id.register_layout, userRegistrationFragment).commit();
+		int userId = 0;
+		if (getIntent().getExtras() != null) {
+			userId = getIntent().getExtras().getInt(USER_ID);
+		}
+		if (userId == 0) {
+			userRegistrationFragment = new UserRegistrationFragment();
+			getSupportFragmentManager().beginTransaction()
+					.add(R.id.register_layout, userRegistrationFragment)
+					.commit();
+		} else {
+			User user = SahaUserDatabase.getUserFromId(this, userId);
+			startFaceRegistration(user, false);
+		}
 	}
 
 	@Override
@@ -57,13 +67,23 @@ public class RegisterActivity extends RoboFragmentActivity {
 
 	@Subscribe
 	public void onUserCreated(RegistrationEvents.UserCreated event) {
-
 		User user = event.getUser();
+		startFaceRegistration(user, true);
+	}
+
+	private void startFaceRegistration(User user, boolean replace) {
 		faceDetectionFragment = new FaceDetectionFragment();
 		faceDetectionFragment.setMode(FaceDetectionFragment.Mode.REGISTRATION);
 		faceDetectionFragment.setCurrentUser(user);
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.register_layout, faceDetectionFragment).commit();
+		if (replace) {
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.register_layout, faceDetectionFragment)
+					.commit();
+		} else {
+			getSupportFragmentManager().beginTransaction()
+					.add(R.id.register_layout, faceDetectionFragment).commit();
+		}
+
 	}
 
 	@Subscribe

@@ -178,7 +178,7 @@ JNIEXPORT jint JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_nativePredictU
 	cvtColor(original, gray, CV_BGR2GRAY);
 	vector<Rect_<int> > faces;
 	haar_cascade.detectMultiScale(gray, faces, 1.1, 3, 0, Size(20, 60));
-	LOGD("FACES : %d ", faces.size());
+	LOGD("Faces detected in image: %d ", faces.size());
 	int predictUserId = -1;
 	if (faces.size() > 0) {
 		Rect face_i = faces[0];
