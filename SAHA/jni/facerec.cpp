@@ -1,7 +1,5 @@
 /**
  * Face recognizer using OpenCV
- * TODO: We need to create an actual C++ instance that holds the model
- * instead of recreating it each time from the saved data which is SLOW
  *
  * @author Andreas Borglin
  */
