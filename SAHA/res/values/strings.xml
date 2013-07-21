@@ -3,11 +3,19 @@
 
     <string name="app_name">SAHA</string>
     <string name="title_activity_face_detection">FaceDetectionActivity</string>
-    <string name="action_settings">Whatever</string>
+    <string name="action_add_user">Add user</string>
+    <string name="action_settings">Andreas smells</string>
     <string name="register">Register</string>
+    <string name="action_recognize">Recognize</string>
     <string name="recognize">Recognize</string>
     <string name="list_users">List users</string>
     <string name="delete_users">Delete users</string>
     <string name="train">Train</string>
+    <string name="action_train">Train</string>
+    <string name="action_list_users">List users</string>
+    <string name="action_delete_users">Delete users</string>
+    <string name="home_screen_title_email">email</string>
+    <string name="home_screen_title_lights">lights</string>
+    <string name="home_screen_title_social">social</string>
 
 </resources>
