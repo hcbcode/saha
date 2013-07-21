@@ -15,6 +15,7 @@ You'll have to use Eclipse for now due to NDK dependencies.
 6. You can now run it
 
 To test the face stuff,
+
 1. Press the add user icon in the action bar
 2. Enter your first name (lowercase, no spaces)
 3. Press Register
@@ -25,6 +26,7 @@ To test the face stuff,
 8. It should pop a Toast with your name
 
 To list users
+
 1. Click the List users menu option
 2. To save more face images for a user, press the button for that user
 
