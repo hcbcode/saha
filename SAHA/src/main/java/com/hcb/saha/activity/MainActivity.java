@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,10 +26,11 @@ import com.google.inject.Inject;
 import com.hcb.saha.R;
 import com.hcb.saha.SahaConfig;
 import com.hcb.saha.config.EnvConfig;
+import com.hcb.saha.data.GmailContract;
+import com.hcb.saha.data.PhoneAccountManager;
 import com.hcb.saha.data.PhoneAccountObserver;
 import com.hcb.saha.data.SahaFileManager;
 import com.hcb.saha.data.SahaUserDatabase;
-import com.hcb.saha.data.PhoneAccountManager;
 import com.hcb.saha.data.model.User;
 import com.hcb.saha.data.model.UsersFaces;
 import com.hcb.saha.event.FaceRecognitionEvents;
@@ -52,6 +54,11 @@ public class MainActivity extends RoboActivity {
 	NativeFaceRecognizer faceRecognizer;
 	@InjectView(R.id.email_text)
 	TextView email;
+
+	// FIXME: Move
+	static final String[] COLUMNS_TO_SHOW = new String[] {
+			GmailContract.Labels.NUM_CONVERSATIONS,
+			GmailContract.Labels.NUM_UNREAD_CONVERSATIONS, };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +99,25 @@ public class MainActivity extends RoboActivity {
 								for (Account account : accounts) {
 									email.setText(email.getText() + "\n "
 											+ account.name);
+
+									Cursor labelsCursor = getContentResolver()
+											.query(GmailContract.Labels
+													.getLabelsUri(account.name),
+													COLUMNS_TO_SHOW, null,
+													null, null);
+
+									// Use loader or something else dynamic.
+									if (labelsCursor.moveToFirst()) {
+										String unread = labelsCursor.getString(labelsCursor
+												.getColumnIndex(GmailContract.Labels.NUM_UNREAD_CONVERSATIONS));
+
+										String read = labelsCursor.getString(labelsCursor
+												.getColumnIndex(GmailContract.Labels.NUM_CONVERSATIONS));
+
+										email.setText(email.getText()
+												+ ". Inbox. unread:" + unread
+												+ ", read:" + read);
+									}
 								}
 
 							}
