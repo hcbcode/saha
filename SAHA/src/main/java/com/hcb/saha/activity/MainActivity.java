@@ -52,8 +52,10 @@ public class MainActivity extends RoboActivity {
 	private Bus eventBus;
 	@Inject
 	NativeFaceRecognizer faceRecognizer;
-	@InjectView(R.id.email_text)
-	TextView email;
+	@InjectView(R.id.email_address_text)
+	TextView emailAddress;
+	@InjectView(R.id.email_unread_count)
+	TextView emailUnreadCount;
 
 	// FIXME: Move
 	static final String[] COLUMNS_TO_SHOW = new String[] {
@@ -89,7 +91,6 @@ public class MainActivity extends RoboActivity {
 		super.onResume();
 
 		// FIXME: Should not use callbacks but use events instead.
-		email.setText("");
 		PhoneAccountManager.getGoogleAccounts(this,
 				new WeakReference<PhoneAccountObserver>(
 						new PhoneAccountObserver() {
@@ -97,8 +98,7 @@ public class MainActivity extends RoboActivity {
 							@Override
 							public void onReadAccounts(Account[] accounts) {
 								for (Account account : accounts) {
-									email.setText(email.getText() + "\n "
-											+ account.name);
+									emailAddress.setText(account.name);
 
 									Cursor labelsCursor = getContentResolver()
 											.query(GmailContract.Labels
@@ -111,11 +111,11 @@ public class MainActivity extends RoboActivity {
 										String unread = labelsCursor.getString(labelsCursor
 												.getColumnIndex(GmailContract.Labels.NUM_UNREAD_CONVERSATIONS));
 
-										String read = labelsCursor.getString(labelsCursor
-												.getColumnIndex(GmailContract.Labels.NUM_CONVERSATIONS));
+										emailUnreadCount.setText(unread + " "
+												+ emailUnreadCount.getText());
 
-										email.setText(email.getText()
-												+ ". Inbox. unread:" + unread);
+										// FIXME: don't loop man.
+										break;
 									}
 								}
 

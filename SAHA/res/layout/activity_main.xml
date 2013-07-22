@@ -9,51 +9,92 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@color/android_red_dark"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="20dp" >
 
         <ImageView
+            android:id="@+id/image_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_email_content_unread" />
 
         <TextView
-            android:id="@+id/email_text"
+            android:id="@+id/email_address_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/home_screen_title_email"
+            android:layout_below="@id/image_email"
+            android:text="@string/home_screen_title_email_address"
             android:textColor="@android:color/white" />
-    </LinearLayout>
+
+        <TextView
+            android:id="@+id/email_unread_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/email_address_text"
+            android:text="@string/home_screen_title_email_unread"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@color/android_red_light"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="20dp" >
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_device_access_brightness_high" />
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/home_screen_title_lights"
-            android:textColor="@android:color/white" />
+            <ImageView
+                android:id="@+id/image_lights"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_device_access_brightness_high" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/image_lights"
+                android:text="@string/home_screen_title_lights"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" >
+
+            <ImageView
+                android:id="@+id/image_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_video" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/image_video"
+                android:text="@string/home_screen_title_cameras"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:baselineAligned="false"
         android:orientation="horizontal" >
 
         <LinearLayout
