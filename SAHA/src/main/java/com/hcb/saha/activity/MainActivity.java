@@ -112,7 +112,7 @@ public class MainActivity extends RoboActivity {
 												.getColumnIndex(GmailContract.Labels.NUM_UNREAD_CONVERSATIONS));
 
 										emailUnreadCount.setText(unread + " "
-												+ emailUnreadCount.getText());
+												+ "Unread");
 
 										// FIXME: don't loop man.
 										break;
