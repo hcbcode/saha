@@ -22,7 +22,8 @@
     <string name="action_list_users">List users</string>
     <string name="action_delete_users">Delete users</string>
     <string name="home_screen_title_email">email</string>
-    <string name="home_screen_title_lights">lights</string>
-    <string name="home_screen_title_social">social</string>
+    <string name="home_screen_title_lights">0 Lights</string>
+    <string name="home_screen_title_social">Facebook</string>
+    <string name="home_screen_title_temperature">Temperature</string>
 
 </resources>

@@ -115,8 +115,7 @@ public class MainActivity extends RoboActivity {
 												.getColumnIndex(GmailContract.Labels.NUM_CONVERSATIONS));
 
 										email.setText(email.getText()
-												+ ". Inbox. unread:" + unread
-												+ ", read:" + read);
+												+ ". Inbox. unread:" + unread);
 									}
 								}
 
