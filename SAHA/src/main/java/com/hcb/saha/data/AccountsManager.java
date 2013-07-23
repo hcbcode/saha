@@ -1,8 +1,6 @@
 package com.hcb.saha.data;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.Arrays;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -13,9 +11,33 @@ import android.accounts.OperationCanceledException;
 import android.content.Context;
 import android.util.Log;
 
-public class PhoneAccountManager {
+import com.google.inject.Inject;
+import com.hcb.saha.event.AccountEvents.QueryAccountsRequest;
+import com.hcb.saha.event.AccountEvents.QueryAccountsResult;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
-	private static final String TAG = PhoneAccountManager.class.getSimpleName();
+/**
+ * 
+ * @author steven hadley
+ *
+ */
+public class AccountsManager {
+
+	private static final String TAG = AccountsManager.class.getSimpleName();
+
+	private Bus eventBus;
+
+	@Inject
+	public AccountsManager(Bus eventBus) {
+		this.eventBus = eventBus;
+		eventBus.register(this);
+	}
+
+	@Subscribe
+	public void queryAccounts(QueryAccountsRequest query) {
+		getGoogleAccounts(query.getContext());
+	}
 
 	/**
 	 * This could easily be made to query FB, LinkedIn etc.
@@ -23,8 +45,7 @@ public class PhoneAccountManager {
 	 * @param ctx
 	 * @param observer
 	 */
-	public static void getGoogleAccounts(Context ctx,
-			final WeakReference<PhoneAccountObserver> observer) {
+	private void getGoogleAccounts(final Context ctx) {
 
 		final String ACCOUNT_TYPE_GOOGLE = "com.google";
 		final String[] FEATURES_MAIL = { "service_mail" };
@@ -44,17 +65,18 @@ public class PhoneAccountManager {
 						} catch (AuthenticatorException ae) {
 							Log.e(TAG, "Got OperationCanceledException", ae);
 						}
-						onAccountResults(accounts, observer);
+						onAccountResults(accounts, ctx);
 					}
 				}, null /* handler */);
 	}
 
-	private static void onAccountResults(Account[] accounts,
-			WeakReference<PhoneAccountObserver> observer) {
-		Log.i("TestApp", "received accounts: " + Arrays.toString(accounts));
-		if (null != observer.get()) {
-			observer.get().onReadAccounts(accounts);
+	private void onAccountResults(Account[] accounts, Context ctx) {
+		String[] accnts = new String[accounts.length];
+		int i = 0;
+		for (Account acc : accounts) {
+			accnts[i] = acc.name;
+			i++;
 		}
+		eventBus.post(new QueryAccountsResult(accnts, ctx));
 	}
-
 }

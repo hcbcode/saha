@@ -1,17 +1,14 @@
 package com.hcb.saha.activity;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
-import android.accounts.Account;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,17 +23,19 @@ import com.google.inject.Inject;
 import com.hcb.saha.R;
 import com.hcb.saha.SahaConfig;
 import com.hcb.saha.config.EnvConfig;
-import com.hcb.saha.data.GmailContract;
-import com.hcb.saha.data.PhoneAccountManager;
-import com.hcb.saha.data.PhoneAccountObserver;
+import com.hcb.saha.data.EmailManager;
 import com.hcb.saha.data.SahaFileManager;
 import com.hcb.saha.data.SahaUserDatabase;
 import com.hcb.saha.data.model.User;
 import com.hcb.saha.data.model.UsersFaces;
+import com.hcb.saha.event.AccountEvents;
+import com.hcb.saha.event.EmailEvents;
+import com.hcb.saha.event.EmailEvents.QueryEmailRequest;
 import com.hcb.saha.event.FaceRecognitionEvents;
 import com.hcb.saha.event.LifecycleEvents;
 import com.hcb.saha.jni.NativeFaceRecognizer;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 /**
  * Main activity
@@ -51,16 +50,14 @@ public class MainActivity extends RoboActivity {
 	@Inject
 	private Bus eventBus;
 	@Inject
-	NativeFaceRecognizer faceRecognizer;
+	private NativeFaceRecognizer faceRecognizer;
 	@InjectView(R.id.email_address_text)
-	TextView emailAddress;
+	private TextView emailAddress;
 	@InjectView(R.id.email_unread_count)
-	TextView emailUnreadCount;
-
-	// FIXME: Move
-	static final String[] COLUMNS_TO_SHOW = new String[] {
-			GmailContract.Labels.NUM_CONVERSATIONS,
-			GmailContract.Labels.NUM_UNREAD_CONVERSATIONS, };
+	private TextView emailUnreadCount;
+	@Inject
+	private EmailManager emailManager;
+	private String emailAccount;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,44 +81,15 @@ public class MainActivity extends RoboActivity {
 			BugSenseHandler.initAndStartSession(this, SahaConfig.BUGSENSE_KEY);
 		}
 
+		// FIXME: This should be done by face recognition not here
+		eventBus.post(new AccountEvents.QueryAccountsRequest(this
+				.getApplicationContext()));
+
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-
-		// FIXME: Should not use callbacks but use events instead.
-		PhoneAccountManager.getGoogleAccounts(this,
-				new WeakReference<PhoneAccountObserver>(
-						new PhoneAccountObserver() {
-
-							@Override
-							public void onReadAccounts(Account[] accounts) {
-								for (Account account : accounts) {
-									emailAddress.setText(account.name);
-
-									Cursor labelsCursor = getContentResolver()
-											.query(GmailContract.Labels
-													.getLabelsUri(account.name),
-													COLUMNS_TO_SHOW, null,
-													null, null);
-
-									// Use loader or something else dynamic.
-									if (labelsCursor.moveToFirst()) {
-										String unread = labelsCursor.getString(labelsCursor
-												.getColumnIndex(GmailContract.Labels.NUM_UNREAD_CONVERSATIONS));
-
-										emailUnreadCount.setText(unread + " "
-												+ "Unread");
-
-										// FIXME: don't loop man.
-										break;
-									}
-								}
-
-							}
-						}));
-
 	}
 
 	@Override
@@ -220,5 +188,19 @@ public class MainActivity extends RoboActivity {
 					View.SYSTEM_UI_FLAG_LOW_PROFILE);
 
 		}
+	}
+
+	@Subscribe
+	public void emailUnreadCountAvailable(EmailEvents.QueryEmailResult email) {
+		emailUnreadCount.setText(email.getUnreadCount() + " " + "Unread");
+	}
+
+	@Subscribe
+	public void onAccountsQueried(AccountEvents.QueryAccountsResult accounts) {
+		// FIXME: Just picking first one
+		eventBus.post(new QueryEmailRequest(accounts.getNames()[0],
+				getApplicationContext()));
+		emailAccount = accounts.getNames()[0];
+		emailAddress.setText(accounts.getNames()[0]);
 	}
 }

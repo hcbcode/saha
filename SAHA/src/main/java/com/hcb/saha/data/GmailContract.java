@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 /**
+ * FIXME: Remove unsused
  * 
  * http://android-developers.blogspot.com.au/2012/04/gmail-public-labels-api.
  * html
@@ -84,6 +85,8 @@ public final class GmailContract {
 	static final String PACKAGE = "com.google.android.gm";
 
 	/**
+	 * FIXME: Use this method.
+	 * 
 	 * Check if the installed Gmail app supports querying for label information.
 	 * 
 	 * @param c
