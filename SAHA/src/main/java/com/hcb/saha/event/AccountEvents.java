@@ -25,7 +25,7 @@ public class AccountEvents {
 	/**
 	 * 
 	 * @author steven hadley
-	 *
+	 * 
 	 */
 	public static class QueryAccountsResult {
 		private String[] names;

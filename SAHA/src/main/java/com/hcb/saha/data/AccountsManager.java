@@ -20,7 +20,7 @@ import com.squareup.otto.Subscribe;
 /**
  * 
  * @author steven hadley
- *
+ * 
  */
 public class AccountsManager {
 
@@ -67,7 +67,7 @@ public class AccountsManager {
 						}
 						onAccountResults(accounts, ctx);
 					}
-				}, null /* handler */);
+				}, null);
 	}
 
 	private void onAccountResults(Account[] accounts, Context ctx) {

@@ -191,8 +191,15 @@ public class MainActivity extends RoboActivity {
 	}
 
 	@Subscribe
-	public void emailUnreadCountAvailable(EmailEvents.QueryEmailResult email) {
-		emailUnreadCount.setText(email.getUnreadCount() + " " + "Unread");
+	public void emailUnreadCountAvailable(final EmailEvents.QueryEmailResult email) {
+		runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				emailUnreadCount.setText(email.getUnreadCount() + " "
+						+ "Unread");
+			}
+		});
 	}
 
 	@Subscribe
