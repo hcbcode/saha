@@ -1,6 +1,8 @@
 package com.hcb.saha.data;
 
+import android.database.ContentObserver;
 import android.database.Cursor;
+import android.os.Handler;
 
 import com.google.inject.Inject;
 import com.hcb.saha.event.EmailEvents;
@@ -11,11 +13,14 @@ import com.squareup.otto.Subscribe;
 /**
  * 
  * @author steven hadley
- *
+ * 
+ *         Only supports monitoring one email address.
+ * 
  */
 public class EmailManager {
 
 	private Bus eventBus;
+	private EmailEvents.QueryEmailRequest cachedEvent;
 
 	static final String[] COLUMNS_TO_SHOW = new String[] {
 			GmailContract.Labels.NUM_CONVERSATIONS,
@@ -29,6 +34,7 @@ public class EmailManager {
 
 	@Subscribe
 	public void queryEmails(EmailEvents.QueryEmailRequest email) {
+
 		Cursor labelsCursor = email
 				.getContext()
 				.getContentResolver()
@@ -36,13 +42,37 @@ public class EmailManager {
 						COLUMNS_TO_SHOW, null, null, null);
 
 		Integer unread = null;
-		// FIXME: Use loader or something else dynamic.
 		if (labelsCursor.moveToFirst()) {
 			unread = labelsCursor
 					.getInt(labelsCursor
 							.getColumnIndex(GmailContract.Labels.NUM_UNREAD_CONVERSATIONS));
 
 		}
+
+		// relies on old cursor being garbage collected and the observer
+		// becoming unreachable and hence garbage collected.
+		labelsCursor.registerContentObserver(new Observer(null));
+
 		eventBus.post(new QueryEmailResult(unread));
+
+		cachedEvent = email;
 	}
+
+	private class Observer extends ContentObserver {
+
+		public Observer(Handler handler) {
+			super(handler);
+		}
+
+		@Override
+		public void onChange(boolean selfChange) {
+			queryEmails(cachedEvent);
+		}
+
+		@Override
+		public boolean deliverSelfNotifications() {
+			return true;
+		}
+	}
+
 }
