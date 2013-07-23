@@ -235,6 +235,8 @@ public class FaceDetectionFragment extends RoboFragment implements
 	@Override
 	public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
 		camera.stopPreview();
+		surfaceHolder.removeCallback(this);
+		detectionActive = false;
 		camera.release();
 	}
 
