@@ -1,5 +1,7 @@
 package com.hcb.saha.data;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Handler;
@@ -22,6 +24,11 @@ public class EmailManager {
 	private Bus eventBus;
 	private EmailEvents.QueryEmailRequest cachedEvent;
 
+	/**
+	 * Used to stop race conditions.
+	 */
+	private ReentrantLock lock = new ReentrantLock();
+
 	static final String[] COLUMNS_TO_SHOW = new String[] {
 			GmailContract.Labels.NUM_CONVERSATIONS,
 			GmailContract.Labels.NUM_UNREAD_CONVERSATIONS, };
@@ -34,6 +41,7 @@ public class EmailManager {
 
 	@Subscribe
 	public void queryEmails(EmailEvents.QueryEmailRequest email) {
+		lock.lock();
 
 		Cursor labelsCursor = email
 				.getContext()
@@ -51,14 +59,27 @@ public class EmailManager {
 
 		// relies on old cursor being garbage collected and the observer
 		// becoming unreachable and hence garbage collected.
-		labelsCursor.registerContentObserver(new Observer(null));
+		Observer observer = new Observer(null);
+		observer.setName(email.getName());
+		labelsCursor.registerContentObserver(observer);
 
 		eventBus.post(new QueryEmailResult(unread));
 
 		cachedEvent = email;
+
+		lock.unlock();
+
 	}
 
+	/**
+	 * Monitor content changes to email.
+	 * 
+	 * @author steven hadley
+	 * 
+	 */
 	private class Observer extends ContentObserver {
+
+		private String name;
 
 		public Observer(Handler handler) {
 			super(handler);
@@ -66,12 +87,16 @@ public class EmailManager {
 
 		@Override
 		public void onChange(boolean selfChange) {
-			queryEmails(cachedEvent);
+			lock.lock();
+			// make sure the email account being displayed has not changed.
+			if (name.equals(cachedEvent.getName())) {
+				queryEmails(cachedEvent);
+			}
+			lock.unlock();
 		}
 
-		@Override
-		public boolean deliverSelfNotifications() {
-			return true;
+		public void setName(String name) {
+			this.name = name;
 		}
 	}
 
