@@ -17,6 +17,9 @@
     <uses-permission android:name="com.google.android.gm.permission.READ_CONTENT_PROVIDER" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
+    <!-- power management -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <uses-feature android:name="android.hardware.camera" />
 
     <application
