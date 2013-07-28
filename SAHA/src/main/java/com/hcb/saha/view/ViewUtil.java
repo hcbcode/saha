@@ -8,9 +8,10 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.hcb.saha.R;
+import com.hcb.saha.system.DeviceManager;
 
 /**
- * Common UI stuff.
+ * Common UI stuff that can be re-used across views.
  * 
  * @author steven hadley
  * 
@@ -18,7 +19,7 @@ import com.hcb.saha.R;
 public class ViewUtil {
 
 	/**
-	 * Full screen and go low profile.
+	 * Full screen and low profile.
 	 * 
 	 * @param activity
 	 */
@@ -28,12 +29,20 @@ public class ViewUtil {
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			activity.getWindow().getDecorView()
 					.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-
 		}
 	}
 
 	/**
-	 * Setup common action bar.
+	 * Keeps activity awake.
+	 * 
+	 * @param activity
+	 */
+	public static void keepActivityAwake(Activity activity) {
+		DeviceManager.keepScreenAwake(activity);
+	}
+
+	/**
+	 * Setup common SAHA action bar.
 	 * 
 	 * @param activity
 	 */

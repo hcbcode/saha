@@ -4,16 +4,12 @@ import java.util.List;
 
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
-import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +29,6 @@ import com.hcb.saha.event.EmailEvents.QueryEmailRequest;
 import com.hcb.saha.event.FaceRecognitionEvents;
 import com.hcb.saha.event.LifecycleEvents;
 import com.hcb.saha.jni.NativeFaceRecognizer;
-import com.hcb.saha.system.DeviceManager;
 import com.hcb.saha.view.ViewUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -59,18 +54,15 @@ public class MainActivity extends RoboActivity {
 
 	@Inject
 	private EmailManager emailManager;
-	@Inject
-	private DeviceManager deviceManager;
-
-	private String emailAccount;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		deviceManager.keepAwake(this);
+		ViewUtil.keepActivityAwake(this);
 		ViewUtil.goFullScreen(this);
 		ViewUtil.customiseActionBar(this);
+
 		setContentView(R.layout.activity_main);
 
 		// OpenCV can't read assets, so need to copy over to sdcard
@@ -181,7 +173,6 @@ public class MainActivity extends RoboActivity {
 		// FIXME: Just picking first one
 		eventBus.post(new QueryEmailRequest(accounts.getNames()[0],
 				getApplicationContext()));
-		emailAccount = accounts.getNames()[0];
 		emailAddress.setText(accounts.getNames()[0]);
 	}
 }
