@@ -29,6 +29,15 @@ public class ViewUtil {
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			activity.getWindow().getDecorView()
 					.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+			/**
+			 * Android: There is a limitation: because navigation controls are
+			 * so important, the least user interaction will cause them to
+			 * reappear immediately. When this happens, both this flag and
+			 * SYSTEM_UI_FLAG_FULLSCREEN will be cleared automatically, so that
+			 * both elements reappear at the same time.
+			 * 
+			 * Would have to use http://www.42gears.com/surelock/
+			 */
 		}
 	}
 
