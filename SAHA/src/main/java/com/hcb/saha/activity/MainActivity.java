@@ -4,17 +4,12 @@ import java.util.List;
 
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
-import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,11 +29,12 @@ import com.hcb.saha.event.EmailEvents.QueryEmailRequest;
 import com.hcb.saha.event.FaceRecognitionEvents;
 import com.hcb.saha.event.LifecycleEvents;
 import com.hcb.saha.jni.NativeFaceRecognizer;
+import com.hcb.saha.view.ViewUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 /**
- * Main activity
+ * Main activity.
  * 
  * @author Andreas Borglin
  * @author Steven Hadley
@@ -55,16 +51,18 @@ public class MainActivity extends RoboActivity {
 	private TextView emailAddress;
 	@InjectView(R.id.email_unread_count)
 	private TextView emailUnreadCount;
+
 	@Inject
 	private EmailManager emailManager;
-	private String emailAccount;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		goFullScreen();
-		customiseActionBar();
+		ViewUtil.keepActivityAwake(this);
+		ViewUtil.goFullScreen(this);
+		ViewUtil.customiseActionBar(this);
+
 		setContentView(R.layout.activity_main);
 
 		// OpenCV can't read assets, so need to copy over to sdcard
@@ -157,41 +155,9 @@ public class MainActivity extends RoboActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * Sample action bar we could use. Discuss.
-	 */
-	private void customiseActionBar() {
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			ActionBar actionBar = getActionBar();
-			actionBar.setDisplayShowTitleEnabled(false);
-			actionBar.setDisplayShowHomeEnabled(false);
-			actionBar.setDisplayShowCustomEnabled(true);
-			LayoutInflater inflator = (LayoutInflater) this
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View v = inflator.inflate(R.layout.action_bar, null);
-			actionBar.setCustomView(v);
-		}
-	}
-
-	/**
-	 * The 'main' server application needs to be full screen. It doesn't need to
-	 * follow Android convention.
-	 * 
-	 * Discuss.
-	 */
-	private void goFullScreen() {
-		getWindow().addFlags(
-				WindowManager.LayoutParams.FLAG_FULLSCREEN
-						| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			getWindow().getDecorView().setSystemUiVisibility(
-					View.SYSTEM_UI_FLAG_LOW_PROFILE);
-
-		}
-	}
-
 	@Subscribe
-	public void emailUnreadCountAvailable(final EmailEvents.QueryEmailResult email) {
+	public void emailUnreadCountAvailable(
+			final EmailEvents.QueryEmailResult email) {
 		runOnUiThread(new Runnable() {
 
 			@Override
@@ -207,7 +173,6 @@ public class MainActivity extends RoboActivity {
 		// FIXME: Just picking first one
 		eventBus.post(new QueryEmailRequest(accounts.getNames()[0],
 				getApplicationContext()));
-		emailAccount = accounts.getNames()[0];
 		emailAddress.setText(accounts.getNames()[0]);
 	}
 }
