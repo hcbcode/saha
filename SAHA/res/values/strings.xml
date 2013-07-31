@@ -21,7 +21,9 @@
     <string name="action_train">Train</string>
     <string name="action_list_users">List users</string>
     <string name="action_delete_users">Delete users</string>
-    <string name="home_screen_title_email_address">Address</string>
+    <string name="action_animate_home_in">Animate home in</string>
+    <string name="action_animate_home_out">Animate home out</string>
+    <string name="home_screen_title_email_address"></string>
     <string name="home_screen_title_email_unread">Unread</string>
     <string name="home_screen_title_lights">0 Lights</string>
     <string name="home_screen_title_social">Facebook</string>

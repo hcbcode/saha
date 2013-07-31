@@ -8,8 +8,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,9 +54,15 @@ public class MainActivity extends RoboActivity {
 	private TextView emailAddress;
 	@InjectView(R.id.email_unread_count)
 	private TextView emailUnreadCount;
-
+	@InjectView(R.id.container_2)
+	private RelativeLayout container2;
 	@Inject
 	private EmailManager emailManager;
+	@InjectView(R.id.container_home_screen)
+	private LinearLayout homeScreen;
+
+	private Handler mAnimationHandler = new Handler();
+	private AnimationStep mAnimationStep = new AnimationStep();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,10 +87,6 @@ public class MainActivity extends RoboActivity {
 		if (EnvConfig.USE_REPORTING) {
 			BugSenseHandler.initAndStartSession(this, SahaConfig.BUGSENSE_KEY);
 		}
-
-		// FIXME: This should be done by face recognition not here
-		eventBus.post(new AccountEvents.QueryAccountsRequest(this
-				.getApplicationContext()));
 
 	}
 
@@ -146,10 +151,18 @@ public class MainActivity extends RoboActivity {
 			eventBus.post(new FaceRecognitionEvents.TrainRecognizerRequest(uf));
 			return true;
 		case R.id.action_recognize:
-
 			startActivity(new Intent(MainActivity.this,
 					IdentificationActivity.class));
-
+			return true;
+		case R.id.action_animate_home_in:
+			// FIXME: remove
+			mAnimationStep.setMoveIn(true);
+			mAnimationHandler.post(mAnimationStep);
+			return true;
+		case R.id.action_animate_home_out:
+			// FIXME: remove
+			mAnimationStep.setMoveIn(false);
+			mAnimationHandler.post(mAnimationStep);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -174,5 +187,56 @@ public class MainActivity extends RoboActivity {
 		eventBus.post(new QueryEmailRequest(accounts.getNames()[0],
 				getApplicationContext()));
 		emailAddress.setText(accounts.getNames()[0]);
+	}
+
+	/**
+	 * Temporary screen animation to provoke discussion.
+	 * 
+	 * @author Steven Hadley
+	 * 
+	 */
+	private class AnimationStep implements Runnable {
+
+		private boolean in;
+		private float pivot;
+
+		public void setMoveIn(boolean in) {
+			this.in = in;
+			if (in) {
+				pivot = 0.5f;
+			} else {
+				pivot = 4f;
+			}
+		}
+
+		@Override
+		public void run() {
+
+			float weight = ((LinearLayout.LayoutParams) container2
+					.getLayoutParams()).weight;
+
+			if (weight > pivot && in) {
+				((LinearLayout.LayoutParams) container2.getLayoutParams()).weight = weight - 0.05f;
+				container2.requestLayout();
+				mAnimationHandler.postDelayed(mAnimationStep, 10);
+			} else if (weight < pivot && in) {
+				// FIXME: This should be done by face recognition not
+				// here
+				eventBus.post(new AccountEvents.QueryAccountsRequest(
+						MainActivity.this.getApplicationContext()));
+			}
+
+			if (weight < pivot && !in) {
+				((LinearLayout.LayoutParams) container2.getLayoutParams()).weight = weight + 0.05f;
+				container2.requestLayout();
+				mAnimationHandler.postDelayed(mAnimationStep, 10);
+
+			} else if (weight >= pivot && !in) {
+				emailAddress.setText("");
+				emailUnreadCount.setText("");
+			}
+
+		}
+
 	}
 }
