@@ -10,7 +10,7 @@ public class SensorEvents {
 
 		private SensorType sensorType;
 		private float[] sensorValues;
-		
+
 		protected SensorEvent(SensorType sensorType, float[] sensorValues) {
 			this.sensorType = sensorType;
 			this.sensorValues = sensorValues;

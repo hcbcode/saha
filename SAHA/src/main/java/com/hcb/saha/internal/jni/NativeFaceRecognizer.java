@@ -99,20 +99,20 @@ public class NativeFaceRecognizer {
 	 * @return Success or failure
 	 */
 	// FIXME
-//	@Subscribe
-//	public void trainRecognizer(
-//			final FaceRecognitionEvents.TrainRecognizerRequest event) {
-//		handler.post(new Runnable() {
-//
-//			@Override
-//			public void run() {
-//				Log.d(TAG, "Training recognizer...");
-//				nativeTrainRecognizer(event.getUsersFaces().getUserIds(), event
-//						.getUsersFaces().getUserImageFaces(),
-//						FACE_REC_MODEL_PATH, CLASSIFIER_PATH, wrapperRef);
-//			}
-//		});
-//	}
+	// @Subscribe
+	// public void trainRecognizer(
+	// final FaceRecognitionEvents.TrainRecognizerRequest event) {
+	// handler.post(new Runnable() {
+	//
+	// @Override
+	// public void run() {
+	// Log.d(TAG, "Training recognizer...");
+	// nativeTrainRecognizer(event.getUsersFaces().getUserIds(), event
+	// .getUsersFaces().getUserImageFaces(),
+	// FACE_REC_MODEL_PATH, CLASSIFIER_PATH, wrapperRef);
+	// }
+	// });
+	// }
 
 	/**
 	 * Predict a user id based on a face image
@@ -122,22 +122,22 @@ public class NativeFaceRecognizer {
 	 * @return A user id if successful, -1 if failure
 	 */
 	// FIXME
-//	@Subscribe
-//	public void predictUserId(
-//			final FaceRecognitionEvents.PredictUserRequest event) {
-//		handler.post(new Runnable() {
-//
-//			@Override
-//			public void run() {
-//				Log.d(TAG, "Starting prediction...");
-//				int predictedId = nativePredictUserId(event.getImagePath(),
-//						FACE_REC_MODEL_PATH, CLASSIFIER_PATH, wrapperRef);
-//				Log.d(TAG, "Predicted user id: " + predictedId);
-//				eventBus.post(new FaceRecognitionEvents.UserPredictionResult(
-//						predictedId));
-//			}
-//		});
-//	}
+	// @Subscribe
+	// public void predictUserId(
+	// final FaceRecognitionEvents.PredictUserRequest event) {
+	// handler.post(new Runnable() {
+	//
+	// @Override
+	// public void run() {
+	// Log.d(TAG, "Starting prediction...");
+	// int predictedId = nativePredictUserId(event.getImagePath(),
+	// FACE_REC_MODEL_PATH, CLASSIFIER_PATH, wrapperRef);
+	// Log.d(TAG, "Predicted user id: " + predictedId);
+	// eventBus.post(new FaceRecognitionEvents.UserPredictionResult(
+	// predictedId));
+	// }
+	// });
+	// }
 
 	/*
 	 * Train the recognizer with images for a specific user String[][] ->

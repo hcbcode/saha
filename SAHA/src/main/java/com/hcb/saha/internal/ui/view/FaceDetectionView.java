@@ -11,52 +11,52 @@ import android.view.View;
 
 /**
  * View for drawing the face rect on top of the preview frame
+ * 
  * @author Andreas Borglin
  */
 public class FaceDetectionView extends View {
 
-    private Rect faceRect;
-    private Matrix matrix;
-    private Paint paint;
+	private Rect faceRect;
+	private Matrix matrix;
+	private Paint paint;
 
-    public FaceDetectionView(Context context) {
-        this(context, null, 0);
-    }
+	public FaceDetectionView(Context context) {
+		this(context, null, 0);
+	}
 
-    public FaceDetectionView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
+	public FaceDetectionView(Context context, AttributeSet attrs) {
+		this(context, attrs, 0);
+	}
 
-    public FaceDetectionView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+	public FaceDetectionView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
 
-        paint = new Paint();
-        paint.setColor(Color.RED);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(5f);
-    }
+		paint = new Paint();
+		paint.setColor(Color.RED);
+		paint.setStyle(Paint.Style.STROKE);
+		paint.setStrokeWidth(5f);
+	}
 
-    public void updateRect(Rect rect, Matrix matrix) {
-        faceRect = rect;
-        this.matrix = matrix;
-        invalidate();
-    }
+	public void updateRect(Rect rect, Matrix matrix) {
+		faceRect = rect;
+		this.matrix = matrix;
+		invalidate();
+	}
 
-    public void clearRect() {
-        faceRect = null;
-        invalidate();
-    }
+	public void clearRect() {
+		faceRect = null;
+		invalidate();
+	}
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
 
-        if (faceRect != null) {
-            canvas.concat(matrix);
-            canvas.drawRect(faceRect, paint);
-        }
-        else {
-            canvas.drawColor(Color.TRANSPARENT);
-        }
-    }
+		if (faceRect != null) {
+			canvas.concat(matrix);
+			canvas.drawRect(faceRect, paint);
+		} else {
+			canvas.drawColor(Color.TRANSPARENT);
+		}
+	}
 }

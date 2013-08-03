@@ -6,7 +6,6 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.hcb.saha.external.AccountsManager;
 import com.hcb.saha.external.EmailManager;
-import com.hcb.saha.internal.jni.NativeFaceRecognizer;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
@@ -19,7 +18,7 @@ public class SahaModule implements Module {
 
 	@Override
 	public void configure(Binder binder) {
-		//binder.bind(NativeFaceRecognizer.class).in(Singleton.class);
+		// binder.bind(NativeFaceRecognizer.class).in(Singleton.class);
 		binder.bind(EmailManager.class).in(Singleton.class);
 		binder.bind(AccountsManager.class).in(Singleton.class);
 	}

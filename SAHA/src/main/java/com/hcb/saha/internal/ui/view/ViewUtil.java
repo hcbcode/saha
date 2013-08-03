@@ -17,7 +17,7 @@ import com.hcb.saha.internal.core.DeviceManager;
  * 
  */
 public final class ViewUtil {
-	
+
 	private ViewUtil() {
 		// Not intended
 	}

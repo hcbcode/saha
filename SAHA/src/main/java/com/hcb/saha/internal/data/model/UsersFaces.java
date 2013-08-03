@@ -2,6 +2,7 @@ package com.hcb.saha.internal.data.model;
 
 /**
  * Represents all users and paths to their face images
+ * 
  * @author Andreas Borglin
  */
 public class UsersFaces {

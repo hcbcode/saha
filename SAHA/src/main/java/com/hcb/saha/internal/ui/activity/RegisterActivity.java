@@ -3,18 +3,13 @@ package com.hcb.saha.internal.ui.activity;
 import roboguice.activity.RoboFragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
-import android.widget.Toast;
-
 import com.google.inject.Inject;
 import com.hcb.saha.R;
 import com.hcb.saha.internal.data.db.SahaUserDatabase;
-import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.data.model.User;
-import com.hcb.saha.internal.data.model.UsersFaces;
 import com.hcb.saha.internal.ui.fragment.FaceDetectionFragment;
 import com.hcb.saha.internal.ui.fragment.UserRegistrationFragment;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 /**
  * Handles user registration process
@@ -64,11 +59,11 @@ public class RegisterActivity extends RoboFragmentActivity {
 	}
 
 	// FIXME
-//	@Subscribe
-//	public void onUserCreated(RegistrationEvents.UserCreated event) {
-//		User user = event.getUser();
-//		startFaceRegistration(user, true);
-//	}
+	// @Subscribe
+	// public void onUserCreated(RegistrationEvents.UserCreated event) {
+	// User user = event.getUser();
+	// startFaceRegistration(user, true);
+	// }
 
 	private void startFaceRegistration(User user, boolean replace) {
 		faceDetectionFragment = new FaceDetectionFragment();
@@ -86,16 +81,16 @@ public class RegisterActivity extends RoboFragmentActivity {
 	}
 
 	// FIXME
-//	@Subscribe
-//	public void onFaceRegistrationCompleted(
-//			RegistrationEvents.FaceRegistrationCompleted event) {
-//		UsersFaces usersFaces = SahaFileManager
-//				.getAllUsersFaceImages(SahaUserDatabase.getAllUsers(this));
-//		eventBus.post(new FaceRecognitionEvents.TrainRecognizerRequest(
-//				usersFaces));
-//		Toast.makeText(this, "Training recognizer...", Toast.LENGTH_SHORT)
-//				.show();
-//		finish();
-//	}
+	// @Subscribe
+	// public void onFaceRegistrationCompleted(
+	// RegistrationEvents.FaceRegistrationCompleted event) {
+	// UsersFaces usersFaces = SahaFileManager
+	// .getAllUsersFaceImages(SahaUserDatabase.getAllUsers(this));
+	// eventBus.post(new FaceRecognitionEvents.TrainRecognizerRequest(
+	// usersFaces));
+	// Toast.makeText(this, "Training recognizer...", Toast.LENGTH_SHORT)
+	// .show();
+	// finish();
+	// }
 
 }

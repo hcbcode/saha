@@ -1,6 +1,5 @@
 package com.hcb.saha.internal.core;
 
-
 /**
  * Main configuration file
  * 
@@ -30,16 +29,16 @@ public final class SahaConfig {
 		public static final String FACE_REC_MODEL = "facerec.xml";
 		public static final String HAAR_FACE_CLASSIFIER = "faceclassifier.xml";
 	}
-	
+
 	public static final class Assets {
 		public static final String HAAR_CLASSIFIERS_DIR = "haarclassifiers";
 		public static final String HAAR_FACE_CLASSIFIER = "haarcascade_frontalface_default.xml";
 	}
-	
+
 	public static final class Registration {
 		public static final int NUM_FACE_PICS_REQUIRED = 3;
 	}
-	
+
 	// NOTE: If you change these, make sure to update facerec.cpp as well!
 	public static final class OpenCvParameters {
 		public static final int CASCADE_MIN_NEIGHBOURS = 3;

@@ -2,21 +2,22 @@ package com.hcb.saha.internal.data.model;
 
 /**
  * Represents a user
+ * 
  * @author Andreas Borglin
  */
 public class User {
-	
+
 	// Id maps directly to database id
 	private int id;
 	// Name as registered by user
 	private String name;
 	// User directory path on sdcard
 	private String directory;
-	
+
 	public User() {
-		
+
 	}
-	
+
 	public User(int id, String name, String directory) {
 		this.id = id;
 		this.name = name;

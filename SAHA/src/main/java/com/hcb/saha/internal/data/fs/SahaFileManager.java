@@ -172,7 +172,7 @@ public final class SahaFileManager {
 			usersFaceImages[userIndex] = new String[images.length];
 
 			for (int i = 0; i < images.length; i++) {
-				//Log.d(TAG, images[i]);
+				// Log.d(TAG, images[i]);
 				usersFaceImages[userIndex][i] = userFaceDir.getAbsolutePath()
 						+ "/" + images[i];
 			}
@@ -230,7 +230,7 @@ public final class SahaFileManager {
 				FileSystem.HAAR_CLASSIFIERS_DIR,
 				FileSystem.HAAR_FACE_CLASSIFIER);
 	}
-	
+
 	/**
 	 * Delete user directories. Note - this will delete all face images!
 	 */

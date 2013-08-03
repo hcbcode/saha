@@ -56,12 +56,14 @@ public class UserRegistrationFragment extends RoboFragment {
 
 			@Override
 			public void onClick(View v) {
-				
+
 				if (nameField.getText().length() < 2) {
-					Toast.makeText(getActivity(), "Name must be at least 2 characters", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getActivity(),
+							"Name must be at least 2 characters",
+							Toast.LENGTH_SHORT).show();
 					return;
 				}
-				
+
 				imm.hideSoftInputFromWindow(nameField.getWindowToken(), 0);
 				final User user = new User();
 				user.setName(nameField.getText().toString());
@@ -69,18 +71,22 @@ public class UserRegistrationFragment extends RoboFragment {
 						.trim());
 				long userId = SahaUserDatabase.addUser(getActivity(), user);
 				if (userId >= 0) {
-					AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+					AlertDialog.Builder dialog = new AlertDialog.Builder(
+							getActivity());
 					dialog.setMessage(R.string.face_reg_message);
-					dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							//eventBus.post(new RegistrationEvents.UserCreated(user));
-							// FIXME
-						}
-					});
+					dialog.setPositiveButton(R.string.ok,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// eventBus.post(new
+									// RegistrationEvents.UserCreated(user));
+									// FIXME
+								}
+							});
 					dialog.show();
-					
+
 				} else {
 					Toast.makeText(getActivity(), "Failed to create user!",
 							Toast.LENGTH_SHORT).show();

@@ -27,7 +27,6 @@ import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.data.model.User;
 import com.hcb.saha.internal.data.model.UsersFaces;
 import com.hcb.saha.internal.event.LifecycleEvents;
-import com.hcb.saha.internal.jni.NativeFaceRecognizer;
 import com.hcb.saha.internal.ui.view.ViewUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -112,7 +111,8 @@ public class MainActivity extends RoboActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_list_users:
-			//startActivity(new Intent(MainActivity.this, UsersActivity.class));
+			// startActivity(new Intent(MainActivity.this,
+			// UsersActivity.class));
 			return true;
 		case R.id.action_delete_users:
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -140,12 +140,13 @@ public class MainActivity extends RoboActivity {
 			List<User> trainUsers = SahaUserDatabase
 					.getAllUsers(MainActivity.this);
 			UsersFaces uf = SahaFileManager.getAllUsersFaceImages(trainUsers);
-			//eventBus.post(new FaceRecognitionEvents.TrainRecognizerRequest(uf));
+			// eventBus.post(new
+			// FaceRecognitionEvents.TrainRecognizerRequest(uf));
 			return true;
 		case R.id.action_recognize:
 
-//			startActivity(new Intent(MainActivity.this,
-//					IdentificationActivity.class));
+			// startActivity(new Intent(MainActivity.this,
+			// IdentificationActivity.class));
 
 			return true;
 		}

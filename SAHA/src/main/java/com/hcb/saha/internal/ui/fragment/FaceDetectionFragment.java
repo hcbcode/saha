@@ -148,7 +148,8 @@ public class FaceDetectionFragment extends RoboFragment implements
 		Camera.Parameters params = camera.getParameters();
 		// Get the first (highest res) preview size
 		Camera.Size previewSize = params.getSupportedPreviewSizes().get(0);
-		Log.d(TAG, "Setting preview size to: " + previewSize.width + ":" + previewSize.height);
+		Log.d(TAG, "Setting preview size to: " + previewSize.width + ":"
+				+ previewSize.height);
 		params.setPreviewSize(previewSize.width, previewSize.height);
 
 		// For output picture size, we want the smallest possible size
@@ -156,11 +157,12 @@ public class FaceDetectionFragment extends RoboFragment implements
 		List<Camera.Size> picSizes = params.getSupportedPictureSizes();
 		Camera.Size preferredSize = picSizes.get(0);
 		for (Camera.Size size : picSizes) {
-			if ((float)size.height / (float)size.width == PIC_ASPECT_RATIO) {
+			if ((float) size.height / (float) size.width == PIC_ASPECT_RATIO) {
 				preferredSize = size;
 			}
 		}
-		Log.d(TAG, "Setting picture size to: " + preferredSize.width + ":" + preferredSize.height);
+		Log.d(TAG, "Setting picture size to: " + preferredSize.width + ":"
+				+ preferredSize.height);
 		params.setPictureSize(preferredSize.width, preferredSize.height);
 
 		camera.setParameters(params);
@@ -204,8 +206,10 @@ public class FaceDetectionFragment extends RoboFragment implements
 			camera.stopFaceDetection();
 			camera.stopPreview();
 		} catch (Throwable t) {
-			// On some devices, face detection is stopped automatically and not on others
-			// If it's already stopped, it will throw a RuntimeException here. Unfortunately
+			// On some devices, face detection is stopped automatically and not
+			// on others
+			// If it's already stopped, it will throw a RuntimeException here.
+			// Unfortunately
 			// there is no way to check if it's stopped already or not...
 			Log.e(TAG, t.getMessage());
 		}
@@ -310,7 +314,8 @@ public class FaceDetectionFragment extends RoboFragment implements
 				// job!
 				else {
 					// FIXME
-					//eventBus.post(new RegistrationEvents.FaceRegistrationCompleted());
+					// eventBus.post(new
+					// RegistrationEvents.FaceRegistrationCompleted());
 				}
 
 			} else {
@@ -319,8 +324,8 @@ public class FaceDetectionFragment extends RoboFragment implements
 				persistFaceBitmap(rotScaledBitmap, new FileOutputStream(
 						idImageFile));
 				// Up to client to handle this
-//				eventBus.post(new FaceRecognitionEvents.PredictUserRequest(
-//						idImageFile.getAbsolutePath()));
+				// eventBus.post(new FaceRecognitionEvents.PredictUserRequest(
+				// idImageFile.getAbsolutePath()));
 				// FIXME
 			}
 		} catch (IOException e) {
