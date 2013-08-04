@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
+
+import org.apache.commons.io.IOUtils;
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.InputStreamContent;
@@ -14,7 +17,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.hcb.saha.R;
-
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -22,6 +24,8 @@ import android.util.Log;
 
 public class RemoteStorageService extends IntentService{
 
+	private static final String TAG = RemoteStorageService.class.getSimpleName();
+	
 	/** E-mail address of the service account. */
 	private static final String SERVICE_ACCOUNT_EMAIL = "537815805809@developer.gserviceaccount.com";
 
@@ -31,6 +35,9 @@ public class RemoteStorageService extends IntentService{
 	/** Global configuration of Google Cloud Storage OAuth 2.0 scope. */
 	private static final String STORAGE_SCOPE =
 			"https://www.googleapis.com/auth/devstorage.read_write";
+	
+	/** GCS Application Name */
+	private static final String APPLICATION_NAME = "SAHA";
 
 
 	public RemoteStorageService() {
@@ -41,7 +48,7 @@ public class RemoteStorageService extends IntentService{
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
-		Log.d("SAHA", "Cloud Service started");
+		Log.d(TAG, "Cloud Service started");
 
 		/** initialise transport and json parser */
 		HttpTransport transport = new NetHttpTransport();
@@ -59,7 +66,7 @@ public class RemoteStorageService extends IntentService{
 			.setServiceAccountPrivateKeyFromP12File(getTempPkc12File())
 			.build();
 		} catch (Exception e) {
-			Log.d("SAHA", "Could not create credential object: " + e.getMessage());
+			Log.d(TAG, "Could not create credential object: " + e.getMessage());
 		}
 		
 	
@@ -67,7 +74,7 @@ public class RemoteStorageService extends IntentService{
 			
 			/** Initialise storage API with above credentials*/
 			Storage.Builder builder = new Storage.Builder(transport, jsonFactory, credential);
-			builder.setApplicationName("SAHA");
+			builder.setApplicationName(APPLICATION_NAME);
 			Storage storage = builder.build();
 
 
@@ -81,7 +88,7 @@ public class RemoteStorageService extends IntentService{
 			/** Upload file to Cloud Storage bucket */
 			try {
 				String uniqueFileName  = System.currentTimeMillis() + "-data.json";
-				Log.d("SAHA", "Upload file name: " + uniqueFileName);
+				Log.d(TAG, "Upload file name: " + uniqueFileName);
 				Storage.Objects.Insert insertObject = storage.objects().insert(BUCKET_NAME, null, content);
 				insertObject.setName(uniqueFileName);
 				insertObject.execute();
@@ -91,7 +98,6 @@ public class RemoteStorageService extends IntentService{
 				//Log.d("SAHA", "Size of stored object: " + response.getSize());
 
 			} catch (IOException e3) {
-				// TODO Auto-generated catch block
 				e3.printStackTrace();
 			}
 		}
@@ -99,18 +105,21 @@ public class RemoteStorageService extends IntentService{
 		
 	}
 
-	
-	//Use commons IO and move to assets directory
 	private File getTempPkc12File() throws IOException {
+	
 		InputStream pkc12Stream = getResources().openRawResource(R.raw.privatekey);
 		File tempPkc12File = File.createTempFile("temp_pkc12_file", "p12");
 		OutputStream tempFileStream = new FileOutputStream(tempPkc12File);
-
-		int read = 0;
-		byte[] bytes = new byte[1024];
-		while ((read = pkc12Stream.read(bytes)) != -1) {
-			tempFileStream.write(bytes, 0, read);
+		int copied = IOUtils.copy(pkc12Stream, tempFileStream);
+		tempFileStream.flush();
+		pkc12Stream.close();
+		tempFileStream.close();
+		
+		if (copied == 0) {
+			Log.e(TAG, "Temporary creation of certificate file failed");
+			
 		}
+		
 		return tempPkc12File;
 	}
 
