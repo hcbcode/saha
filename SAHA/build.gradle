@@ -24,6 +24,17 @@ dependencies {
     compile "org.roboguice:roboguice:$depRoboguiceVersion"
     compile "com.bugsense.trace:bugsense:$depBugsenseTraceVersion"
 	compile "commons-io:commons-io:$depCommonsIOVersion"
+	compile ("com.google.apis:google-api-services-storage:$depGcsAPIVersion") {
+		exclude module: 'httpclient'
+		exclude module: 'xpp3'
+		exclude module: 'junit'
+		exclude module: 'android'
+	}
+	compile ("com.google.http-client:google-http-client-jackson:$depGcsJacksonVersion"){
+		exclude module: 'httpclient'
+		exclude module: 'xpp3'
+	}
+	compile "com.fasterxml.jackson.core:jackson-core:$depJacksonCoreVersion"
 	compile files('libs/android-support-v4.jar')
     //compile project(':libProjects:OpenCVAndroid')
 }

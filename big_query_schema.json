@@ -1,0 +1,44 @@
+[
+    {
+        "name": "houseId",
+        "type": "string",
+        "mode": "required"
+    },
+    {
+        "name": "userId",
+        "type": "string",
+        "mode": "nullable"
+    },
+    {
+        "name": "deviceId",
+        "type": "string",
+        "mode": "required"
+    },
+    {
+        "name": "datetime",
+        "type": "timestamp",
+        "mode": "nullable"
+    },
+    {
+        "name": "reasonCode",
+        "type": "integer",
+        "mode": "nullable"
+    },
+    {
+        "name": "sensors",
+        "type": "record",
+        "mode": "repeated",
+        "fields": [
+            {
+                "name": "sensorCode",
+                "type": "integer",
+                "mode": "nullable"
+            },
+            {
+                "name": "value",
+                "type": "integer",
+                "mode": "nullable"
+            }
+        ]
+    }
+]
