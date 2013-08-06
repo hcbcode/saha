@@ -1,11 +1,14 @@
 package com.hcb.saha.internal.source;
 
 /**
- * Provider interface for all provider implementations to implement This is what
- * the managers uses to talk to providers
+ * Provider base class for all provider implementations to extend.
+ * This registers itself with the manager implementation.
  * 
- * @author andreas
+ * @author Andreas Borglin
  */
-public interface Provider {
+public abstract class Provider {
 
+	protected Provider(BaseSourceManager baseSourceManager) {
+		baseSourceManager.registerProvider(this);
+	}
 }

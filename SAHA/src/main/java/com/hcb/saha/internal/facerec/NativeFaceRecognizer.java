@@ -1,13 +1,15 @@
-package com.hcb.saha.internal.jni;
+package com.hcb.saha.internal.facerec;
 
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hcb.saha.internal.core.SahaConfig;
 import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.event.LifecycleEvents;
+import com.hcb.saha.internal.facerec.FaceRecognizer.FaceRecognitionEventHandler;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -19,7 +21,7 @@ import com.squareup.otto.Subscribe;
  * 
  * @author Andreas Borglin
  */
-public class NativeFaceRecognizer {
+public class NativeFaceRecognizer implements FaceRecognizer {
 
 	private static final String TAG = NativeFaceRecognizer.class
 			.getSimpleName();
@@ -89,55 +91,35 @@ public class NativeFaceRecognizer {
 		});
 	}
 
-	/**
-	 * Train the face recognizer with a set of images for a user
-	 * 
-	 * @param userId
-	 *            The user id
-	 * @param faceImagePaths
-	 *            An array of paths to face images
-	 * @return Success or failure
-	 */
-	// FIXME
-	// @Subscribe
-	// public void trainRecognizer(
-	// final FaceRecognitionEvents.TrainRecognizerRequest event) {
-	// handler.post(new Runnable() {
-	//
-	// @Override
-	// public void run() {
-	// Log.d(TAG, "Training recognizer...");
-	// nativeTrainRecognizer(event.getUsersFaces().getUserIds(), event
-	// .getUsersFaces().getUserImageFaces(),
-	// FACE_REC_MODEL_PATH, CLASSIFIER_PATH, wrapperRef);
-	// }
-	// });
-	// }
+	@Override
+	public void trainRecognizer(final int[] userIds, final String[][] usersFaces, final FaceRecognitionEventHandler eventHandler) {
+		handler.post(new Runnable() {
 
-	/**
-	 * Predict a user id based on a face image
-	 * 
-	 * @param faceImage
-	 *            The face image
-	 * @return A user id if successful, -1 if failure
-	 */
-	// FIXME
-	// @Subscribe
-	// public void predictUserId(
-	// final FaceRecognitionEvents.PredictUserRequest event) {
-	// handler.post(new Runnable() {
-	//
-	// @Override
-	// public void run() {
-	// Log.d(TAG, "Starting prediction...");
-	// int predictedId = nativePredictUserId(event.getImagePath(),
-	// FACE_REC_MODEL_PATH, CLASSIFIER_PATH, wrapperRef);
-	// Log.d(TAG, "Predicted user id: " + predictedId);
-	// eventBus.post(new FaceRecognitionEvents.UserPredictionResult(
-	// predictedId));
-	// }
-	// });
-	// }
+			@Override
+			public void run() {
+				Log.d(TAG, "Training recognizer...");
+				nativeTrainRecognizer(userIds, usersFaces, FACE_REC_MODEL_PATH,
+						CLASSIFIER_PATH, wrapperRef);
+				eventHandler.onRecognizerTrainingCompleted();
+			}
+		});
+	}
+
+	@Override
+	public void predictUserId(final String imagePath,
+			final FaceRecognitionEventHandler eventHandler) {
+		handler.post(new Runnable() {
+
+			@Override
+			public void run() {
+				Log.d(TAG, "Starting prediction...");
+				int predictedId = nativePredictUserId(imagePath,
+						FACE_REC_MODEL_PATH, CLASSIFIER_PATH, wrapperRef);
+				Log.d(TAG, "Predicted user id: " + predictedId);
+				eventHandler.onPredictionCompleted(predictedId);
+			}
+		});
+	}
 
 	/*
 	 * Train the recognizer with images for a specific user String[][] ->
