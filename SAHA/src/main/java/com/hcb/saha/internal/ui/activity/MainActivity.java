@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ import com.hcb.saha.internal.data.model.User;
 import com.hcb.saha.internal.data.model.UsersFaces;
 import com.hcb.saha.internal.event.LifecycleEvents;
 import com.hcb.saha.internal.service.RemoteStorageService;
+import com.hcb.saha.internal.processor.CameraProcessor;
 import com.hcb.saha.internal.ui.view.ViewUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -51,6 +53,8 @@ public class MainActivity extends RoboActivity {
 
 	@Inject
 	private EmailManager emailManager;
+	@Inject
+	private CameraProcessor cameraProcessor;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +75,8 @@ public class MainActivity extends RoboActivity {
 
 		eventBus.register(this);
 		eventBus.post(new LifecycleEvents.MainActivityCreated());
+		// FIXME temp code
+		cameraProcessor.startCamera((SurfaceView)findViewById(R.id.surface));
 	}
 
 	@Override

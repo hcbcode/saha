@@ -125,7 +125,7 @@ static void readFaceParameters(FaceRecParams* faceRecParams, JNIEnv* env,
 /*
  * Load the persisted model file for the face recognizer
  */
-JNIEXPORT jlong JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_loadPersistedModel(
+JNIEXPORT jlong JNICALL Java_com_hcb_saha_internal_facerec_NativeFaceRecognizer_loadPersistedModel(
 		JNIEnv* env, jobject thiz, jstring modelFilePath, jclass params) {
 
 	// Create a new wrapper instance so that we can keep it alive across JNI calls
@@ -160,7 +160,7 @@ JNIEXPORT jlong JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_loadPersisted
 /*
  * Delete the wrapper which will deallocate the face recognizer as well
  */
-JNIEXPORT void JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_deleteWrapper(
+JNIEXPORT void JNICALL Java_com_hcb_saha_internal_facerec_NativeFaceRecognizer_deleteWrapper(
 		JNIEnv* env, jobject thiz, jlong wrapperRef) {
 	FaceRecWrapper* wrapper = (FaceRecWrapper*) wrapperRef;
 	FaceRecParams* params = wrapper->getParams();
@@ -171,7 +171,7 @@ JNIEXPORT void JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_deleteWrapper(
 /*
  * Train the recognizer with a set of images
  */
-JNIEXPORT jboolean JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_nativeTrainRecognizer(
+JNIEXPORT jboolean JNICALL Java_com_hcb_saha_internal_facerec_NativeFaceRecognizer_nativeTrainRecognizer(
 		JNIEnv* env, jobject thiz, jintArray userIds,
 		jobjectArray usersImagePathArray, jstring modelFilePath,
 		jstring classifierPath, jlong wrapperRef) {
@@ -257,7 +257,7 @@ JNIEXPORT jboolean JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_nativeTrai
 /*
  * Predict user id based on input image
  */
-JNIEXPORT jint JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_nativePredictUserId(
+JNIEXPORT jint JNICALL Java_com_hcb_saha_internal_facerec_NativeFaceRecognizer_nativePredictUserId(
 		JNIEnv* env, jobject thiz, jstring imagePath, jstring modelFilePath,
 		jstring classifierPath, jlong wrapperRef) {
 
@@ -300,7 +300,7 @@ JNIEXPORT jint JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_nativePredictU
 
 }
 
-JNIEXPORT void JNICALL Java_com_hcb_saha_jni_NativeFaceRecognizer_dumpCroppedImages(
+JNIEXPORT void JNICALL Java_com_hcb_saha_internal_facerec_NativeFaceRecognizer_dumpCroppedImages(
 		JNIEnv* env, jobject thiz, jintArray userIds,
 		jobjectArray usersImagePathArray, jobjectArray outputPaths, jstring modelFilePath,
 		jstring classifierPath, jlong wrapperRef) {

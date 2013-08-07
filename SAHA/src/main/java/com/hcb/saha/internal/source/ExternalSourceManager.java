@@ -2,11 +2,10 @@ package com.hcb.saha.internal.source;
 
 /**
  * Handles events from app external modules (plugins) and passes on these events
- * over the event bus
+ * over the event bus.
  * 
- * @author andreas
- * 
+ * @author Andreas Borglin
  */
 public class ExternalSourceManager {
-
+	// TODO
 }

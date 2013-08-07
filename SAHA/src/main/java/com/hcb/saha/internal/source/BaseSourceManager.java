@@ -3,7 +3,8 @@ package com.hcb.saha.internal.source;
 import java.util.ArrayList;
 
 /**
- * Base class for all managers that keeps a list of registered providers
+ * Base class for all managers.
+ * Keeps a list of registered providers for subclasses to use.
  * 
  * @author Andreas Borglin
  * 
