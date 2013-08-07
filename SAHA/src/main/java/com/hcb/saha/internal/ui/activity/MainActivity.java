@@ -44,9 +44,9 @@ public class MainActivity extends RoboActivity {
 
 	@Inject
 	private Bus eventBus;
-	@InjectView(R.id.email_address_text)
+	//@InjectView(R.id.email_address_text)
 	private TextView emailAddress;
-	@InjectView(R.id.email_unread_count)
+	//@InjectView(R.id.email_unread_count)
 	private TextView emailUnreadCount;
 
 	@Inject
@@ -60,12 +60,11 @@ public class MainActivity extends RoboActivity {
 		ViewUtil.goFullScreen(this);
 		ViewUtil.customiseActionBar(this);
 
-		setContentView(R.layout.activity_main);
-		
-		
-		//Just for testing - will move this to a better location later - Starts event extraction (tbc and transfer)
+		setContentView(R.layout.activity_main_idle);
+
+		// Just for testing - will move this to a better location later - Starts
+		// event extraction (tbc and transfer)
 		startService(new Intent(this, RemoteStorageService.class));
-		
 
 		// OpenCV can't read assets, so need to copy over to sdcard
 		SahaFileManager.copyClassifierToSdCard(this.getAssets());
@@ -82,8 +81,8 @@ public class MainActivity extends RoboActivity {
 		}
 
 		// FIXME: This should be done by face recognition not here
-		eventBus.post(new AccountEvents.QueryAccountsRequest(this
-				.getApplicationContext()));
+		//eventBus.post(new AccountEvents.QueryAccountsRequest(this
+		//		.getApplicationContext()));
 
 	}
 

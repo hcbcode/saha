@@ -23,7 +23,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Weather"
+            android:text="13:00:01"
             android:textSize="50sp" />
 
         <TextView
