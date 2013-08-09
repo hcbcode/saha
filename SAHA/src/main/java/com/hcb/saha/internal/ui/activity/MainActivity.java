@@ -2,26 +2,21 @@ package com.hcb.saha.internal.ui.activity;
 
 import java.util.List;
 
-import roboguice.activity.RoboActivity;
-import roboguice.inject.InjectView;
+import roboguice.activity.RoboFragmentActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SurfaceView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.google.inject.Inject;
 import com.hcb.saha.R;
 import com.hcb.saha.config.EnvConfig;
-import com.hcb.saha.external.AccountEvents;
-import com.hcb.saha.external.EmailEvents;
-import com.hcb.saha.external.EmailEvents.QueryEmailRequest;
-import com.hcb.saha.external.EmailManager;
 import com.hcb.saha.internal.core.SahaConfig;
 import com.hcb.saha.internal.data.db.SahaUserDatabase;
 import com.hcb.saha.internal.data.fs.SahaFileManager;
@@ -29,10 +24,11 @@ import com.hcb.saha.internal.data.model.User;
 import com.hcb.saha.internal.data.model.UsersFaces;
 import com.hcb.saha.internal.event.LifecycleEvents;
 import com.hcb.saha.internal.service.RemoteStorageService;
-import com.hcb.saha.internal.processor.CameraProcessor;
+import com.hcb.saha.internal.ui.fragment.HomeCarouselFragment;
+import com.hcb.saha.internal.ui.fragment.HomeUserCloseFragment;
+import com.hcb.saha.internal.ui.fragment.HomeUserPersonalisedFragment;
 import com.hcb.saha.internal.ui.view.ViewUtil;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 /**
  * Main activity.
@@ -40,21 +36,12 @@ import com.squareup.otto.Subscribe;
  * @author Andreas Borglin
  * @author Steven Hadley
  */
-public class MainActivity extends RoboActivity {
+public class MainActivity extends RoboFragmentActivity {
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 
 	@Inject
 	private Bus eventBus;
-	@InjectView(R.id.email_address_text)
-	private TextView emailAddress;
-	@InjectView(R.id.email_unread_count)
-	private TextView emailUnreadCount;
-
-	@Inject
-	private EmailManager emailManager;
-	@Inject
-	private CameraProcessor cameraProcessor;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,19 +52,17 @@ public class MainActivity extends RoboActivity {
 		ViewUtil.customiseActionBar(this);
 
 		setContentView(R.layout.activity_main);
-		
-		
-		//Just for testing - will move this to a better location later - Starts event extraction (tbc and transfer)
-		startService(new Intent(this, RemoteStorageService.class));
-		
 
+		// Just for testing - will move this to a better location later - Starts
+		// event extraction (tbc and transfer)
+		startService(new Intent(this, RemoteStorageService.class));
 		// OpenCV can't read assets, so need to copy over to sdcard
 		SahaFileManager.copyClassifierToSdCard(this.getAssets());
 
 		eventBus.register(this);
 		eventBus.post(new LifecycleEvents.MainActivityCreated());
-		// FIXME temp code
-		cameraProcessor.startCamera((SurfaceView)findViewById(R.id.surface));
+
+		showHomeCarousel();
 	}
 
 	@Override
@@ -86,10 +71,6 @@ public class MainActivity extends RoboActivity {
 		if (EnvConfig.USE_REPORTING) {
 			BugSenseHandler.initAndStartSession(this, SahaConfig.BUGSENSE_KEY);
 		}
-
-		// FIXME: This should be done by face recognition not here
-		eventBus.post(new AccountEvents.QueryAccountsRequest(this
-				.getApplicationContext()));
 
 	}
 
@@ -121,7 +102,17 @@ public class MainActivity extends RoboActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+
 		switch (item.getItemId()) {
+		case R.id.action_show_user_personalised:
+			showHomeUserPersonalised();
+			return true;
+		case R.id.action_show_carousel:
+			showHomeCarousel();
+			return true;
+		case R.id.action_show_user_close:
+			showHomeUserClose();
+			return true;
 		case R.id.action_list_users:
 			// startActivity(new Intent(MainActivity.this,
 			// UsersActivity.class));
@@ -156,33 +147,35 @@ public class MainActivity extends RoboActivity {
 			// FaceRecognitionEvents.TrainRecognizerRequest(uf));
 			return true;
 		case R.id.action_recognize:
-
 			// startActivity(new Intent(MainActivity.this,
 			// IdentificationActivity.class));
-
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Subscribe
-	public void emailUnreadCountAvailable(
-			final EmailEvents.QueryEmailResult email) {
-		runOnUiThread(new Runnable() {
-
-			@Override
-			public void run() {
-				emailUnreadCount.setText(email.getUnreadCount() + " "
-						+ "Unread");
-			}
-		});
+	private void showHomeCarousel() {
+		Fragment newFragment = new HomeCarouselFragment();
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction();
+		transaction.replace(R.id.home, newFragment);
+		transaction.commit();
 	}
 
-	@Subscribe
-	public void onAccountsQueried(AccountEvents.QueryAccountsResult accounts) {
-		// FIXME: Just picking first one
-		eventBus.post(new QueryEmailRequest(accounts.getNames()[0],
-				getApplicationContext()));
-		emailAddress.setText(accounts.getNames()[0]);
+	private void showHomeUserClose() {
+		Fragment newFragment = new HomeUserCloseFragment();
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction();
+		transaction.replace(R.id.home, newFragment);
+		transaction.commit();
 	}
+
+	private void showHomeUserPersonalised() {
+		Fragment newFragment = new HomeUserPersonalisedFragment();
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction();
+		transaction.replace(R.id.home, newFragment);
+		transaction.commit();
+	}
+
 }
