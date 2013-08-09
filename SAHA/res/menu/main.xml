@@ -26,5 +26,20 @@
         android:orderInCategory="5"
         android:showAsAction="never"
         android:title="@string/action_delete_users"/>
+    <item
+        android:id="@+id/action_show_carousel"
+        android:orderInCategory="6"
+        android:showAsAction="never"
+        android:title="1. Show Generic Home"/>
+    <item
+        android:id="@+id/action_show_user_close"
+        android:orderInCategory="7"
+        android:showAsAction="never"
+        android:title="2. Show User Close"/>
+    <item
+        android:id="@+id/action_show_user_personalised"
+        android:orderInCategory="8"
+        android:showAsAction="never"
+        android:title="3. Show User Personalised"/>
 
 </menu>
