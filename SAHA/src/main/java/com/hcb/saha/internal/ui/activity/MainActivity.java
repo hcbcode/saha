@@ -2,12 +2,13 @@ package com.hcb.saha.internal.ui.activity;
 
 import java.util.List;
 
-import roboguice.activity.RoboActivity;
-import roboguice.inject.InjectView;
+import roboguice.activity.RoboFragmentActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceView;
@@ -28,8 +29,9 @@ import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.data.model.User;
 import com.hcb.saha.internal.data.model.UsersFaces;
 import com.hcb.saha.internal.event.LifecycleEvents;
-import com.hcb.saha.internal.service.RemoteStorageService;
 import com.hcb.saha.internal.processor.CameraProcessor;
+import com.hcb.saha.internal.service.RemoteStorageService;
+import com.hcb.saha.internal.ui.fragment.GenericCarouselFragment;
 import com.hcb.saha.internal.ui.view.ViewUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -40,15 +42,16 @@ import com.squareup.otto.Subscribe;
  * @author Andreas Borglin
  * @author Steven Hadley
  */
-public class MainActivity extends RoboActivity {
+public class MainActivity extends RoboFragmentActivity {
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 
 	@Inject
 	private Bus eventBus;
-	//@InjectView(R.id.email_address_text)
+
+	// @InjectView(R.id.email_address_text)
 	private TextView emailAddress;
-	//@InjectView(R.id.email_unread_count)
+	// @InjectView(R.id.email_unread_count)
 	private TextView emailUnreadCount;
 
 	@Inject
@@ -76,7 +79,10 @@ public class MainActivity extends RoboActivity {
 		eventBus.register(this);
 		eventBus.post(new LifecycleEvents.MainActivityCreated());
 		// FIXME temp code
-		cameraProcessor.startCamera((SurfaceView)findViewById(R.id.surface));
+		// cameraProcessor.startCamera((SurfaceView)
+		// findViewById(R.id.surface));
+
+		showGenericCarousel();
 	}
 
 	@Override
@@ -87,8 +93,9 @@ public class MainActivity extends RoboActivity {
 		}
 
 		// FIXME: This should be done by face recognition not here
-		//eventBus.post(new AccountEvents.QueryAccountsRequest(this
-		//		.getApplicationContext()));
+
+		// eventBus.post(new AccountEvents.QueryAccountsRequest(this
+		// .getApplicationContext()));
 
 	}
 
@@ -184,4 +191,13 @@ public class MainActivity extends RoboActivity {
 				getApplicationContext()));
 		emailAddress.setText(accounts.getNames()[0]);
 	}
+
+	private void showGenericCarousel() {
+		Fragment newFragment = new GenericCarouselFragment();
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction();
+		transaction.replace(R.id.home, newFragment);
+		transaction.commit();
+	}
+
 }
