@@ -64,7 +64,7 @@ public class MainActivity extends RoboActivity {
 		ViewUtil.goFullScreen(this);
 		ViewUtil.customiseActionBar(this);
 
-		setContentView(R.layout.activity_main_idle);
+		setContentView(R.layout.activity_main);
 
 		// Just for testing - will move this to a better location later - Starts
 		// event extraction (tbc and transfer)
