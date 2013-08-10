@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
+import android.hardware.Camera.Face;
+
+import com.hcb.saha.internal.processor.CameraProcessor;
 
 /**
  * Camera utils class
@@ -20,6 +23,15 @@ public final class CameraUtils {
 
 	public static interface FacePictureTakenHandler {
 		void onFacePictureTaken(String imagePath);
+	}
+	
+	public static interface FaceDetectionHandler {
+		void onFaceDetected(Face[] faces, CameraProcessor cameraProcessor);
+		void onNoFaceDetected();
+	}
+	
+	public static interface PreviewFrameHandler {
+		void onPreviewFrame(byte[] data);
 	}
 
 	private static int detectCamera(int cameraType) {

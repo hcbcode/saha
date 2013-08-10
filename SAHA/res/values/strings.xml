@@ -10,6 +10,7 @@
     <string name="recognize">Recognize</string>
     <string name="list_users">List users</string>
     <string name="delete_users">Delete users</string>
+    <string name="user_recognized_speech">Hello %1$s</string>
     <string name="train">Train</string>
     <string name="face_reg_message">The application will now start the camera and take a series of pictures.</string>
     <string name="delete_users_title">Delete users</string>

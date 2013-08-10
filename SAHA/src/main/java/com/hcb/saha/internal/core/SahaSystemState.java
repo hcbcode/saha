@@ -6,14 +6,16 @@ import android.speech.tts.TextToSpeech.OnInitListener;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hcb.saha.R;
 import com.hcb.saha.internal.data.model.User;
+import com.hcb.saha.internal.event.TextSpeechEvents;
 import com.hcb.saha.internal.event.UserIdentificationEvents;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 /**
- * Early implementation of a system state
- * TODO a lot
+ * Early implementation of a system state TODO a lot
+ * 
  * @author Andreas Borglin
  */
 @Singleton
@@ -30,37 +32,35 @@ public final class SahaSystemState {
 	private Application context;
 	private State currentState;
 	private User currentUser;
-	private TextToSpeech tts;
+	private Bus eventBus;
 
 	@Inject
 	public SahaSystemState(Bus eventBus) {
+		this.eventBus = eventBus;
 		eventBus.register(this);
 		currentState = State.IDLE;
 	}
 
 	@Subscribe
-	public void onRegisteredUserDetected(UserIdentificationEvents.RegisteredUserDetected event) {
+	public void onRegisteredUserDetected(
+			UserIdentificationEvents.RegisteredUserDetected event) {
 		currentState = State.REGISTERED_USER;
 		currentUser = event.getUser();
-
-		tts = new TextToSpeech(context, new OnInitListener() {
-
-			@Override
-			public void onInit(int status) {
-				String user = "User " + currentUser.getName() + " detected";
-				tts.speak(user, TextToSpeech.QUEUE_ADD, null);
-			}
-		});
+		eventBus.post(new TextSpeechEvents.TextToSpeechRequest(context
+				.getString(R.string.user_recognized_speech,
+						currentUser.getName())));
 	}
 
 	@Subscribe
-	public void onAnonymousUserDetected(UserIdentificationEvents.AnonymousUserDetected event) {
+	public void onAnonymousUserDetected(
+			UserIdentificationEvents.AnonymousUserDetected event) {
 		currentState = State.ANONYMOUS_USER;
 		currentUser = null;
 	}
 
 	@Subscribe
-	public void onUserInactivity(UserIdentificationEvents.UserInactivitityEvent event) {
+	public void onUserInactivity(
+			UserIdentificationEvents.UserInactivitityEvent event) {
 		currentState = State.IDLE;
 		currentUser = null;
 	}
@@ -76,6 +76,4 @@ public final class SahaSystemState {
 	public User getCurrentUser() {
 		return currentUser;
 	}
-
-
 }

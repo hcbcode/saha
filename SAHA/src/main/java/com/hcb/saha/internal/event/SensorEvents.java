@@ -1,5 +1,9 @@
 package com.hcb.saha.internal.event;
 
+/**
+ * Sensor events
+ * @author Andreas Borglin
+ */
 public class SensorEvents {
 
 	public static enum SensorType {

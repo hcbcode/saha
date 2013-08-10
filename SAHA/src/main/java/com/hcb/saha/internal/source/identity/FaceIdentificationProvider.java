@@ -1,6 +1,8 @@
 package com.hcb.saha.internal.source.identity;
 
 import android.app.Application;
+import android.graphics.Rect;
+import android.hardware.Camera.Face;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -12,11 +14,9 @@ import com.hcb.saha.internal.event.UserIdentificationEvents;
 import com.hcb.saha.internal.facerec.FaceRecognizer;
 import com.hcb.saha.internal.facerec.FaceRecognizer.FaceRecognitionEventHandler;
 import com.hcb.saha.internal.processor.CameraProcessor;
-import com.hcb.saha.internal.processor.CameraProcessor.CameraDetectionMode;
-import com.hcb.saha.internal.processor.CameraProcessor.CameraDetectionType;
+import com.hcb.saha.internal.utils.CameraUtils.FaceDetectionHandler;
 import com.hcb.saha.internal.utils.CameraUtils.FacePictureTakenHandler;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 /**
  * Responsible for identifying a face
@@ -24,74 +24,29 @@ import com.squareup.otto.Subscribe;
  * @author Andreas Borglin
  */
 @Singleton
-public class FaceIdentificationProvider implements FaceRecognitionEventHandler {
+public class FaceIdentificationProvider implements FaceRecognitionEventHandler,
+		FaceDetectionHandler {
 
 	@Inject
 	private FaceRecognizer faceRecognizer;
 	@Inject
 	private Application context;
-	private Bus eventBus;
-	private CameraProcessor cameraProcessor;
-	private boolean userDetected = false;
-
 	@Inject
-	public FaceIdentificationProvider(Bus eventBus,
-			CameraProcessor cameraProcessor) {
-		this.eventBus = eventBus;
-		this.cameraProcessor = cameraProcessor;
-		eventBus.register(this);
-		// TODO: temp for testing?
-		// If camera is active, start face detection. If not, the event will
-		// trigger it
-		if (cameraProcessor.isCameraActive()) {
-			identifyUser();
-		}
-	}
+	private Bus eventBus;
+	private boolean predictUserOnFaceDetected;
 
-	private void identifyUser() {
-		try {
-			cameraProcessor.requestDetection(CameraDetectionType.FACE,
-					CameraDetectionMode.ONE_OFF);
-		} catch (UnsupportedOperationException e) {
-			e.printStackTrace();
-			// TODO
-		} catch (CameraNotActiveException e) {
-			e.printStackTrace();
-			// TODO
-		}
-	}
-
-	@Subscribe
-	public void onCameraReady(CameraEvents.CameraActivatedEvent event) {
-		identifyUser();
-	}
-
-	@Subscribe
-	public void onFaceDetected(CameraEvents.FaceDetectedEvent event) {
-		try {
-			cameraProcessor.takeFacePicture(new FacePictureTakenHandler() {
-
-				@Override
-				public void onFacePictureTaken(String imagePath) {
-					faceRecognizer.predictUserId(imagePath,
-							FaceIdentificationProvider.this);
-				}
-			});
-		} catch (CameraNotActiveException e) {
-			e.printStackTrace();
-			// TODO
-		}
+	public FaceIdentificationProvider() {
+		predictUserOnFaceDetected = true;
 	}
 
 	@Override
 	public void onRecognizerTrainingCompleted() {
-
+		// No op for now
 	}
 
 	@Override
 	public void onPredictionCompleted(int predictedUserId) {
 
-		userDetected = true;
 		if (predictedUserId == -1) {
 			eventBus.post(new UserIdentificationEvents.AnonymousUserDetected());
 		} else {
@@ -99,6 +54,41 @@ public class FaceIdentificationProvider implements FaceRecognitionEventHandler {
 					.getUserFromId(context, predictedUserId);
 			eventBus.post(new UserIdentificationEvents.RegisteredUserDetected(
 					user));
+		}
+	}
+
+	@Override
+	public void onFaceDetected(Face[] faces, CameraProcessor cameraProcessor) {
+		if (predictUserOnFaceDetected) {
+			try {
+				cameraProcessor.takeFacePicture(new FacePictureTakenHandler() {
+
+					@Override
+					public void onFacePictureTaken(String imagePath) {
+						faceRecognizer.predictUserId(imagePath,
+								FaceIdentificationProvider.this);
+						// Now, don't predict again until the flag has been
+						// reset
+						predictUserOnFaceDetected = false;
+					}
+				});
+			} catch (CameraNotActiveException e) {
+				e.printStackTrace();
+				// TODO
+			}
+		} else {
+			// TODO Support multiple faces?
+			Rect face = faces[0].rect;
+			eventBus.post(new CameraEvents.FaceAvailableEvent(face.width(),
+					face.height()));
+		}
+	}
+
+	@Override
+	public void onNoFaceDetected() {
+		if (!predictUserOnFaceDetected) {
+			eventBus.post(new CameraEvents.FaceDisappearedEvent());
+			predictUserOnFaceDetected = true;
 		}
 	}
 }

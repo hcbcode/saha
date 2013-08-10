@@ -3,7 +3,6 @@ package com.hcb.saha.internal.processor;
 import java.io.IOException;
 
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.hardware.Camera;
 import android.hardware.Camera.Face;
 import android.hardware.Camera.FaceDetectionListener;
@@ -11,7 +10,6 @@ import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.PreviewCallback;
 import android.util.Log;
 import android.view.SurfaceHolder;
-import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
 import com.google.inject.Inject;
@@ -19,111 +17,37 @@ import com.google.inject.Singleton;
 import com.hcb.saha.internal.core.SahaExceptions.CameraNotActiveException;
 import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.event.CameraEvents;
-import com.hcb.saha.internal.event.CameraEvents.FaceDetectedEvent;
 import com.hcb.saha.internal.utils.CameraUtils;
+import com.hcb.saha.internal.utils.CameraUtils.FaceDetectionHandler;
 import com.hcb.saha.internal.utils.CameraUtils.FacePictureTakenHandler;
+import com.hcb.saha.internal.utils.CameraUtils.PreviewFrameHandler;
 import com.squareup.otto.Bus;
 
 /**
- * Responsible for all things camera. This can be set in different modes from
- * the client to indicate what the camera processor should be focusing on. By
- * default, the camera will be in movement detection mode.
- * 
- * As soon as movement is detected, an event will be fired that a client can
- * listen to and update the mode accordingly. For instance, we might want to try
- * to detect faces as soon as movement is detected to check whether someone has
- * approached the device and is ready to interact with it.
- * 
- * TODO Movement detection, barcode detection, "object detection"
+ * Responsible for all things camera.
  * 
  * @author Andreas Borglin
  */
 @Singleton
-public class CameraProcessor implements PreviewCallback, PictureCallback,
-		Callback, FaceDetectionListener {
+public class CameraProcessor implements PreviewCallback, SurfaceHolder.Callback,
+		FaceDetectionListener {
 
 	private static final String TAG = CameraProcessor.class.getSimpleName();
-	private static final int PRIO_NONE = 0;
-	private static final int PRIO_LOW = 1;
-	private static final int PRIO_MEDIUM = 2;
-	private static final int PRIO_HIGH = 3;
-
-	private static class CameraFeature {
-		public int clientCount;
-		private Runnable updateState;
-
-	}
-
-	/**
-	 * Type of detection
-	 */
-	public static enum CameraDetectionType {
-		MOVEMENT(PRIO_LOW), FACE(PRIO_HIGH), BARCODE(PRIO_MEDIUM), OBJECT(
-				PRIO_MEDIUM);
-
-		private final int priority;
-
-		CameraDetectionType(int priority) {
-			this.priority = priority;
-		}
-
-		public int getPriority() {
-			return priority;
-		}
-
-	}
-
-	/**
-	 * Detection mode
-	 */
-	public static enum CameraDetectionMode {
-		ONE_OFF, STREAM
-	}
 
 	@Inject
 	private Bus eventBus;
+	@Inject(optional = true)
+	private FaceDetectionHandler faceDetectionHandler;
+	@Inject(optional = true)
+	private PreviewFrameHandler previewFrameHandler;
+
 	private Camera camera;
 	private SurfaceHolder surfaceHolder;
-	private CameraDetectionType detectionType;
-	private CameraDetectionMode detectionMode;
-
-	private int movementDetectionClientCount;
-	private int faceDetectionClientCount;
-	private int frameCollectionClientCount;
-
-	// private HashMap
-
-	private boolean cameraActive = false;
-	private boolean lastFaceStateDetected = false;
+	private boolean cameraActive;
 
 	@Inject
 	public CameraProcessor(Bus eventBus) {
 		eventBus.register(this);
-	}
-
-	// @Subscribe
-	// public void onClientInterest(CameraEvents.CameraClientInterestEvent
-	// event) {
-	// InterestType interestType = event.getInterestType();
-	// int countDiff = event.getInterest() == Interest.REGISTER ? 1 : -1;
-	// switch (interestType) {
-	// case MOVEMENT: {
-	// movementDetectionClientCount += countDiff;
-	// break;
-	// }
-	// case FACE: {
-	// faceDetectionClientCount += countDiff;
-	// break;
-	// }
-	// case FRAMES: {
-	// frameCollectionClientCount += countDiff;
-	// break;
-	// }
-	// }
-	// }
-
-	private void checkClientCounts() {
-
 	}
 
 	/**
@@ -142,7 +66,6 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 					"Device has no front-facing camera");
 		}
 		// Front facing camera found. Woho!
-		resetDetectionState();
 		surfaceHolder = surfaceView.getHolder();
 		surfaceHolder.setSizeFromLayout();
 		surfaceHolder.addCallback(this);
@@ -160,64 +83,6 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 	private void checkCameraActive() throws CameraNotActiveException {
 		if (!cameraActive) {
 			throw new CameraNotActiveException("Camera not active");
-		}
-	}
-
-	/**
-	 * Request a change to the detection type and mode. Depending on current and
-	 * new priority, the requests might be granted or denied.
-	 * 
-	 * @param type
-	 *            Type of detection
-	 * @param mode
-	 *            Detection mode
-	 * @return True if granted, false if denied
-	 */
-	public boolean requestDetection(CameraDetectionType type,
-			CameraDetectionMode mode) throws UnsupportedOperationException,
-			CameraNotActiveException {
-		Log.d(TAG,
-				"requestDetection type: " + type.name() + ", mode: "
-						+ mode.name());
-		// Check the type priority
-		if (type.getPriority() >= detectionType.getPriority()) {
-			// Check that the type is supported
-			checkDetectionTypeSupport(type);
-			this.detectionType = type;
-			this.detectionMode = mode;
-			checkCameraActive();
-			switchDetectionType();
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Reset the camera detection state back to default
-	 * 
-	 * @throws CameraNotActiveException
-	 */
-	public void resetDetectionState() {
-		this.detectionType = CameraDetectionType.MOVEMENT;
-		this.detectionMode = CameraDetectionMode.STREAM;
-		switchDetectionType();
-	}
-
-	private void switchDetectionType() {
-		// FIXME
-		// Do we want to keep the last type/mode and swap back to that when
-		// we're done?
-		if (detectionType == CameraDetectionType.FACE) {
-			startFaceDetection();
-		}
-	}
-
-	private void checkDetectionTypeSupport(CameraDetectionType type)
-			throws UnsupportedOperationException {
-		if (type == CameraDetectionType.FACE
-				&& !CameraUtils.isFaceDetectionSupported(camera)) {
-			throw new UnsupportedOperationException(
-					"Face detection not supported");
 		}
 	}
 
@@ -249,37 +114,37 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 			throws CameraNotActiveException {
 		checkCameraActive();
 		stopFaceDetection();
-		lastFaceStateDetected = false;
-		if (detectionType == CameraDetectionType.FACE) {
-			camera.takePicture(null, null, new PictureCallback() {
+		camera.takePicture(null, null, new PictureCallback() {
 
-				@Override
-				public void onPictureTaken(byte[] data, Camera camera) {
-					Bitmap bitmap = CameraUtils
-							.getBitmapFromFrontCameraData(data);
-					String imagePath = SahaFileManager
-							.persistFaceBitmap(bitmap);
-					if (imagePath != null) {
-						handler.onFacePictureTaken(imagePath);
-					}
-					// FIXME Preview will be stopped now - restart?
-					startPreview();
-					startFaceDetection();
+			@Override
+			public void onPictureTaken(byte[] data, Camera camera) {
+				Bitmap bitmap = CameraUtils.getBitmapFromFrontCameraData(data);
+				String imagePath = SahaFileManager.persistFaceBitmap(bitmap);
+				if (imagePath != null) {
+					handler.onFacePictureTaken(imagePath);
 				}
-			});
-		}
+				// Restart preview and face detection
+				startPreview();
+				startFaceDetection();
+			}
+		});
 	}
 
 	private void startPreview() {
 		Log.d(TAG, "startPreview");
 		try {
 			camera.setPreviewDisplay(surfaceHolder);
-			// FIXME commented out for now
-			// camera.setPreviewCallback(this);
 			camera.startPreview();
-			Log.d(TAG, "camera started");
 			cameraActive = true;
 			eventBus.post(new CameraEvents.CameraActivatedEvent());
+
+			if (previewFrameHandler != null) {
+				camera.setPreviewCallback(this);
+			}
+			if (faceDetectionHandler != null) {
+				startFaceDetection();
+			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			// TODO handle error
@@ -308,15 +173,6 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 	public void onPreviewFrame(byte[] data, Camera camera) {
 		// TODO
 		Log.d(TAG, "onPreviewFrame");
-		// Face detection is handled separately
-		if (detectionType != CameraDetectionType.FACE) {
-
-		}
-	}
-
-	@Override
-	public void onPictureTaken(byte[] data, Camera camera) {
-		Log.d(TAG, "picture taken");
 	}
 
 	@Override
@@ -338,22 +194,11 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 
 	@Override
 	public void onFaceDetection(Face[] faces, Camera camera) {
+
 		if (faces.length > 0) {
-			if (detectionMode == CameraDetectionMode.ONE_OFF) {
-				// stopFaceDetection();
-			}
-			// TODO Might spam the event bus quite a lot for STREAM here...
-			if (!lastFaceStateDetected) {
-				eventBus.post(new FaceDetectedEvent(faces));
-			}
-			Rect face = faces[0].rect;
-			eventBus.post(new CameraEvents.FaceAvailableEvent(face.width(),
-					face.height()));
-			lastFaceStateDetected = true;
-		} else if (lastFaceStateDetected) {
-			eventBus.post(new CameraEvents.FaceDisappearedEvent());
-			lastFaceStateDetected = false;
+			faceDetectionHandler.onFaceDetected(faces, this);
+		} else {
+			faceDetectionHandler.onNoFaceDetected();
 		}
 	}
-
 }

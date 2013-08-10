@@ -9,9 +9,11 @@ import com.google.inject.Singleton;
 import com.hcb.saha.external.AccountsManager;
 import com.hcb.saha.internal.facerec.FaceRecognizer;
 import com.hcb.saha.internal.facerec.NativeFaceRecognizer;
+import com.hcb.saha.internal.service.TextToSpeechService;
 import com.hcb.saha.internal.source.identity.FaceIdentificationProvider;
 import com.hcb.saha.internal.source.identity.VoiceIdentificationProvider;
 import com.hcb.saha.internal.source.sensor.LightSensorProvider;
+import com.hcb.saha.internal.utils.CameraUtils.FaceDetectionHandler;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
@@ -24,14 +26,22 @@ public class SahaModule implements Module {
 
 	@Override
 	public void configure(Binder binder) {
-		Log.d("GUICE", "configure");
-		// binder.bind(Application.class).toInstance(application);
-		binder.bind(FaceRecognizer.class).to(NativeFaceRecognizer.class)
-				.asEagerSingleton();
+		
+		// Core
 		binder.bind(SahaSystemState.class).asEagerSingleton();
+
+		// External
 		binder.bind(AccountsManager.class).asEagerSingleton();
-		// binder.bind(UserIdentificationManager.class).
-		binder.bind(FaceIdentificationProvider.class).asEagerSingleton();
+		
+		// Face recognition
+				binder.bind(FaceRecognizer.class).to(NativeFaceRecognizer.class)
+						.asEagerSingleton();
+		
+		// Services
+		binder.bind(TextToSpeechService.class).asEagerSingleton();
+		
+		// Source providers
+		binder.bind(FaceDetectionHandler.class).to(FaceIdentificationProvider.class).asEagerSingleton();
 		binder.bind(VoiceIdentificationProvider.class).asEagerSingleton();
 		binder.bind(LightSensorProvider.class).asEagerSingleton();
 	}
