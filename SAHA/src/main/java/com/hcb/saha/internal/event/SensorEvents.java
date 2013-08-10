@@ -28,7 +28,7 @@ public class SensorEvents {
 
 	public static final class SensorPollingEvent extends SensorEvent {
 
-		protected SensorPollingEvent(SensorType sensorType, float[] sensorValues) {
+		public SensorPollingEvent(SensorType sensorType, float[] sensorValues) {
 			super(sensorType, sensorValues);
 		}
 
@@ -36,7 +36,7 @@ public class SensorEvents {
 
 	public static final class SensorDetectionEvent extends SensorEvent {
 
-		protected SensorDetectionEvent(SensorType sensorType,
+		public SensorDetectionEvent(SensorType sensorType,
 				float[] sensorValues) {
 			super(sensorType, sensorValues);
 		}

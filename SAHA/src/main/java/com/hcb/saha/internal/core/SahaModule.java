@@ -11,6 +11,7 @@ import com.hcb.saha.external.EmailManager;
 import com.hcb.saha.internal.facerec.FaceRecognizer;
 import com.hcb.saha.internal.facerec.NativeFaceRecognizer;
 import com.hcb.saha.internal.source.identity.FaceIdentificationProvider;
+import com.hcb.saha.internal.source.sensor.LightSensorProvider;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
@@ -33,7 +34,7 @@ public class SahaModule implements Module {
 		//binder.bind(UserIdentificationManager.class).
 		binder.bind(FaceIdentificationProvider.class).asEagerSingleton();
 		//binder.bind(VoiceIdentificationProvider.class).asEagerSingleton();
-		//binder.bind(LightSensorProvider.class).asEagerSingleton();
+		binder.bind(LightSensorProvider.class).asEagerSingleton();
 	}
 
 	@Provides

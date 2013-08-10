@@ -8,56 +8,55 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hcb.saha.internal.event.SensorEvents;
+import com.squareup.otto.Bus;
+
 
 @Singleton
 public class LightSensorProvider implements SensorEventListener {
 
+	private static final String TAG = LightSensorProvider.class.getSimpleName();
+	private float lastSensorValue = 0f;
+	
+	private Bus eventBus;
+	
 	@Inject
-	public LightSensorProvider(Application context) {
+	public LightSensorProvider(Application context, Bus eventBus) {
 
 		SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-
-		Log.d("LIGHT", "light");
+		
+		this.eventBus = eventBus;
+		eventBus.register(this);
+		
+		Log.d(TAG, "light");
 		Sensor lightSensor = null;
 		if ((lightSensor = sm.getDefaultSensor(Sensor.TYPE_LIGHT)) != null) {
-			//sm.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
-			Log.d("LIGHT", "light sensor listening");
-		}
-
-		Sensor proxSensor = null;
-		if ((proxSensor = sm.getDefaultSensor(Sensor.TYPE_PROXIMITY)) != null) {
-			Log.d("PROX", "has prox");
-			sm.registerListener(new SensorEventListener() {
-
-				@Override
-				public void onSensorChanged(SensorEvent event) {
-					Log.d("PROX", "value: " + event.values[0]);
-				}
-
-				@Override
-				public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-				}
-			}, proxSensor, SensorManager.SENSOR_DELAY_NORMAL);
-			Log.d("LIGHT", "light sensor listening");
+			sm.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_UI);
+			Log.d(TAG, "light sensor listening");
 		}
 
 	}
 
-	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO Auto-generated method stub
-		Log.d("LIGHT", "light accuracy: " + accuracy);
-
-	}
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		// TODO Auto-generated method stub
-		Log.d("LIGHT", "onsensorchanged: " + event.values[0]);
+		float eventValue = event.values[0];
+		if (lastSensorValue != eventValue){
+			Log.d(TAG, "onsensorchanged: " + eventValue);
+			eventBus.post(new SensorEvents.SensorDetectionEvent(SensorEvents.SensorType.LIGHT, new float[] {eventValue}));
+			lastSensorValue = eventValue;
+		}
 
+	}
+
+
+	@Override
+	public void onAccuracyChanged(Sensor arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
