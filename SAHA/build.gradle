@@ -35,6 +35,7 @@ dependencies {
 		exclude module: 'xpp3'
 	}
 	compile "com.fasterxml.jackson.core:jackson-core:$depJacksonCoreVersion"
+	compile "com.fasterxml.jackson.core:jackson-databind:$depJacksonDatabindVersion"
 	compile files('libs/android-support-v4.jar')
     //compile project(':libProjects:OpenCVAndroid')
 }

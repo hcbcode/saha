@@ -71,6 +71,15 @@ public final class SahaFileManager {
 		return getTopLevelDir(FileSystem.TMP_DIR);
 	}
 
+	
+	/**
+	 * Get the tmp directory for temporary files
+	 */
+	public static File getEventsDir() {
+		return getTopLevelDir(FileSystem.EVENTS_DIR);
+	}
+	
+	
 	/**
 	 * Get the directory for haar cascade classifiers
 	 */

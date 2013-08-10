@@ -9,6 +9,7 @@ import com.google.inject.Singleton;
 import com.hcb.saha.external.AccountsManager;
 import com.hcb.saha.internal.facerec.FaceRecognizer;
 import com.hcb.saha.internal.facerec.NativeFaceRecognizer;
+import com.hcb.saha.internal.service.DataPersistenceService;
 import com.hcb.saha.internal.service.TextToSpeechService;
 import com.hcb.saha.internal.source.identity.FaceIdentificationProvider;
 import com.hcb.saha.internal.source.identity.VoiceIdentificationProvider;
@@ -39,6 +40,7 @@ public class SahaModule implements Module {
 		
 		// Services
 		binder.bind(TextToSpeechService.class).asEagerSingleton();
+		binder.bind(DataPersistenceService.class).asEagerSingleton();
 		
 		// Source providers
 		binder.bind(FaceDetectionHandler.class).to(FaceIdentificationProvider.class).asEagerSingleton();

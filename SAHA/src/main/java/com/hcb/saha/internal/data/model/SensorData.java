@@ -1,5 +1,6 @@
 package com.hcb.saha.internal.data.model;
 
+import java.util.Date;
 import java.util.List;
 
 public class SensorData {
@@ -7,7 +8,7 @@ public class SensorData {
 	private String houseId;
 	private String deviceId;
 	private String userId;
-	private String dateTime;
+	private Date dateTime;
 	private Integer reasonCode;
 	private List<SensorDataIndividualSensor> sensors;
 	
@@ -30,11 +31,11 @@ public class SensorData {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	public String getDateTime() {
+	public Date getDateTime() {
 		return dateTime;
 	}
-	public void setDateTime(String dateTime) {
-		this.dateTime = dateTime;
+	public void setDateTime(Date date) {
+		this.dateTime = date;
 	}
 	public Integer getReasonCode() {
 		return reasonCode;
