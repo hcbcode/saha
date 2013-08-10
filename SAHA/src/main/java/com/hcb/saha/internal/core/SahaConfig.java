@@ -48,4 +48,10 @@ public final class SahaConfig {
 		public static final int CASCADE_OUTPUT_FACE_WIDTH = 200;
 		public static final int CASCADE_OUTPUT_FACE_HEIGHT = 200;
 	}
+	
+	public static final class Sensor {
+		public static final int LIGHT_CHANGE_THRESHOLD = 2;
+		public static final int LIGHT_COUNT_THROTTLE = 10;
+
+	}
 }

@@ -1,5 +1,7 @@
 package com.hcb.saha.internal.source.sensor;
 
+import java.sql.Date;
+
 import android.app.Application;
 import android.content.Context;
 import android.hardware.Sensor;
@@ -8,8 +10,12 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+
+import com.google.common.collect.Range;
+import com.google.common.collect.Ranges;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hcb.saha.internal.core.SahaConfig;
 import com.hcb.saha.internal.event.SensorEvents;
 import com.squareup.otto.Bus;
 
@@ -17,8 +23,12 @@ import com.squareup.otto.Bus;
 public class LightSensorProvider implements SensorEventListener {
 
 	private static final String TAG = LightSensorProvider.class.getSimpleName();
-	private float lastSensorValue = 0f;
-
+	private int lastSensorValue = 0;
+	
+	//TODO: Not sure if we need this yet
+	private Date lastSensorEvent =  new Date(System.currentTimeMillis());
+	
+	
 	private Bus eventBus;
 
 	@Inject
@@ -42,23 +52,29 @@ public class LightSensorProvider implements SensorEventListener {
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		float eventValue = event.values[0];
+		
+		//Turn into int
+		int eventValue = Math.round(event.values[0]);
+	
+		//Create range that is above and below previous value
+		 Range<Integer> range = Range.closed(lastSensorValue - SahaConfig.Sensor.LIGHT_CHANGE_THRESHOLD, 
+				 lastSensorValue + SahaConfig.Sensor.LIGHT_CHANGE_THRESHOLD);
 
-		// FIXME: Does this need to be thread safe i.e. are they coming so fast
-		// that you may be comparing lastSensorValue as it is being set ?
-
-		if (lastSensorValue != eventValue) {
-			// Log.d(TAG, "onsensorchanged: " + eventValue);
-			eventBus.post(new SensorEvents.SensorDetectionEvent(
-					SensorEvents.SensorType.LIGHT, new float[] { eventValue }));
-			lastSensorValue = eventValue;
+		
+		//if new value is no within range, then send event 
+		if (!range.contains(eventValue)){
+			eventBus.post(new SensorEvents.SensorDetectionEvent(SensorEvents.SensorType.LIGHT, new float[] {eventValue}));
 		}
+		
+		//update old sensor value everytime to allow it to progressively increase
+		lastSensorValue = eventValue;
+		
 
 	}
 
 	@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
-
+		// NA
 	}
 
 }

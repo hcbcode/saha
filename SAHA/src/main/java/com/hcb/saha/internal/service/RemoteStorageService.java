@@ -9,6 +9,8 @@ import java.util.Collections;
 
 import org.apache.commons.io.IOUtils;
 
+import roboguice.service.RoboIntentService;
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.InputStreamContent;
@@ -16,13 +18,13 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.storage.Storage;
+import com.google.inject.Inject;
 import com.hcb.saha.R;
-import android.app.IntentService;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.util.Log;
 
-public class RemoteStorageService extends IntentService{
+public class RemoteStorageService extends RoboIntentService{
 
 	private static final String TAG = RemoteStorageService.class.getSimpleName();
 
@@ -39,7 +41,12 @@ public class RemoteStorageService extends IntentService{
 	/** GCS Application Name */
 	private static final String APPLICATION_NAME = "SAHA";
 
+	@Inject
+	public NetHttpTransport transport;
 
+	@Inject
+	public JacksonFactory jsonFactory; 
+	
 	public RemoteStorageService() {
 		super("RemoteStorageService");
 
@@ -49,10 +56,6 @@ public class RemoteStorageService extends IntentService{
 	protected void onHandleIntent(Intent intent) {
 
 		Log.d(TAG, "Cloud Service started");
-
-		/** initialise transport and json parser */
-		HttpTransport transport = new NetHttpTransport();
-		JsonFactory jsonFactory = new JacksonFactory();;
 
 		/** Create OAuth2 Credential object with service account  */
 		GoogleCredential credential = null;

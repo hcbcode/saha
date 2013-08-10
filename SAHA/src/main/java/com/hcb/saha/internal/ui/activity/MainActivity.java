@@ -23,6 +23,7 @@ import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.data.model.User;
 import com.hcb.saha.internal.data.model.UsersFaces;
 import com.hcb.saha.internal.event.LifecycleEvents;
+import com.hcb.saha.internal.service.DataPersistenceService;
 import com.hcb.saha.internal.service.RemoteStorageService;
 import com.hcb.saha.internal.ui.fragment.HomeCarouselFragment;
 import com.hcb.saha.internal.ui.fragment.HomeUserNearFragment;
@@ -56,6 +57,7 @@ public class MainActivity extends RoboFragmentActivity {
 		// Just for testing - will move this to a better location later - Starts
 		// event extraction (tbc and transfer)
 		startService(new Intent(this, RemoteStorageService.class));
+		startService(new Intent(this, DataPersistenceService.class));
 		// OpenCV can't read assets, so need to copy over to sdcard
 		SahaFileManager.copyClassifierToSdCard(this.getAssets());
 

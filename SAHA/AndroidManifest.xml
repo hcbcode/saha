@@ -43,6 +43,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <service android:name=".internal.service.RemoteStorageService"/>
+        <service android:name=".internal.service.DataPersistenceService"/>
     </application>
 
 </manifest>
