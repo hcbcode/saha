@@ -62,6 +62,7 @@
         android:orientation="horizontal" >
 
         <LinearLayout
+            android:id="@+id/light_measure_panel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -69,13 +70,16 @@
             android:padding="20dp" >
 
             <TextView
+                android:id="@+id/light_val"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Stuff"
-                android:textColor="@android:color/white" />
+                android:text="No Light"
+                android:textColor="@android:color/white"
+                android:textSize="40sp" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/face_measure_panel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -83,10 +87,12 @@
             android:padding="20dp" >
 
             <TextView
+                android:id="@+id/face_val"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Stuff"
-                android:textColor="@android:color/white" />
+                android:text="No Face"
+                android:textColor="@android:color/white"
+                android:textSize="40sp" />
         </LinearLayout>
     </LinearLayout>
 

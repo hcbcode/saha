@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.Handler;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hcb.saha.external.EmailEvents.QueryEmailResult;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -18,6 +19,7 @@ import com.squareup.otto.Subscribe;
  *         Only supports monitoring one email address.
  * 
  */
+@Singleton
 public class EmailManager {
 
 	private Bus eventBus;

@@ -47,6 +47,8 @@ public class AccountsManager {
 	 */
 	private void getGoogleAccounts(final Context ctx) {
 
+		Log.d(TAG, "Get accounts");
+
 		final String ACCOUNT_TYPE_GOOGLE = "com.google";
 		final String[] FEATURES_MAIL = { "service_mail" };
 
