@@ -55,6 +55,7 @@ public class HomeUserCloseFragment extends RoboFragment {
 	public void onDestroyView() {
 		super.onDestroyView();
 		eventBus.unregister(this);
+		cameraProcessor.tearDownCamera();
 	}
 
 	@Subscribe

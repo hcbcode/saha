@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.hcb.saha.R;
 import com.hcb.saha.internal.data.model.User;
+import com.hcb.saha.internal.event.LifecycleEvents;
 import com.hcb.saha.internal.event.TextSpeechEvents;
 import com.hcb.saha.internal.event.UserIdentificationEvents;
 import com.squareup.otto.Bus;
@@ -23,7 +24,8 @@ public final class SahaSystemState {
 
 	public static enum State {
 		SLEEPING, // Device is in sleep mode (sensors, camera, etc off)
-		IDLE, // Device is active and awaiting user interaction
+		DETECTION, // Device is active and awaiting user detection
+		REGISTRATION, // Device is active and in process of registering a user
 		ANONYMOUS_USER, // A user is detected, but is not recognized
 		REGISTERED_USER // A registered user has been detected
 	}
@@ -38,14 +40,19 @@ public final class SahaSystemState {
 	public SahaSystemState(Bus eventBus) {
 		this.eventBus = eventBus;
 		eventBus.register(this);
-		currentState = State.IDLE;
+		currentState = State.DETECTION;
+	}
+	
+	private void updateState(State state) {
+		currentState = state;
+		eventBus.post(new LifecycleEvents.SystemStateChangedEvent(currentState));
 	}
 
 	@Subscribe
 	public void onRegisteredUserDetected(
 			UserIdentificationEvents.RegisteredUserDetected event) {
-		currentState = State.REGISTERED_USER;
 		currentUser = event.getUser();
+		updateState(State.REGISTERED_USER);
 		eventBus.post(new TextSpeechEvents.TextToSpeechRequest(context
 				.getString(R.string.user_recognized_speech,
 						currentUser.getName())));
@@ -54,19 +61,27 @@ public final class SahaSystemState {
 	@Subscribe
 	public void onAnonymousUserDetected(
 			UserIdentificationEvents.AnonymousUserDetected event) {
-		currentState = State.ANONYMOUS_USER;
+		updateState(State.ANONYMOUS_USER);
 		currentUser = null;
 	}
 
 	@Subscribe
 	public void onUserInactivity(
 			UserIdentificationEvents.UserInactivitityEvent event) {
-		currentState = State.IDLE;
+		updateState(State.DETECTION);
 		currentUser = null;
 	}
-
-	public void setState(State state) {
-		currentState = state;
+	
+	@Subscribe
+	public void onRegistrationInitiated(LifecycleEvents.RegistrationInitiatedEvent event) {
+		updateState(State.REGISTRATION);
+		currentUser = null;
+	}
+	
+	@Subscribe
+	public void onRegistrationCompleted(LifecycleEvents.RegistrationCompletedEvent event) {
+		currentUser = event.getUser();
+		updateState(State.REGISTERED_USER);
 	}
 
 	public State getCurrentState() {

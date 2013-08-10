@@ -7,7 +7,17 @@ package com.hcb.saha.internal.event;
 public class SensorEvents {
 
 	public static enum SensorType {
-		MOVEMENT, LIGHT, TEMPERATURE, HUMIDITY, PRESSURE, PROXIMITY
+		MOVEMENT(1), LIGHT(2), TEMPERATURE(3), HUMIDITY(4), PRESSURE(5), PROXIMITY(6);
+		
+		private int id;
+		
+		private SensorType(int id) {
+			this.id = id;
+		}
+		
+		public int getId() {
+			return id;
+		}
 	}
 
 	private static abstract class SensorEvent {
