@@ -66,7 +66,7 @@ public class HomeUserCloseFragment extends RoboFragment {
 	@Subscribe
 	public void onSensorEvent(SensorEvents.SensorDetectionEvent event) {
 		if (event.getSensorType() == SensorType.LIGHT) {
-			lightText.setText("Light: " + event.getSensorValues());
+			lightText.setText("Light: " + event.getSensorValues()[0]);
 		}
 	}
 
