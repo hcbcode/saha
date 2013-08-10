@@ -5,9 +5,9 @@ import java.util.ArrayList;
 /**
  * Base class for all managers.
  * Keeps a list of registered providers for subclasses to use.
- * 
+ *
  * @author Andreas Borglin
- * 
+ *
  */
 public abstract class BaseSourceManager {
 

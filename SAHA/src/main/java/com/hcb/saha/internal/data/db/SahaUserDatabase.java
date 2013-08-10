@@ -15,7 +15,7 @@ import com.hcb.saha.internal.data.model.User;
 
 /**
  * Saha user database handler
- * 
+ *
  * @author Andreas Borglin
  */
 public final class SahaUserDatabase {

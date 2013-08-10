@@ -17,7 +17,7 @@ public interface FaceRecognizer {
 
 	/**
 	 * Train the face recognizer with a set of images for a user
-	 * 
+	 *
 	 * @param userId
 	 *            The user id
 	 * @param faceImagePaths
@@ -29,7 +29,7 @@ public interface FaceRecognizer {
 
 	/**
 	 * Predict a user id based on a face image
-	 * 
+	 *
 	 * @param faceImage
 	 *            The face image
 	 * @return A user id if successful, -1 if failed to identify

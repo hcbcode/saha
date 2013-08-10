@@ -25,7 +25,7 @@ import android.util.Log;
 public class RemoteStorageService extends IntentService{
 
 	private static final String TAG = RemoteStorageService.class.getSimpleName();
-	
+
 	/** E-mail address of the service account. */
 	private static final String SERVICE_ACCOUNT_EMAIL = "537815805809@developer.gserviceaccount.com";
 
@@ -35,7 +35,7 @@ public class RemoteStorageService extends IntentService{
 	/** Global configuration of Google Cloud Storage OAuth 2.0 scope. */
 	private static final String STORAGE_SCOPE =
 			"https://www.googleapis.com/auth/devstorage.read_write";
-	
+
 	/** GCS Application Name */
 	private static final String APPLICATION_NAME = "SAHA";
 
@@ -56,7 +56,7 @@ public class RemoteStorageService extends IntentService{
 
 		/** Create OAuth2 Credential object with service account  */
 		GoogleCredential credential = null;
-		
+
 		try {
 			credential = new GoogleCredential.Builder()
 			.setTransport(transport)
@@ -68,10 +68,10 @@ public class RemoteStorageService extends IntentService{
 		} catch (Exception e) {
 			Log.d(TAG, "Could not create credential object: " + e.getMessage());
 		}
-		
-	
+
+
 		if (credential != null){
-			
+
 			/** Initialise storage API with above credentials*/
 			Storage.Builder builder = new Storage.Builder(transport, jsonFactory, credential);
 			builder.setApplicationName(APPLICATION_NAME);
@@ -93,7 +93,7 @@ public class RemoteStorageService extends IntentService{
 				insertObject.setName(uniqueFileName);
 				insertObject.execute();
 
-				//Retrieve stored object to check its there (temp for now) 
+				//Retrieve stored object to check its there (temp for now)
 				//StorageObject response = storage.objects().get(BUCKET_NAME, uniqueFileName).execute();
 				//Log.d("SAHA", "Size of stored object: " + response.getSize());
 
@@ -101,12 +101,12 @@ public class RemoteStorageService extends IntentService{
 				e3.printStackTrace();
 			}
 		}
-	
-		
+
+
 	}
 
 	private File getTempPkc12File() throws IOException {
-	
+
 		InputStream pkc12Stream = getResources().openRawResource(R.raw.privatekey);
 		File tempPkc12File = File.createTempFile("temp_pkc12_file", "p12");
 		OutputStream tempFileStream = new FileOutputStream(tempPkc12File);
@@ -114,12 +114,12 @@ public class RemoteStorageService extends IntentService{
 		tempFileStream.flush();
 		pkc12Stream.close();
 		tempFileStream.close();
-		
+
 		if (copied == 0) {
 			Log.e(TAG, "Temporary creation of certificate file failed");
-			
+
 		}
-		
+
 		return tempPkc12File;
 	}
 

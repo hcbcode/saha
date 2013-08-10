@@ -5,11 +5,9 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hcb.saha.internal.core.SahaConfig;
 import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.event.LifecycleEvents;
-import com.hcb.saha.internal.facerec.FaceRecognizer.FaceRecognitionEventHandler;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -18,7 +16,7 @@ import com.squareup.otto.Subscribe;
  * requests on a separate thread managed by a looper and a handler. Requests
  * comes in via the event bus and are placed on the handler messaging queue for
  * synchronous in-order request handling.
- * 
+ *
  * @author Andreas Borglin
  */
 public class NativeFaceRecognizer implements FaceRecognizer {

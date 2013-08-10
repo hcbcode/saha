@@ -11,7 +11,7 @@ import android.view.View;
 
 /**
  * View for drawing the face rect on top of the preview frame
- * 
+ *
  * @author Andreas Borglin
  */
 public class FaceDetectionView extends View {

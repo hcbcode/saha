@@ -23,7 +23,7 @@ import com.squareup.otto.Bus;
 
 /**
  * Fragment for allowing a user to create a new "account"
- * 
+ *
  * @author Andreas Borglin
  */
 public class UserRegistrationFragment extends RoboFragment {

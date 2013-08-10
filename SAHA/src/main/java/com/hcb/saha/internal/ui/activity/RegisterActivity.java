@@ -13,7 +13,7 @@ import com.squareup.otto.Bus;
 
 /**
  * Handles user registration process
- * 
+ *
  * @author Andreas Borglin
  */
 public class RegisterActivity extends RoboFragmentActivity {

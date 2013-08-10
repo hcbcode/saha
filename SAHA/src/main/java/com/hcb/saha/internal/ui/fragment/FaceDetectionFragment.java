@@ -34,7 +34,7 @@ import com.squareup.otto.Bus;
  * This fragment is responsible for detecting faces from the camera preview, and
  * persist images to the file system. It support two modes, one for face
  * registration and one for face identification
- * 
+ *
  * @author Andreas Borglin
  */
 public class FaceDetectionFragment extends RoboFragment implements

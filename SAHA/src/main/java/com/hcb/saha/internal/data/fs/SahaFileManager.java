@@ -11,6 +11,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.os.Environment;
 import android.util.Log;
 
@@ -21,7 +23,7 @@ import com.hcb.saha.internal.data.model.UsersFaces;
 
 /**
  * Manages the Saha file system directories and files
- * 
+ *
  * @author Andreas Borglin
  */
 public final class SahaFileManager {
@@ -49,7 +51,7 @@ public final class SahaFileManager {
 
 	/**
 	 * Get a top level directory in SAHA root
-	 * 
+	 *
 	 * @param dirName
 	 *            The top level directory
 	 */
@@ -85,7 +87,7 @@ public final class SahaFileManager {
 
 	/**
 	 * Get the user directory for a user
-	 * 
+	 *
 	 * @param user
 	 *            the user directory name
 	 */
@@ -99,7 +101,7 @@ public final class SahaFileManager {
 
 	/**
 	 * Get the face image directory for a user
-	 * 
+	 *
 	 * @param user
 	 *            the user
 	 */
@@ -114,7 +116,7 @@ public final class SahaFileManager {
 
 	/**
 	 * Get an output stream for writing a new face image for a user
-	 * 
+	 *
 	 * @param user
 	 *            the user
 	 */
@@ -127,6 +129,32 @@ public final class SahaFileManager {
 				+ String.valueOf(curNumFiles) + FileSystem.FACE_IMAGE_EXT);
 		newFace.createNewFile();
 		return new FileOutputStream(newFace);
+	}
+
+	/**
+	 * Persist a face bitmap to file
+	 * TODO Should this logic be here?
+	 * @param bitmap The face bitmap
+	 */
+	public static String persistFaceBitmap(Bitmap bitmap) {
+
+		File output = getFileForFaceIdentification();
+		try {
+			FileOutputStream fos = new FileOutputStream(output);
+			if (bitmap != null && fos != null) {
+
+				boolean c = bitmap.compress(CompressFormat.JPEG, 100, fos);
+				Log.d(TAG, "Persist bitmap to file status: " + c);
+				fos.flush();
+				fos.close();
+				return output.getAbsolutePath();
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.e(TAG, e.getMessage());
+		}
+		return null;
 	}
 
 	/**
@@ -155,7 +183,7 @@ public final class SahaFileManager {
 
 	/**
 	 * Get a representation of all the users and paths to their face images
-	 * 
+	 *
 	 * @param users
 	 *            List of all users
 	 */

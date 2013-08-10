@@ -5,7 +5,7 @@ import android.app.Application;
 
 /**
  * Saha Application instance
- * 
+ *
  * @author Andreas Borglin
  */
 public class SahaApplication extends Application {
@@ -16,7 +16,7 @@ public class SahaApplication extends Application {
 		RoboGuice.setBaseApplicationInjector(this, RoboGuice.DEFAULT_STAGE,
 				RoboGuice.newDefaultRoboModule(this), new SahaModule());
 	}
-	
-	
+
+
 
 }

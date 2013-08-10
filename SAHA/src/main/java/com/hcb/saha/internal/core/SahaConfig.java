@@ -2,7 +2,7 @@ package com.hcb.saha.internal.core;
 
 /**
  * Main configuration file
- * 
+ *
  * @author Andreas Borglin
  */
 public final class SahaConfig {
