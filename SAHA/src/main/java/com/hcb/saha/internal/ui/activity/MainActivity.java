@@ -23,7 +23,6 @@ import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.data.model.User;
 import com.hcb.saha.internal.data.model.UsersFaces;
 import com.hcb.saha.internal.event.LifecycleEvents;
-import com.hcb.saha.internal.service.DataPersistenceService;
 import com.hcb.saha.internal.service.RemoteStorageService;
 import com.hcb.saha.internal.ui.fragment.HomeCarouselFragment;
 import com.hcb.saha.internal.ui.fragment.HomeUserNearFragment;
@@ -72,7 +71,6 @@ public class MainActivity extends RoboFragmentActivity {
 		if (EnvConfig.USE_REPORTING) {
 			BugSenseHandler.initAndStartSession(this, SahaConfig.BUGSENSE_KEY);
 		}
-
 	}
 
 	@Override

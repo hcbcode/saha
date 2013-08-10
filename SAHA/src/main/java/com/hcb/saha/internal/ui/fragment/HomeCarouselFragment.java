@@ -3,6 +3,7 @@ package com.hcb.saha.internal.ui.fragment;
 import java.lang.reflect.Field;
 
 import roboguice.fragment.RoboFragment;
+import roboguice.inject.InjectView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -18,13 +19,15 @@ import android.view.animation.AccelerateInterpolator;
 import com.hcb.saha.R;
 import com.hcb.saha.internal.ui.view.DepthPageTransformer;
 import com.hcb.saha.internal.ui.view.FixedSpeedScroller;
-import com.hcb.saha.internal.ui.view.ZoomOutPageTransformer;
 
 public class HomeCarouselFragment extends RoboFragment {
 
 	int NUM_PAGES = 6;
-	private ViewPager pager;
+
 	private PagerAdapter pagerAdapter;
+
+	@InjectView(R.id.pager)
+	private ViewPager pager;
 
 	private Handler animationHandler = new Handler();
 	private AnimationStep animationStep = new AnimationStep();
@@ -41,7 +44,6 @@ public class HomeCarouselFragment extends RoboFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		pager = (ViewPager) getView().findViewById(R.id.pager);
 		pagerAdapter = new CarouselAdapter(this.getChildFragmentManager());
 		pager.setAdapter(pagerAdapter);
 		pager.setPageTransformer(true, new DepthPageTransformer());
