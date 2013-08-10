@@ -58,9 +58,14 @@ public class HomeUserCloseFragment extends RoboFragment {
 	}
 
 	@Subscribe
-	public void onFaceDetected(CameraEvents.FaceAvailableEvent face) {
-		faceText.setText("H: " + face.getFaceHeight() + "\nW: "
-				+ face.getFaceWidth());
+	public void onFaceDetected(CameraEvents.FaceAvailableEvent event) {
+		faceText.setText("H: " + event.getFaceHeight() + "\nW: "
+				+ event.getFaceWidth());
+	}
+
+	@Subscribe
+	public void onFaceDisappeared(CameraEvents.FaceDisappearedEvent event) {
+		faceText.setText("No face");
 	}
 
 	@Subscribe

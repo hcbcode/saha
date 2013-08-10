@@ -62,7 +62,7 @@ public class MainActivity extends RoboFragmentActivity {
 		eventBus.register(this);
 		eventBus.post(new LifecycleEvents.MainActivityCreated());
 
-		showHomeCarousel();
+		showHomeUserClose();
 	}
 
 	@Override
