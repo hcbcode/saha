@@ -22,19 +22,20 @@ import com.hcb.saha.internal.event.CameraEvents;
 import com.hcb.saha.internal.utils.CameraUtils;
 import com.hcb.saha.internal.utils.CameraUtils.FacePictureTakenHandler;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 /**
  * Responsible for all things camera. This can be set in different modes from
  * the client to indicate what the camera processor should be focusing on. By
  * default, the camera will be in movement detection mode.
- *
+ * 
  * As soon as movement is detected, an event will be fired that a client can
  * listen to and update the mode accordingly. For instance, we might want to try
  * to detect faces as soon as movement is detected to check whether someone has
  * approached the device and is ready to interact with it.
- *
+ * 
  * TODO Movement detection, barcode detection, "object detection"
- *
+ * 
  * @author Andreas Borglin
  */
 @Singleton
@@ -47,6 +48,12 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 	private static final int PRIO_MEDIUM = 2;
 	private static final int PRIO_HIGH = 3;
 
+	private static class CameraFeature {
+		public int clientCount;
+		private Runnable updateState;
+		
+	}
+	
 	/**
 	 * Type of detection
 	 */
@@ -79,12 +86,51 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 	private SurfaceHolder surfaceHolder;
 	private CameraDetectionType detectionType;
 	private CameraDetectionMode detectionMode;
+
+	private int movementDetectionClientCount;
+	private int faceDetectionClientCount;
+	private int frameCollectionClientCount;
+	
+	//private HashMap
+
 	private boolean cameraActive = false;
+	private boolean lastFaceStateDetected = false;
+
+	@Inject
+	public CameraProcessor(Bus eventBus) {
+		eventBus.register(this);
+	}
+
+//	@Subscribe
+//	public void onClientInterest(CameraEvents.CameraClientInterestEvent event) {
+//		InterestType interestType = event.getInterestType();
+//		int countDiff = event.getInterest() == Interest.REGISTER ? 1 : -1;
+//		switch (interestType) {
+//		case MOVEMENT: {
+//			movementDetectionClientCount += countDiff;
+//			break;
+//		}
+//		case FACE: {
+//			faceDetectionClientCount += countDiff;
+//			break;
+//		}
+//		case FRAMES: {
+//			frameCollectionClientCount += countDiff;
+//			break;
+//		}
+//		}
+//	}
+	
+	private void checkClientCounts() {
+		
+		
+		
+	}
 
 	/**
 	 * This must be called in onCreate of the client activity for the
 	 * surfaceholder callbacks to be called.
-	 *
+	 * 
 	 * @param surfaceView
 	 *            Surface view to render camera preview on
 	 */
@@ -105,7 +151,7 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 
 	/**
 	 * Check if the camera is active.
-	 *
+	 * 
 	 * @return True if active.
 	 */
 	public boolean isCameraActive() {
@@ -121,7 +167,7 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 	/**
 	 * Request a change to the detection type and mode. Depending on current and
 	 * new priority, the requests might be granted or denied.
-	 *
+	 * 
 	 * @param type
 	 *            Type of detection
 	 * @param mode
@@ -149,7 +195,7 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 
 	/**
 	 * Reset the camera detection state back to default
-	 *
+	 * 
 	 * @throws CameraNotActiveException
 	 */
 	public void resetDetectionState() {
@@ -196,7 +242,7 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 
 	/**
 	 * Take a picture during face detection
-	 *
+	 * 
 	 * @param handler
 	 *            Callback interface
 	 */
@@ -294,6 +340,11 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 			Rect face = faces[0].rect;
 			eventBus.post(new CameraEvents.FaceAvailableEvent(face.width(),
 					face.height()));
+			lastFaceStateDetected = true;
+		}
+		else if (lastFaceStateDetected) {
+			eventBus.post(new CameraEvents.FaceDisappearedEvent());
+			lastFaceStateDetected = false;
 		}
 	}
 

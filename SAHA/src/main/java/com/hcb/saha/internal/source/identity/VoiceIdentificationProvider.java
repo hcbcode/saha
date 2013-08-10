@@ -53,6 +53,10 @@ public class VoiceIdentificationProvider {
 						playString = "I am the smart android household array at your service";
 						break;
 					}
+					else if (val.equalsIgnoreCase("describe steven")) {
+						playString = "Grumpy posh bastard";
+						break;
+					}
 
 				}
 				if (playString == null) {

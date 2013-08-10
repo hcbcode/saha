@@ -8,6 +8,30 @@ import android.hardware.Camera.Face;
  * @author Andreas Borglin
  */
 public class CameraEvents {
+	
+//	public static final class CameraClientInterestEvent {
+//
+//		public static enum Interest {
+//			REGISTER, UNREGISTER
+//		}
+//		
+//		private Interest interest;
+//		private InterestType interestType;
+//		
+//		public CameraClientInterestEvent(InterestType interestType, Interest interest) {
+//			this.interestType = interestType;
+//			this.interest = interest;
+//		}
+//		
+//		public Interest getInterest() {
+//			return interest;
+//		}
+//		
+//		public InterestType getInterestType() {
+//			return interestType;
+//		}
+//		
+//	}
 
 	public static final class CameraActivatedEvent {
 
@@ -49,5 +73,9 @@ public class CameraEvents {
 		public int getFaceHeight() {
 			return faceHeight;
 		}
+	}
+	
+	public static final class FaceDisappearedEvent {
+		
 	}
 }
