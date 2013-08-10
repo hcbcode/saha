@@ -15,8 +15,8 @@ import android.view.SurfaceView;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.hcb.saha.internal.core.SahaExceptions.CameraNotActiveException;
-import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.event.CameraEvents;
+import com.hcb.saha.internal.ui.fragment.FaceDetectionFragment.FaceDetectionFragmentHandler;
 import com.hcb.saha.internal.utils.CameraUtils;
 import com.hcb.saha.internal.utils.CameraUtils.FaceDetectionHandler;
 import com.hcb.saha.internal.utils.CameraUtils.FacePictureTakenHandler;
@@ -29,8 +29,8 @@ import com.squareup.otto.Bus;
  * @author Andreas Borglin
  */
 @Singleton
-public class CameraProcessor implements PreviewCallback, SurfaceHolder.Callback,
-		FaceDetectionListener {
+public class CameraProcessor implements PreviewCallback,
+		SurfaceHolder.Callback, FaceDetectionListener {
 
 	private static final String TAG = CameraProcessor.class.getSimpleName();
 
@@ -44,6 +44,8 @@ public class CameraProcessor implements PreviewCallback, SurfaceHolder.Callback,
 	private Camera camera;
 	private SurfaceHolder surfaceHolder;
 	private boolean cameraActive;
+
+	private FaceDetectionHandler faceBackupHandler;
 
 	@Inject
 	public CameraProcessor(Bus eventBus) {
@@ -59,16 +61,28 @@ public class CameraProcessor implements PreviewCallback, SurfaceHolder.Callback,
 	 */
 	public void startCamera(SurfaceView surfaceView)
 			throws UnsupportedOperationException {
-		Log.d(TAG, "startCamera");
-		camera = CameraUtils.getFrontFacingCamera();
-		if (camera == null) {
-			throw new UnsupportedOperationException(
-					"Device has no front-facing camera");
+		if (!cameraActive) {
+			Log.d(TAG, "startCamera");
+			camera = CameraUtils.getFrontFacingCamera();
+			if (camera == null) {
+				throw new UnsupportedOperationException(
+						"Device has no front-facing camera");
+			}
+			// Front facing camera found. Woho!
+			surfaceHolder = surfaceView.getHolder();
+			surfaceHolder.setSizeFromLayout();
+			surfaceHolder.addCallback(this);
 		}
-		// Front facing camera found. Woho!
-		surfaceHolder = surfaceView.getHolder();
-		surfaceHolder.setSizeFromLayout();
-		surfaceHolder.addCallback(this);
+	}
+
+	public void setFaceDetectionHandler(FaceDetectionHandler handler) {
+		faceBackupHandler = faceDetectionHandler;
+		this.faceDetectionHandler = handler;
+	}
+
+	// TODO temp hack
+	public void revertToOriginalHandler() {
+		this.faceDetectionHandler = faceBackupHandler;
 	}
 
 	/**
@@ -119,9 +133,8 @@ public class CameraProcessor implements PreviewCallback, SurfaceHolder.Callback,
 			@Override
 			public void onPictureTaken(byte[] data, Camera camera) {
 				Bitmap bitmap = CameraUtils.getBitmapFromFrontCameraData(data);
-				String imagePath = SahaFileManager.persistFaceBitmap(bitmap);
-				if (imagePath != null) {
-					handler.onFacePictureTaken(imagePath);
+				if (bitmap != null) {
+					handler.onFacePictureTaken(bitmap);
 				}
 				// Restart preview and face detection
 				startPreview();

@@ -9,7 +9,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-    <com.hcb.saha.view.FaceDetectionView
+    <com.hcb.saha.internal.ui.view.FaceDetectionView
             android:id="@+id/overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

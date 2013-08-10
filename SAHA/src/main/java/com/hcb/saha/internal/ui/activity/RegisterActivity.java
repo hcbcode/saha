@@ -3,26 +3,38 @@ package com.hcb.saha.internal.ui.activity;
 import roboguice.activity.RoboFragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.widget.Toast;
+
 import com.google.inject.Inject;
 import com.hcb.saha.R;
 import com.hcb.saha.internal.data.db.SahaUserDatabase;
+import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.data.model.User;
+import com.hcb.saha.internal.data.model.UsersFaces;
+import com.hcb.saha.internal.facerec.FaceRecognizer;
+import com.hcb.saha.internal.facerec.FaceRecognizer.FaceRecognitionEventHandler;
 import com.hcb.saha.internal.ui.fragment.FaceDetectionFragment;
+import com.hcb.saha.internal.ui.fragment.FaceDetectionFragment.FaceDetectionFragmentHandler;
 import com.hcb.saha.internal.ui.fragment.UserRegistrationFragment;
+import com.hcb.saha.internal.ui.fragment.UserRegistrationFragment.UserCreatedHandler;
 import com.squareup.otto.Bus;
 
 /**
  * Handles user registration process
- *
+ * 
  * @author Andreas Borglin
  */
-public class RegisterActivity extends RoboFragmentActivity {
+public class RegisterActivity extends RoboFragmentActivity implements
+		FaceDetectionFragmentHandler, UserCreatedHandler {
 
 	public static final String USER_ID = "userId";
-	private UserRegistrationFragment userRegistrationFragment;
-	private FaceDetectionFragment faceDetectionFragment;
 	@Inject
 	private Bus eventBus;
+	@Inject
+	private FaceRecognizer faceReognizer;
+
+	private UserRegistrationFragment userRegistrationFragment;
+	private FaceDetectionFragment faceDetectionFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +48,7 @@ public class RegisterActivity extends RoboFragmentActivity {
 		}
 		if (userId == 0) {
 			userRegistrationFragment = new UserRegistrationFragment();
+			userRegistrationFragment.setUserCreatedHandler(this);
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.register_layout, userRegistrationFragment)
 					.commit();
@@ -58,15 +71,9 @@ public class RegisterActivity extends RoboFragmentActivity {
 		return true;
 	}
 
-	// FIXME
-	// @Subscribe
-	// public void onUserCreated(RegistrationEvents.UserCreated event) {
-	// User user = event.getUser();
-	// startFaceRegistration(user, true);
-	// }
-
 	private void startFaceRegistration(User user, boolean replace) {
 		faceDetectionFragment = new FaceDetectionFragment();
+		faceDetectionFragment.setFaceDetectionFragmentHandler(this);
 		faceDetectionFragment.setMode(FaceDetectionFragment.Mode.REGISTRATION);
 		faceDetectionFragment.setCurrentUser(user);
 		if (replace) {
@@ -80,17 +87,31 @@ public class RegisterActivity extends RoboFragmentActivity {
 
 	}
 
-	// FIXME
-	// @Subscribe
-	// public void onFaceRegistrationCompleted(
-	// RegistrationEvents.FaceRegistrationCompleted event) {
-	// UsersFaces usersFaces = SahaFileManager
-	// .getAllUsersFaceImages(SahaUserDatabase.getAllUsers(this));
-	// eventBus.post(new FaceRecognitionEvents.TrainRecognizerRequest(
-	// usersFaces));
-	// Toast.makeText(this, "Training recognizer...", Toast.LENGTH_SHORT)
-	// .show();
-	// finish();
-	// }
+	@Override
+	public void onUserCreated(User user) {
+		startFaceRegistration(user, true);
+	}
 
+	@Override
+	public void onFaceRegistrationCompleted() {
+		UsersFaces usersFaces = SahaFileManager
+				.getAllUsersFaceImages(SahaUserDatabase.getAllUsers(this));
+		Toast.makeText(this, "Training recognizer...", Toast.LENGTH_SHORT)
+				.show();
+		faceReognizer.trainRecognizer(usersFaces.getUserIds(),
+				usersFaces.getUserImageFaces(),
+				new FaceRecognitionEventHandler() {
+
+					@Override
+					public void onRecognizerTrainingCompleted() {
+					}
+
+					@Override
+					public void onPredictionCompleted(int predictedUserId) {
+
+					}
+				});
+		
+		finish();
+	}
 }

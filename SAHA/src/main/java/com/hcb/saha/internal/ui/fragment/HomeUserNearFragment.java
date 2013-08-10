@@ -46,16 +46,24 @@ public class HomeUserNearFragment extends RoboFragment {
 		super.onActivityCreated(savedInstanceState);
 
 		// FIXME temp code
-		cameraProcessor.startCamera((SurfaceView) getView().findViewById(
-				R.id.surface));
+//		cameraProcessor.startCamera((SurfaceView) getView().findViewById(
+//				R.id.surface));
 
 	}
-
+	
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
 		eventBus.unregister(this);
 		cameraProcessor.tearDownCamera();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		cameraProcessor.startCamera((SurfaceView) getView().findViewById(
+				R.id.surface));
 	}
 
 	@Subscribe

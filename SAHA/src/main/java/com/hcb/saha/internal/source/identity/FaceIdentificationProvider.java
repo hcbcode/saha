@@ -1,6 +1,7 @@
 package com.hcb.saha.internal.source.identity;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.hardware.Camera.Face;
 
@@ -8,6 +9,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.hcb.saha.internal.core.SahaExceptions.CameraNotActiveException;
 import com.hcb.saha.internal.data.db.SahaUserDatabase;
+import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.data.model.User;
 import com.hcb.saha.internal.event.CameraEvents;
 import com.hcb.saha.internal.event.UserIdentificationEvents;
@@ -64,7 +66,8 @@ public class FaceIdentificationProvider implements FaceRecognitionEventHandler,
 				cameraProcessor.takeFacePicture(new FacePictureTakenHandler() {
 
 					@Override
-					public void onFacePictureTaken(String imagePath) {
+					public void onFacePictureTaken(Bitmap bitmap) {
+						String imagePath = SahaFileManager.persistFaceBitmap(bitmap, null);
 						faceRecognizer.predictUserId(imagePath,
 								FaceIdentificationProvider.this);
 						// Now, don't predict again until the flag has been

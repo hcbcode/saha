@@ -15,11 +15,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.inject.Inject;
 import com.hcb.saha.R;
 import com.hcb.saha.internal.data.db.SahaUserDatabase;
 import com.hcb.saha.internal.data.model.User;
-import com.squareup.otto.Bus;
 
 /**
  * Fragment for allowing a user to create a new "account"
@@ -27,13 +25,17 @@ import com.squareup.otto.Bus;
  * @author Andreas Borglin
  */
 public class UserRegistrationFragment extends RoboFragment {
+	
+	public static interface UserCreatedHandler {
+		void onUserCreated(User user);
+	}
 
 	@InjectView(R.id.namefield)
 	private EditText nameField;
 	@InjectView(R.id.create)
 	private Button createButton;
-	@Inject
-	private Bus eventBus;
+	
+	private UserCreatedHandler handler;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,6 +43,10 @@ public class UserRegistrationFragment extends RoboFragment {
 		View view = inflater.inflate(R.layout.fragment_user_registration,
 				container, false);
 		return view;
+	}
+	
+	public void setUserCreatedHandler(UserCreatedHandler handler) {
+		this.handler = handler;
 	}
 
 	@Override
@@ -80,9 +86,7 @@ public class UserRegistrationFragment extends RoboFragment {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									// eventBus.post(new
-									// RegistrationEvents.UserCreated(user));
-									// FIXME
+									handler.onUserCreated(user);
 								}
 							});
 					dialog.show();

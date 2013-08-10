@@ -129,7 +129,7 @@ public final class SahaFileManager {
 	 * @param user
 	 *            the user
 	 */
-	public static FileOutputStream getStreamForNewFaceImage(User user)
+	public static File getFileForNewFaceImage(User user)
 			throws IOException {
 		File userFaceDir = getUserFaceDir(user);
 		// Find the first available index
@@ -137,7 +137,7 @@ public final class SahaFileManager {
 		File newFace = new File(userFaceDir, FileSystem.FACE_IMAGE_PREFIX
 				+ String.valueOf(curNumFiles) + FileSystem.FACE_IMAGE_EXT);
 		newFace.createNewFile();
-		return new FileOutputStream(newFace);
+		return newFace;
 	}
 
 	/**
@@ -145,10 +145,15 @@ public final class SahaFileManager {
 	 * TODO Should this logic be here?
 	 * @param bitmap The face bitmap
 	 */
-	public static String persistFaceBitmap(Bitmap bitmap) {
-
-		File output = getFileForFaceIdentification();
+	public static String persistFaceBitmap(Bitmap bitmap, User user) {
+		
 		try {
+			File output = null;
+			if (user == null) {
+				output = getFileForFaceIdentification();
+			} else {
+				output = getFileForNewFaceImage(user);
+			}
 			FileOutputStream fos = new FileOutputStream(output);
 			if (bitmap != null && fos != null) {
 
