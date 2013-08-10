@@ -11,7 +11,7 @@ import android.widget.Scroller;
  */
 public class FixedSpeedScroller extends Scroller {
 
-	private static final int DURATION_MILLIS = 500;
+	private static final int DURATION_MILLIS = 1000;
 
 	public FixedSpeedScroller(Context context) {
 		super(context);

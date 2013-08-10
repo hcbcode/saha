@@ -18,7 +18,7 @@ import com.hcb.saha.internal.processor.CameraProcessor;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-public class HomeUserCloseFragment extends RoboFragment {
+public class HomeUserNearFragment extends RoboFragment {
 
 	@Inject
 	private Bus eventBus;
@@ -35,7 +35,7 @@ public class HomeUserCloseFragment extends RoboFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_home_user_close,
+		View view = inflater.inflate(R.layout.fragment_home_user_near,
 				container, false);
 		eventBus.register(this);
 		return view;

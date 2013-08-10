@@ -32,10 +32,10 @@
         android:showAsAction="never"
         android:title="1. Show Generic Home"/>
     <item
-        android:id="@+id/action_show_user_close"
+        android:id="@+id/action_show_user_near"
         android:orderInCategory="7"
         android:showAsAction="never"
-        android:title="2. Show User Close"/>
+        android:title="2. Show User Near"/>
     <item
         android:id="@+id/action_show_user_personalised"
         android:orderInCategory="8"

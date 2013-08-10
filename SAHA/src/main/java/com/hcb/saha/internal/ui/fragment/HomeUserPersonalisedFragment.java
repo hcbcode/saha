@@ -44,7 +44,7 @@ public class HomeUserPersonalisedFragment extends RoboFragment {
 		super.onActivityCreated(savedInstanceState);
 
 		// FIXME: This should not be done here
-		eventBus.post(new AccountEvents.QueryAccountsRequest(this.getActivity()));
+		eventBus.post(new AccountEvents.QueryAccountsRequest());
 
 	}
 

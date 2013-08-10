@@ -25,7 +25,7 @@ import com.hcb.saha.internal.data.model.UsersFaces;
 import com.hcb.saha.internal.event.LifecycleEvents;
 import com.hcb.saha.internal.service.RemoteStorageService;
 import com.hcb.saha.internal.ui.fragment.HomeCarouselFragment;
-import com.hcb.saha.internal.ui.fragment.HomeUserCloseFragment;
+import com.hcb.saha.internal.ui.fragment.HomeUserNearFragment;
 import com.hcb.saha.internal.ui.fragment.HomeUserPersonalisedFragment;
 import com.hcb.saha.internal.ui.view.ViewUtil;
 import com.squareup.otto.Bus;
@@ -62,7 +62,7 @@ public class MainActivity extends RoboFragmentActivity {
 		eventBus.register(this);
 		eventBus.post(new LifecycleEvents.MainActivityCreated());
 
-		showHomeUserClose();
+		showHomeUserNear();
 	}
 
 	@Override
@@ -110,8 +110,8 @@ public class MainActivity extends RoboFragmentActivity {
 		case R.id.action_show_carousel:
 			showHomeCarousel();
 			return true;
-		case R.id.action_show_user_close:
-			showHomeUserClose();
+		case R.id.action_show_user_near:
+			showHomeUserNear();
 			return true;
 		case R.id.action_list_users:
 			// startActivity(new Intent(MainActivity.this,
@@ -162,8 +162,8 @@ public class MainActivity extends RoboFragmentActivity {
 		transaction.commit();
 	}
 
-	private void showHomeUserClose() {
-		Fragment newFragment = new HomeUserCloseFragment();
+	private void showHomeUserNear() {
+		Fragment newFragment = new HomeUserNearFragment();
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
 		transaction.replace(R.id.home, newFragment);

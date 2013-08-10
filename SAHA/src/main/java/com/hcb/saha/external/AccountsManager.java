@@ -8,7 +8,7 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
-import android.content.Context;
+import android.app.Application;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -27,6 +27,8 @@ public class AccountsManager {
 	private static final String TAG = AccountsManager.class.getSimpleName();
 
 	private Bus eventBus;
+	@Inject
+	private Application context;
 
 	@Inject
 	public AccountsManager(Bus eventBus) {
@@ -36,7 +38,7 @@ public class AccountsManager {
 
 	@Subscribe
 	public void queryAccounts(QueryAccountsRequest query) {
-		getGoogleAccounts(query.getContext());
+		getGoogleAccounts();
 	}
 
 	/**
@@ -45,14 +47,14 @@ public class AccountsManager {
 	 * @param ctx
 	 * @param observer
 	 */
-	private void getGoogleAccounts(final Context ctx) {
+	private void getGoogleAccounts() {
 
 		Log.d(TAG, "Get accounts");
 
 		final String ACCOUNT_TYPE_GOOGLE = "com.google";
 		final String[] FEATURES_MAIL = { "service_mail" };
 
-		AccountManager.get(ctx).getAccountsByTypeAndFeatures(
+		AccountManager.get(context).getAccountsByTypeAndFeatures(
 				ACCOUNT_TYPE_GOOGLE, FEATURES_MAIL,
 				new AccountManagerCallback<Account[]>() {
 					@Override
@@ -67,18 +69,18 @@ public class AccountsManager {
 						} catch (AuthenticatorException ae) {
 							Log.e(TAG, "Got OperationCanceledException", ae);
 						}
-						onAccountResults(accounts, ctx);
+						onAccountResults(accounts);
 					}
 				}, null);
 	}
 
-	private void onAccountResults(Account[] accounts, Context ctx) {
+	private void onAccountResults(Account[] accounts) {
 		String[] accnts = new String[accounts.length];
 		int i = 0;
 		for (Account acc : accounts) {
 			accnts[i] = acc.name;
 			i++;
 		}
-		eventBus.post(new QueryAccountsResult(accnts, ctx));
+		eventBus.post(new QueryAccountsResult(accnts));
 	}
 }

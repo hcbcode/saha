@@ -1,7 +1,5 @@
 package com.hcb.saha.external;
 
-import android.content.Context;
-
 /**
  * 
  * @author steven hadley
@@ -10,14 +8,8 @@ import android.content.Context;
 public class AccountEvents {
 
 	public static class QueryAccountsRequest {
-		private Context ctx;
 
-		public QueryAccountsRequest(Context ctx) {
-			this.ctx = ctx;
-		}
-
-		public Context getContext() {
-			return ctx;
+		public QueryAccountsRequest() {
 		}
 
 	}
@@ -29,21 +21,15 @@ public class AccountEvents {
 	 */
 	public static class QueryAccountsResult {
 		private String[] names;
-		private Context ctx;
 
-		public QueryAccountsResult(String[] names, Context ctx) {
+		public QueryAccountsResult(String[] names) {
 			this.names = names;
-			this.ctx = ctx;
-
 		}
 
 		public String[] getNames() {
 			return names;
 		}
 
-		public Context getContext() {
-			return ctx;
-		}
 	}
 
 }
