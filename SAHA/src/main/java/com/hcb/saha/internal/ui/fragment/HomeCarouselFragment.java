@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 
 import com.hcb.saha.R;
+import com.hcb.saha.internal.ui.view.DepthPageTransformer;
 import com.hcb.saha.internal.ui.view.FixedSpeedScroller;
 import com.hcb.saha.internal.ui.view.ZoomOutPageTransformer;
 
@@ -43,7 +44,7 @@ public class HomeCarouselFragment extends RoboFragment {
 		pager = (ViewPager) getView().findViewById(R.id.pager);
 		pagerAdapter = new CarouselAdapter(this.getChildFragmentManager());
 		pager.setAdapter(pagerAdapter);
-		pager.setPageTransformer(true, new ZoomOutPageTransformer());
+		pager.setPageTransformer(true, new DepthPageTransformer());
 
 		try {
 			FixedSpeedScroller scroller = new FixedSpeedScroller(
