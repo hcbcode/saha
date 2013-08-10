@@ -45,7 +45,7 @@ public class LightSensorProvider implements SensorEventListener {
 	public void onSensorChanged(SensorEvent event) {
 		float eventValue = event.values[0];
 		if (lastSensorValue != eventValue){
-			Log.d(TAG, "onsensorchanged: " + eventValue);
+			//Log.d(TAG, "onsensorchanged: " + eventValue);
 			eventBus.post(new SensorEvents.SensorDetectionEvent(SensorEvents.SensorType.LIGHT, new float[] {eventValue}));
 			lastSensorValue = eventValue;
 		}

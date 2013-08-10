@@ -20,7 +20,7 @@ import com.squareup.otto.Subscribe;
 
 /**
  * Responsible for identifying a face
- *
+ * 
  * @author Andreas Borglin
  */
 @Singleton
@@ -32,6 +32,7 @@ public class FaceIdentificationProvider implements FaceRecognitionEventHandler {
 	private Application context;
 	private Bus eventBus;
 	private CameraProcessor cameraProcessor;
+	private boolean userDetected = false;
 
 	@Inject
 	public FaceIdentificationProvider(Bus eventBus,
@@ -90,6 +91,7 @@ public class FaceIdentificationProvider implements FaceRecognitionEventHandler {
 	@Override
 	public void onPredictionCompleted(int predictedUserId) {
 
+		userDetected = true;
 		if (predictedUserId == -1) {
 			eventBus.post(new UserIdentificationEvents.AnonymousUserDetected());
 		} else {

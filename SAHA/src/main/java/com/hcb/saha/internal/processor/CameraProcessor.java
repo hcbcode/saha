@@ -19,10 +19,10 @@ import com.google.inject.Singleton;
 import com.hcb.saha.internal.core.SahaExceptions.CameraNotActiveException;
 import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.event.CameraEvents;
+import com.hcb.saha.internal.event.CameraEvents.FaceDetectedEvent;
 import com.hcb.saha.internal.utils.CameraUtils;
 import com.hcb.saha.internal.utils.CameraUtils.FacePictureTakenHandler;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 /**
  * Responsible for all things camera. This can be set in different modes from
@@ -51,9 +51,9 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 	private static class CameraFeature {
 		public int clientCount;
 		private Runnable updateState;
-		
+
 	}
-	
+
 	/**
 	 * Type of detection
 	 */
@@ -90,8 +90,8 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 	private int movementDetectionClientCount;
 	private int faceDetectionClientCount;
 	private int frameCollectionClientCount;
-	
-	//private HashMap
+
+	// private HashMap
 
 	private boolean cameraActive = false;
 	private boolean lastFaceStateDetected = false;
@@ -101,30 +101,29 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 		eventBus.register(this);
 	}
 
-//	@Subscribe
-//	public void onClientInterest(CameraEvents.CameraClientInterestEvent event) {
-//		InterestType interestType = event.getInterestType();
-//		int countDiff = event.getInterest() == Interest.REGISTER ? 1 : -1;
-//		switch (interestType) {
-//		case MOVEMENT: {
-//			movementDetectionClientCount += countDiff;
-//			break;
-//		}
-//		case FACE: {
-//			faceDetectionClientCount += countDiff;
-//			break;
-//		}
-//		case FRAMES: {
-//			frameCollectionClientCount += countDiff;
-//			break;
-//		}
-//		}
-//	}
-	
+	// @Subscribe
+	// public void onClientInterest(CameraEvents.CameraClientInterestEvent
+	// event) {
+	// InterestType interestType = event.getInterestType();
+	// int countDiff = event.getInterest() == Interest.REGISTER ? 1 : -1;
+	// switch (interestType) {
+	// case MOVEMENT: {
+	// movementDetectionClientCount += countDiff;
+	// break;
+	// }
+	// case FACE: {
+	// faceDetectionClientCount += countDiff;
+	// break;
+	// }
+	// case FRAMES: {
+	// frameCollectionClientCount += countDiff;
+	// break;
+	// }
+	// }
+	// }
+
 	private void checkClientCounts() {
-		
-		
-		
+
 	}
 
 	/**
@@ -249,6 +248,8 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 	public void takeFacePicture(final FacePictureTakenHandler handler)
 			throws CameraNotActiveException {
 		checkCameraActive();
+		stopFaceDetection();
+		lastFaceStateDetected = false;
 		if (detectionType == CameraDetectionType.FACE) {
 			camera.takePicture(null, null, new PictureCallback() {
 
@@ -262,6 +263,8 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 						handler.onFacePictureTaken(imagePath);
 					}
 					// FIXME Preview will be stopped now - restart?
+					startPreview();
+					startFaceDetection();
 				}
 			});
 		}
@@ -285,8 +288,12 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 
 	private void startFaceDetection() {
 		Log.d(TAG, "startFaceDetection");
-		camera.setFaceDetectionListener(this);
-		camera.startFaceDetection();
+		try {
+			camera.setFaceDetectionListener(this);
+			camera.startFaceDetection();
+		} catch (Exception e) {
+			// FIXME
+		}
 	}
 
 	private void stopFaceDetection() {
@@ -335,14 +342,16 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 			if (detectionMode == CameraDetectionMode.ONE_OFF) {
 				// stopFaceDetection();
 			}
+			Log.d("FACE", "face detected: " + lastFaceStateDetected);
 			// TODO Might spam the event bus quite a lot for STREAM here...
-			// eventBus.post(new FaceDetectedEvent(faces));
+			if (!lastFaceStateDetected) {
+				eventBus.post(new FaceDetectedEvent(faces));
+			}
 			Rect face = faces[0].rect;
 			eventBus.post(new CameraEvents.FaceAvailableEvent(face.width(),
 					face.height()));
 			lastFaceStateDetected = true;
-		}
-		else if (lastFaceStateDetected) {
+		} else if (lastFaceStateDetected) {
 			eventBus.post(new CameraEvents.FaceDisappearedEvent());
 			lastFaceStateDetected = false;
 		}

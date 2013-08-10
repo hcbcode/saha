@@ -43,24 +43,24 @@ public class VoiceIdentificationProvider {
 				String playString = null;
 				for (String val : values) {
 					Log.d("REC", val);
-					if (val.equalsIgnoreCase("saha")) {
+					if (val.equalsIgnoreCase("nexus")) {
 						playString = "Saha at your command";
 						break;
 					} else if (val.equalsIgnoreCase("who am i")) {
 						playString = "You are Andreas";
 						break;
-					} else if (val.equalsIgnoreCase("what are you") || val.equalsIgnoreCase("who are you")) {
+					} else if (val.equalsIgnoreCase("what are you")
+							|| val.equalsIgnoreCase("who are you")) {
 						playString = "I am the smart android household array at your service";
 						break;
-					}
-					else if (val.equalsIgnoreCase("describe steven")) {
+					} else if (val.equalsIgnoreCase("describe steven")) {
 						playString = "Grumpy posh bastard";
 						break;
 					}
 
 				}
 				if (playString == null) {
-					playString = "Not sure what you want";
+					// playString = "Not sure what you want";
 				}
 
 				final String value1 = playString;
@@ -87,7 +87,8 @@ public class VoiceIdentificationProvider {
 							public void onDone(String utteranceId) {
 								// TODO Auto-generated method stub
 								Log.d("BLEH", "on tts done");
-								Handler handler = new Handler(context.getMainLooper());
+								Handler handler = new Handler(context
+										.getMainLooper());
 								handler.post(new Runnable() {
 
 									@Override
@@ -105,12 +106,24 @@ public class VoiceIdentificationProvider {
 									}
 								});
 
-
 							}
 						});
-						HashMap<String, String> map = new HashMap<String, String>();
-						map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "1");
-						tts.speak(value1, TextToSpeech.QUEUE_ADD, map);
+						if (value1 != null) {
+							HashMap<String, String> map = new HashMap<String, String>();
+							map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
+									"1");
+							tts.speak(value1, TextToSpeech.QUEUE_ADD, map);
+						} else {
+							Intent intent = new Intent(
+									RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+							intent.putExtra(
+									RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+									RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+							intent.putExtra(
+									RecognizerIntent.EXTRA_CALLING_PACKAGE,
+									context.getPackageName());
+							rec.startListening(intent);
+						}
 
 					}
 				});
@@ -141,11 +154,9 @@ public class VoiceIdentificationProvider {
 				Log.d("REC", "onError: " + error);
 				Intent intent = new Intent(
 						RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-				intent.putExtra(
-						RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 						RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-				intent.putExtra(
-						RecognizerIntent.EXTRA_CALLING_PACKAGE,
+				intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
 						context.getPackageName());
 				rec.startListening(intent);
 			}
