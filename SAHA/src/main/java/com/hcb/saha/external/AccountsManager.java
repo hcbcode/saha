@@ -12,6 +12,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hcb.saha.external.AccountEvents.QueryAccountsRequest;
 import com.hcb.saha.external.AccountEvents.QueryAccountsResult;
 import com.squareup.otto.Bus;
@@ -22,6 +23,7 @@ import com.squareup.otto.Subscribe;
  * @author steven hadley
  * 
  */
+@Singleton
 public class AccountsManager {
 
 	private static final String TAG = AccountsManager.class.getSimpleName();

@@ -8,9 +8,9 @@
     <color name="android_blue_dark">#0099CC</color>
 
     <!-- Home screen refactored. FIXME: -->
-    <color name="home_screen_blue">#6dcaec</color>
+    <color name="home_screen_blue">#2cb1e1</color>
     
     <!-- 1st 2 hex from 00 to FF. 00 = fully trans, FF fully opaque, 80 50% trans -->
-    <color name="content_view_background">#80c0c0c0</color>
+    <color name="content_view_background">#80a8dff4</color>
 
 </resources>

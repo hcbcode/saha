@@ -83,10 +83,12 @@
             android:padding="20dp" >
 
             <TextView
+                android:id="@+id/face_measure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Stuff"
-                android:textColor="@android:color/white" />
+                android:text="Face"
+                android:textColor="@android:color/white" 
+                android:textSize="40sp"/>
         </LinearLayout>
     </LinearLayout>
 
