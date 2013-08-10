@@ -342,7 +342,6 @@ public class CameraProcessor implements PreviewCallback, PictureCallback,
 			if (detectionMode == CameraDetectionMode.ONE_OFF) {
 				// stopFaceDetection();
 			}
-			Log.d("FACE", "face detected: " + lastFaceStateDetected);
 			// TODO Might spam the event bus quite a lot for STREAM here...
 			if (!lastFaceStateDetected) {
 				eventBus.post(new FaceDetectedEvent(faces));
