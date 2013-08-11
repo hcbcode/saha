@@ -11,7 +11,11 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 import com.hcb.saha.R;
+import com.hcb.saha.internal.core.SahaSystemState;
+import com.hcb.saha.internal.core.SahaSystemState.State;
+import com.hcb.saha.internal.data.model.User;
 import com.hcb.saha.internal.event.CameraEvents;
+import com.hcb.saha.internal.event.LifecycleEvents;
 import com.hcb.saha.internal.event.SensorEvents;
 import com.hcb.saha.internal.event.SensorEvents.SensorType;
 import com.hcb.saha.internal.processor.CameraProcessor;
@@ -22,12 +26,17 @@ public class HomeUserNearFragment extends RoboFragment {
 
 	@Inject
 	private Bus eventBus;
+	@Inject
+	private SahaSystemState systemState;
 
 	@InjectView(R.id.face_val)
 	private TextView faceText;
 
 	@InjectView(R.id.light_val)
 	private TextView lightText;
+
+	@InjectView(R.id.user_name)
+	private TextView userName;
 
 	@Inject
 	private CameraProcessor cameraProcessor;
@@ -45,12 +54,8 @@ public class HomeUserNearFragment extends RoboFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		// FIXME temp code
-//		cameraProcessor.startCamera((SurfaceView) getView().findViewById(
-//				R.id.surface));
-
 	}
-	
+
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
@@ -61,9 +66,35 @@ public class HomeUserNearFragment extends RoboFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		
+
 		cameraProcessor.startCamera((SurfaceView) getView().findViewById(
 				R.id.surface));
+	}
+
+	@Subscribe
+	public void onSystemStateChanged(LifecycleEvents.SystemStateChangedEvent event) {
+		State state = event.getState();
+		switch (state) {
+		case REGISTERED_USER: {
+			User user = systemState.getCurrentUser();
+			updateUserName(user.getName());
+			break;
+		}
+		default: {
+			updateUserName(getString(R.string.anonymous));
+			break;
+		}
+		}
+	}
+
+	private void updateUserName(final String username) {
+		getActivity().runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				userName.setText(username);
+			}
+		});
 	}
 
 	@Subscribe

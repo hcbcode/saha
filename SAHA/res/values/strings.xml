@@ -15,6 +15,7 @@
     <string name="user_delete">Delete user</string>
     <string name="user_name">Name: %1$s</string>
     <string name="user_num_photos">Num photos: %1$d</string>
+    <string name="anonymous">Anonymous</string>
     <string name="user_recognized_speech">Hello %1$s</string>
     <string name="train">Train</string>
     <string name="face_reg_message">The application will now start the camera and take a series of pictures.</string>
