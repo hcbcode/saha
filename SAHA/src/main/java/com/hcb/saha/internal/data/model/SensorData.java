@@ -8,7 +8,7 @@ public class SensorData {
 	private String houseId;
 	private String deviceId;
 	private String userId;
-	private Date dateTime;
+	private Date datetime;
 	private Integer reasonCode;
 	private List<SensorDataIndividualSensor> sensors;
 	
@@ -31,11 +31,11 @@ public class SensorData {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	public Date getDateTime() {
-		return dateTime;
+	public Date getDatetime() {
+		return datetime;
 	}
-	public void setDateTime(Date date) {
-		this.dateTime = date;
+	public void setDatetime(Date date) {
+		this.datetime = date;
 	}
 	public Integer getReasonCode() {
 		return reasonCode;

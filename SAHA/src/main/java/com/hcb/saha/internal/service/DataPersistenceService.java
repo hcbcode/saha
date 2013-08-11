@@ -14,6 +14,7 @@ import android.util.Log;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.data.model.SensorData;
 import com.hcb.saha.internal.data.model.SensorDataIndividualSensor;
 import com.hcb.saha.internal.event.SensorEvents;
@@ -49,14 +50,20 @@ public class DataPersistenceService {
 
 	private void logSensorObject(SensorData sensorData) {
 		ObjectMapper mapper = new ObjectMapper();
+		
+		String jsonEvent = null;
 		try {
-			String jsonEvent = mapper.writeValueAsString(sensorData);
-			//Log.d(TAG, jsonEvent);
+			jsonEvent = mapper.writeValueAsString(sensorData);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//TODO: Write to file
+		
+		if (jsonEvent != null){
+			boolean result = SahaFileManager.appendEvent(jsonEvent);
+			Log.d(TAG, "Event append: " + result);
+		}
+
 	}
 
 
@@ -69,7 +76,7 @@ public class DataPersistenceService {
 		sensorData.setDeviceId("deviceXYZ645");
 		sensorData.setUserId("user123");
 		sensorData.setReasonCode(1);
-		sensorData.setDateTime(new Date(System.currentTimeMillis()));
+		sensorData.setDatetime(new Date(System.currentTimeMillis()));
 
 		List<SensorDataIndividualSensor> sensors = new ArrayList<SensorDataIndividualSensor>();
 		SensorDataIndividualSensor sdis = new SensorDataIndividualSensor();

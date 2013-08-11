@@ -33,6 +33,8 @@ public final class SahaConfig {
 		public static final String FACE_REC_MODEL = "facerec.xml";
 		public static final String HAAR_FACE_CLASSIFIER = "faceclassifier.xml";
 		public static final String EVENTS_DIR = "events";
+		public static final String EVENTS_DATA_FILE = "events.dat";
+		
 	}
 
 	public static final class Assets {
@@ -55,7 +57,7 @@ public final class SahaConfig {
 	}
 
 	public static final class Sensor {
-		public static final int LIGHT_CHANGE_THRESHOLD = 5;
+		public static final int LIGHT_CHANGE_THRESHOLD = 3;
 		public static final int LIGHT_COUNT_THROTTLE = 10;
 
 	}

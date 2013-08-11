@@ -1,12 +1,17 @@
 package com.hcb.saha.internal.service;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import roboguice.service.RoboIntentService;
@@ -20,6 +25,8 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.inject.Inject;
 import com.hcb.saha.R;
+import com.hcb.saha.internal.data.fs.SahaFileManager;
+
 import android.content.Intent;
 import android.content.res.Resources;
 import android.util.Log;
@@ -69,7 +76,7 @@ public class RemoteStorageService extends RoboIntentService{
 			.setServiceAccountPrivateKeyFromP12File(getTempPkc12File())
 			.build();
 		} catch (Exception e) {
-			Log.d(TAG, "Could not create credential object: " + e.getMessage());
+			Log.e(TAG, "Could not create credential object: " + e.getMessage());
 		}
 
 
@@ -81,28 +88,38 @@ public class RemoteStorageService extends RoboIntentService{
 			Storage storage = builder.build();
 
 
-			/** temp: Load JSON from file system while events DB not yet built */
-			Resources res = getResources();
-			InputStream is = res.openRawResource(R.raw.datauf);
-			InputStreamContent content = new InputStreamContent("application/json", is);
-
-
-
-			/** Upload file to Cloud Storage bucket */
-			try {
-				String uniqueFileName  = System.currentTimeMillis() + "-data.json";
-				Log.d(TAG, "Upload file name: " + uniqueFileName);
-				Storage.Objects.Insert insertObject = storage.objects().insert(BUCKET_NAME, null, content);
-				insertObject.setName(uniqueFileName);
-				insertObject.execute();
-
-				//Retrieve stored object to check its there (temp for now)
-				//StorageObject response = storage.objects().get(BUCKET_NAME, uniqueFileName).execute();
-				//Log.d("SAHA", "Size of stored object: " + response.getSize());
-
-			} catch (IOException e3) {
-				e3.printStackTrace();
+			List<String> uploadFiles = SahaFileManager.getEventFilesForUpload();
+			Iterator<String> it = uploadFiles.iterator();
+			
+			while (it.hasNext()){
+				String fileLocation =  it.next();
+				Log.d(TAG, fileLocation);
+				
+				InputStream is = null;
+				
+				try {
+					is = new FileInputStream(fileLocation);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				if (is != null){
+					InputStreamContent content = new InputStreamContent("application/json", is);
+					
+					/** Upload file to Cloud Storage bucket */
+					try {
+						String uniqueFileName  = System.currentTimeMillis() + "-live-data.json";
+						Log.d(TAG, "Upload file name: " + uniqueFileName);
+						Storage.Objects.Insert insertObject = storage.objects().insert(BUCKET_NAME, null, content);
+						insertObject.setName(uniqueFileName);
+						insertObject.execute();
+	
+					} catch (IOException e3) {
+						e3.printStackTrace();
+					}
+					SahaFileManager.deleteUploadedFile(fileLocation);	
+				}
 			}
+			
 		}
 
 
@@ -112,17 +129,7 @@ public class RemoteStorageService extends RoboIntentService{
 
 		InputStream pkc12Stream = getResources().openRawResource(R.raw.privatekey);
 		File tempPkc12File = File.createTempFile("temp_pkc12_file", "p12");
-		OutputStream tempFileStream = new FileOutputStream(tempPkc12File);
-		int copied = IOUtils.copy(pkc12Stream, tempFileStream);
-		tempFileStream.flush();
-		pkc12Stream.close();
-		tempFileStream.close();
-
-		if (copied == 0) {
-			Log.e(TAG, "Temporary creation of certificate file failed");
-
-		}
-
+		FileUtils.copyInputStreamToFile(pkc12Stream, tempPkc12File);
 		return tempPkc12File;
 	}
 

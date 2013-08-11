@@ -61,7 +61,7 @@ public class LightSensorProvider implements SensorEventListener {
 				 lastSensorValue + SahaConfig.Sensor.LIGHT_CHANGE_THRESHOLD);
 
 		
-		//if new value is no within range, then send event 
+		//if new value is not within range, then send event 
 		if (!range.contains(eventValue)){
 			eventBus.post(new SensorEvents.SensorDetectionEvent(SensorEvents.SensorType.LIGHT, new float[] {eventValue}));
 		}

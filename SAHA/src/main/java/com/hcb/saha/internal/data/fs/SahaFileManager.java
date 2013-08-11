@@ -1,14 +1,18 @@
 package com.hcb.saha.internal.data.fs;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -170,7 +174,70 @@ public final class SahaFileManager {
 		}
 		return null;
 	}
+	/**
+	 * Appends event (JSON String) to the event data file
+	 * If file does not exist it will create it
+	 * If file reaches 1MB it will be copied to a unique filename in the same directory
+	 * ready for upload and a new file will be created
+	 * @param event
+	 *  
+	 */
+	public static boolean appendEvent(String event){
+		File eventsDir = getEventsDir();
+		
+		File file = new File(eventsDir, FileSystem.EVENTS_DATA_FILE);
+		
+		if (file.exists() && FileUtils.sizeOf(file) > 1024*20){
+			Log.d(TAG, "Creating new events file");
+			File newFile = new File(eventsDir, FileSystem.EVENTS_DATA_FILE + "-" + System.currentTimeMillis() + ".upload");
+			try {
+				FileUtils.moveFile(file, newFile);
+			} catch (IOException e) {
+				Log.e(TAG, "New file creation failed: " + e.getMessage());
+				return false;
+			}
+		}
+		
+		if (!file.exists()){
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				Log.e(TAG, "Could not create events file: " + e.getMessage());
+				return false;
+			}
+		}
+		
+		try {
+			FileUtils.write(file, event, true);
+			FileUtils.write(file, "\n", true);
+		} catch (IOException e) {
+			Log.e(TAG, "Could not write event to file: " + e.getMessage());
+			return false;
+		}
+		
+		return true;
+	}
 
+	
+	public static List<String> getEventFilesForUpload(){
+		
+		File eventsDir = getEventsDir();
+		
+		List<String> fileLocations = new ArrayList<String>();
+		String[] files = eventsDir.list( new SuffixFileFilter(".upload"));
+		for (int i=0; i<files.length;i++){
+			String location = String.format("%s/%s/%s", getSahaRoot().getAbsolutePath(),
+				FileSystem.EVENTS_DIR, files[i]);
+			Log.d(TAG, location);
+			fileLocations.add(location);
+		}
+		return fileLocations;
+	}
+	
+	public static void deleteUploadedFile(String fileLocation){
+		FileUtils.deleteQuietly(new File(fileLocation));
+	}
+	
 	/**
 	 * Get the file for the temporary image used for face identification
 	 */
