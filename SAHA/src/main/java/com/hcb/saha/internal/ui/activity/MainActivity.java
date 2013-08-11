@@ -54,9 +54,6 @@ public class MainActivity extends RoboFragmentActivity {
 
 		setContentView(R.layout.activity_main);
 
-		// Just for testing - will move this to a better location later - Starts
-		// event extraction (tbc and transfer)
-		startService(new Intent(this, RemoteStorageService.class));
 		// OpenCV can't read assets, so need to copy over to sdcard
 		SahaFileManager.copyClassifierToSdCard(this.getAssets());
 

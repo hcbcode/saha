@@ -39,9 +39,8 @@ public class LightSensorProvider implements SensorEventListener {
 
 		this.eventBus = eventBus;
 		eventBus.register(this);
-
-		Log.d(TAG, "light");
 		Sensor lightSensor = null;
+		
 		if ((lightSensor = sm.getDefaultSensor(Sensor.TYPE_LIGHT)) != null) {
 			sm.registerListener(this, lightSensor,
 					SensorManager.SENSOR_DELAY_UI);
@@ -66,7 +65,7 @@ public class LightSensorProvider implements SensorEventListener {
 			eventBus.post(new SensorEvents.SensorDetectionEvent(SensorEvents.SensorType.LIGHT, new float[] {eventValue}));
 		}
 		
-		//update old sensor value everytime to allow it to progressively increase
+		//update old sensor value everytime to allow it to progressively increase without triggering event
 		lastSensorValue = eventValue;
 		
 

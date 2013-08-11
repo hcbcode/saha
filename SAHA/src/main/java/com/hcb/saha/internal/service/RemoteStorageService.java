@@ -39,7 +39,7 @@ public class RemoteStorageService extends RoboIntentService{
 	private static final String SERVICE_ACCOUNT_EMAIL = "537815805809@developer.gserviceaccount.com";
 
 	/** Bucket Name */
-	private static final String BUCKET_NAME = "data64";
+	private static final String BUCKET_NAME = "data";
 
 	/** Global configuration of Google Cloud Storage OAuth 2.0 scope. */
 	private static final String STORAGE_SCOPE =
@@ -107,7 +107,7 @@ public class RemoteStorageService extends RoboIntentService{
 					
 					/** Upload file to Cloud Storage bucket */
 					try {
-						String uniqueFileName  = System.currentTimeMillis() + "-live-data.json";
+						String uniqueFileName  = System.currentTimeMillis() + "-real-data.json";
 						Log.d(TAG, "Upload file name: " + uniqueFileName);
 						Storage.Objects.Insert insertObject = storage.objects().insert(BUCKET_NAME, null, content);
 						insertObject.setName(uniqueFileName);

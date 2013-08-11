@@ -77,7 +77,7 @@ public final class SahaFileManager {
 
 	
 	/**
-	 * Get the tmp directory for temporary files
+	 * Get the events directory for event collection files
 	 */
 	public static File getEventsDir() {
 		return getTopLevelDir(FileSystem.EVENTS_DIR);
@@ -176,18 +176,19 @@ public final class SahaFileManager {
 	}
 	/**
 	 * Appends event (JSON String) to the event data file
-	 * If file does not exist it will create it
-	 * If file reaches 1MB it will be copied to a unique filename in the same directory
+	 * String should be a JSON representation of @SensorData object
+	 * If event data file does not exist it will create it
+	 * If event data file reaches 1MB it will be copied to a unique filename in the same directory
 	 * ready for upload and a new file will be created
 	 * @param event
 	 *  
 	 */
 	public static boolean appendEvent(String event){
 		File eventsDir = getEventsDir();
-		
+
 		File file = new File(eventsDir, FileSystem.EVENTS_DATA_FILE);
-		
-		if (file.exists() && FileUtils.sizeOf(file) > 1024*20){
+
+		if (file.exists() && FileUtils.sizeOf(file) > 1024*200){
 			Log.d(TAG, "Creating new events file");
 			File newFile = new File(eventsDir, FileSystem.EVENTS_DATA_FILE + "-" + System.currentTimeMillis() + ".upload");
 			try {
@@ -197,7 +198,7 @@ public final class SahaFileManager {
 				return false;
 			}
 		}
-		
+
 		if (!file.exists()){
 			try {
 				file.createNewFile();
@@ -206,7 +207,7 @@ public final class SahaFileManager {
 				return false;
 			}
 		}
-		
+
 		try {
 			FileUtils.write(file, event, true);
 			FileUtils.write(file, "\n", true);
@@ -214,26 +215,34 @@ public final class SahaFileManager {
 			Log.e(TAG, "Could not write event to file: " + e.getMessage());
 			return false;
 		}
-		
+
 		return true;
 	}
 
-	
+	/**
+	 * Returns list of absolute locations for all
+	 * event collection files that match the upload pattern
+	 *
+	 */
 	public static List<String> getEventFilesForUpload(){
-		
+
 		File eventsDir = getEventsDir();
-		
+
 		List<String> fileLocations = new ArrayList<String>();
 		String[] files = eventsDir.list( new SuffixFileFilter(".upload"));
 		for (int i=0; i<files.length;i++){
 			String location = String.format("%s/%s/%s", getSahaRoot().getAbsolutePath(),
-				FileSystem.EVENTS_DIR, files[i]);
+					FileSystem.EVENTS_DIR, files[i]);
 			Log.d(TAG, location);
 			fileLocations.add(location);
 		}
 		return fileLocations;
 	}
-	
+
+	/**
+	 * Deletes the file specified by absolute fileLocation
+	 * @param fileLocation
+	 */
 	public static void deleteUploadedFile(String fileLocation){
 		FileUtils.deleteQuietly(new File(fileLocation));
 	}
