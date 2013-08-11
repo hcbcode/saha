@@ -18,6 +18,8 @@ import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 
 import com.google.inject.Inject;
+import com.hcb.saha.internal.core.SahaSystemState;
+import com.hcb.saha.internal.data.model.User;
 
 // TODO Work in progress
 public class VoiceIdentificationProvider {
@@ -26,6 +28,8 @@ public class VoiceIdentificationProvider {
 	private SpeechRecognizer speechRec;
 	private TextToSpeech tts;
 	private AudioManager audioManager;
+	@Inject
+	private SahaSystemState systemState;
 
 	@Inject
 	public VoiceIdentificationProvider(final Application context) {
@@ -83,7 +87,7 @@ public class VoiceIdentificationProvider {
 				List<String> values = results
 						.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 				parseSpeechInput(values);
-				
+
 			}
 
 			@Override
@@ -134,7 +138,7 @@ public class VoiceIdentificationProvider {
 	}
 
 	private void parseSpeechInput(List<String> values) {
-		
+
 		String playString = null;
 		for (String val : values) {
 			Log.d("REC", val);
@@ -142,7 +146,13 @@ public class VoiceIdentificationProvider {
 				playString = "Saha at your command";
 				break;
 			} else if (val.equalsIgnoreCase("who am i")) {
-				playString = "You are Andreas";
+				User user = systemState.getCurrentUser();
+				if (user != null) {
+					playString = "You are " + user.getName();
+				} else {
+					playString = "You are anonymous";
+				}
+
 				break;
 			} else if (val.equalsIgnoreCase("what are you")
 					|| val.equalsIgnoreCase("who are you")) {
