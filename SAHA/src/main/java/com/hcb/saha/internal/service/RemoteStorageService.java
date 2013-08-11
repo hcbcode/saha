@@ -39,7 +39,7 @@ public class RemoteStorageService extends RoboIntentService{
 	private static final String SERVICE_ACCOUNT_EMAIL = "537815805809@developer.gserviceaccount.com";
 
 	/** Bucket Name */
-	private static final String BUCKET_NAME = "data";
+	private static final String BUCKET_NAME = "data-real";
 
 	/** Global configuration of Google Cloud Storage OAuth 2.0 scope. */
 	private static final String STORAGE_SCOPE =
@@ -62,7 +62,7 @@ public class RemoteStorageService extends RoboIntentService{
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
-		Log.d(TAG, "Cloud Service started");
+		Log.d(TAG, "Remote Storage Service started");
 
 		/** Create OAuth2 Credential object with service account  */
 		GoogleCredential credential = null;
@@ -78,7 +78,7 @@ public class RemoteStorageService extends RoboIntentService{
 		} catch (Exception e) {
 			Log.e(TAG, "Could not create credential object: " + e.getMessage());
 		}
-
+		
 
 		if (credential != null){
 
@@ -89,6 +89,9 @@ public class RemoteStorageService extends RoboIntentService{
 
 
 			List<String> uploadFiles = SahaFileManager.getEventFilesForUpload();
+			
+			Log.d(TAG, "Size of uploads list: "+uploadFiles.size());
+			
 			Iterator<String> it = uploadFiles.iterator();
 			
 			while (it.hasNext()){
@@ -112,11 +115,12 @@ public class RemoteStorageService extends RoboIntentService{
 						Storage.Objects.Insert insertObject = storage.objects().insert(BUCKET_NAME, null, content);
 						insertObject.setName(uniqueFileName);
 						insertObject.execute();
+						SahaFileManager.deleteUploadedFile(fileLocation);
 	
 					} catch (IOException e3) {
 						e3.printStackTrace();
 					}
-					SahaFileManager.deleteUploadedFile(fileLocation);	
+						
 				}
 			}
 			
