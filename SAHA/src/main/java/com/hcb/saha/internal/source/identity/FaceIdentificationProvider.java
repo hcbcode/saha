@@ -145,7 +145,7 @@ FaceDetectionHandler {
 	@Override
 	public void onNoFaceDetected() {
 
-		if (scheduledFuture == null) {
+		if (scheduledFuture == null && systemState.inUserMode()) {
 			scheduledFuture = scheduler.schedule(faceTimeoutHandler,
 					SahaConfig.System.USER_TIMEOUT_SECONDS, TimeUnit.SECONDS);
 			eventBus.post(new CameraEvents.FaceDisappearedEvent());

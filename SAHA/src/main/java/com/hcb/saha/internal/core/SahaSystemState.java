@@ -100,6 +100,11 @@ public final class SahaSystemState {
 		return currentState == State.DETECTION;
 	}
 
+	public boolean inUserMode() {
+		return currentState == State.ANONYMOUS_USER
+				|| currentState == State.REGISTERED_USER;
+	}
+
 	public boolean inAnonymousUserMode() {
 		return currentState == State.ANONYMOUS_USER;
 	}
