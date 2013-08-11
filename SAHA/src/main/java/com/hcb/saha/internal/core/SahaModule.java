@@ -10,6 +10,7 @@ import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.hcb.saha.external.AccountsManager;
+import com.hcb.saha.internal.data.db.SahaUserDatabase;
 import com.hcb.saha.internal.facerec.FaceRecognizer;
 import com.hcb.saha.internal.facerec.NativeFaceRecognizer;
 import com.hcb.saha.internal.service.DataPersistenceService;
@@ -51,7 +52,8 @@ public class SahaModule implements Module {
 		binder.bind(VoiceCommandProvider.class).asEagerSingleton();
 
 		// Manual external class bindings
-		binder.bind(SpeechRecognizer.class).toProvider(SpeechRecognizerProvider.class).in(Singleton.class);;
+		binder.bind(SpeechRecognizer.class).toProvider(SpeechRecognizerProvider.class).in(Singleton.class);
+		binder.requestStaticInjection(SahaUserDatabase.class);
 	}
 
 	@Provides

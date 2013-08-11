@@ -25,7 +25,7 @@ import com.squareup.otto.Bus;
  * @author Andreas Borglin
  */
 public class RegisterActivity extends RoboFragmentActivity implements
-		FaceDetectionFragmentHandler, UserCreatedHandler {
+FaceDetectionFragmentHandler, UserCreatedHandler {
 
 	public static final String USER_ID = "userId";
 	@Inject
@@ -50,10 +50,10 @@ public class RegisterActivity extends RoboFragmentActivity implements
 			userRegistrationFragment = new UserRegistrationFragment();
 			userRegistrationFragment.setUserCreatedHandler(this);
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.register_layout, userRegistrationFragment)
-					.commit();
+			.add(R.id.register_layout, userRegistrationFragment)
+			.commit();
 		} else {
-			User user = SahaUserDatabase.getUserFromId(this, userId);
+			User user = SahaUserDatabase.getUserFromId(userId);
 			startFaceRegistration(user, false);
 		}
 	}
@@ -78,11 +78,11 @@ public class RegisterActivity extends RoboFragmentActivity implements
 		faceDetectionFragment.setCurrentUser(user);
 		if (replace) {
 			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.register_layout, faceDetectionFragment)
-					.commit();
+			.replace(R.id.register_layout, faceDetectionFragment)
+			.commit();
 		} else {
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.register_layout, faceDetectionFragment).commit();
+			.add(R.id.register_layout, faceDetectionFragment).commit();
 		}
 
 	}
@@ -95,23 +95,23 @@ public class RegisterActivity extends RoboFragmentActivity implements
 	@Override
 	public void onFaceRegistrationCompleted() {
 		UsersFaces usersFaces = SahaFileManager
-				.getAllUsersFaceImages(SahaUserDatabase.getAllUsers(this));
+				.getAllUsersFaceImages(SahaUserDatabase.getAllUsers());
 		Toast.makeText(this, "Training recognizer...", Toast.LENGTH_SHORT)
-				.show();
+		.show();
 		faceReognizer.trainRecognizer(usersFaces.getUserIds(),
 				usersFaces.getUserImageFaces(),
 				new FaceRecognitionEventHandler() {
 
-					@Override
-					public void onRecognizerTrainingCompleted() {
-					}
+			@Override
+			public void onRecognizerTrainingCompleted() {
+			}
 
-					@Override
-					public void onPredictionCompleted(int predictedUserId) {
+			@Override
+			public void onPredictionCompleted(int predictedUserId) {
 
-					}
-				});
-		
+			}
+		});
+
 		finish();
 	}
 }

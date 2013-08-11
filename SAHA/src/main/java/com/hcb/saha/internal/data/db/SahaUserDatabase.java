@@ -3,6 +3,7 @@ package com.hcb.saha.internal.data.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,6 +11,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
 import com.hcb.saha.internal.core.SahaConfig.Database;
 import com.hcb.saha.internal.data.model.User;
 
@@ -18,30 +22,31 @@ import com.hcb.saha.internal.data.model.User;
  *
  * @author Andreas Borglin
  */
+@Singleton
 public final class SahaUserDatabase {
+
+	@Inject
+	private static Provider<Application> contextProvider;
 
 	private SahaUserDatabase() {
 		// Not intended
 	}
 
-	public static final String USERS_TABLE = "users";
+	private static final String USERS_TABLE = "users";
 
-	public static final class UsersColumns implements BaseColumns {
+	private static final class UsersColumns implements BaseColumns {
 
 		public static final String ID_FIELD = BaseColumns._ID;
 		public static final String NAME_FIELD = "name";
 		public static final String DIRECTORY_FIELD = "dir";
 	}
 
-	// TODO Replace with Guice injection of the helper (with auto context
-	// injection)
-	// The lifecycle of the openhelper should be handled automatically
-	public static SahaOpenHelper getSahaOpenHelper(Context context) {
-		return new SahaOpenHelper(context);
+	private static SahaOpenHelper getSahaOpenHelper() {
+		return new SahaOpenHelper(contextProvider.get());
 	}
 
-	public static List<User> getAllUsers(Context context) {
-		SQLiteDatabase db = getSahaOpenHelper(context).getReadableDatabase();
+	public static List<User> getAllUsers() {
+		SQLiteDatabase db = getSahaOpenHelper().getReadableDatabase();
 		Cursor cursor = db.query(USERS_TABLE, null, null, null, null, null,
 				null);
 		boolean more = cursor.moveToFirst();
@@ -55,8 +60,8 @@ public final class SahaUserDatabase {
 		return users;
 	}
 
-	public static User getUserFromId(Context context, int id) {
-		SQLiteDatabase db = getSahaOpenHelper(context).getReadableDatabase();
+	public static User getUserFromId(int id) {
+		SQLiteDatabase db = getSahaOpenHelper().getReadableDatabase();
 		Cursor cursor = db
 				.query(USERS_TABLE, null, UsersColumns.ID_FIELD + " = ?",
 						new String[] { String.valueOf(id) }, null, null, null);
@@ -69,8 +74,8 @@ public final class SahaUserDatabase {
 		return user;
 	}
 
-	public static long addUser(Context context, User user) {
-		SQLiteDatabase db = getSahaOpenHelper(context).getWritableDatabase();
+	public static long addUser(User user) {
+		SQLiteDatabase db = getSahaOpenHelper().getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(UsersColumns.NAME_FIELD, user.getName());
 		values.put(UsersColumns.DIRECTORY_FIELD, user.getDirectory());
@@ -80,8 +85,8 @@ public final class SahaUserDatabase {
 		return id;
 	}
 
-	public static void deleteAllUsers(Context context) {
-		SQLiteDatabase db = getSahaOpenHelper(context).getWritableDatabase();
+	public static void deleteAllUsers() {
+		SQLiteDatabase db = getSahaOpenHelper().getWritableDatabase();
 		db.execSQL("delete from " + USERS_TABLE + ";");
 		db.close();
 	}
@@ -96,7 +101,7 @@ public final class SahaUserDatabase {
 		return user;
 	}
 
-	public static class SahaOpenHelper extends SQLiteOpenHelper {
+	private static class SahaOpenHelper extends SQLiteOpenHelper {
 
 		public SahaOpenHelper(Context context) {
 			super(context, Database.NAME, null, Database.VERSION);

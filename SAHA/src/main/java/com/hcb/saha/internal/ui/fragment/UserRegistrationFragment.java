@@ -21,11 +21,11 @@ import com.hcb.saha.internal.data.model.User;
 
 /**
  * Fragment for allowing a user to create a new "account"
- *
+ * 
  * @author Andreas Borglin
  */
 public class UserRegistrationFragment extends RoboFragment {
-	
+
 	public static interface UserCreatedHandler {
 		void onUserCreated(User user);
 	}
@@ -34,7 +34,7 @@ public class UserRegistrationFragment extends RoboFragment {
 	private EditText nameField;
 	@InjectView(R.id.create)
 	private Button createButton;
-	
+
 	private UserCreatedHandler handler;
 
 	@Override
@@ -44,7 +44,7 @@ public class UserRegistrationFragment extends RoboFragment {
 				container, false);
 		return view;
 	}
-	
+
 	public void setUserCreatedHandler(UserCreatedHandler handler) {
 		this.handler = handler;
 	}
@@ -75,7 +75,7 @@ public class UserRegistrationFragment extends RoboFragment {
 				user.setName(nameField.getText().toString());
 				user.setDirectory(nameField.getText().toString().toLowerCase()
 						.trim());
-				long userId = SahaUserDatabase.addUser(getActivity(), user);
+				long userId = SahaUserDatabase.addUser(user);
 				if (userId >= 0) {
 					AlertDialog.Builder dialog = new AlertDialog.Builder(
 							getActivity());
@@ -83,12 +83,12 @@ public class UserRegistrationFragment extends RoboFragment {
 					dialog.setPositiveButton(R.string.ok,
 							new DialogInterface.OnClickListener() {
 
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									handler.onUserCreated(user);
-								}
-							});
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
+							handler.onUserCreated(user);
+						}
+					});
 					dialog.show();
 
 				} else {

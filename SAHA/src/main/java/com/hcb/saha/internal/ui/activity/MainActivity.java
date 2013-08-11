@@ -114,8 +114,9 @@ public class MainActivity extends RoboFragmentActivity {
 			showHomeUserNear();
 			return true;
 		case R.id.action_list_users:
-			//startActivity(new Intent(MainActivity.this, UsersActivity.class));
-			List<User> users = SahaUserDatabase.getAllUsers(this);
+			// startActivity(new Intent(MainActivity.this,
+			// UsersActivity.class));
+			List<User> users = SahaUserDatabase.getAllUsers();
 			for (User user : users) {
 				Log.d("USER", "User: " + user.getName());
 			}
@@ -127,15 +128,15 @@ public class MainActivity extends RoboFragmentActivity {
 			dialog.setPositiveButton(R.string.ok,
 					new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							SahaUserDatabase.deleteAllUsers(MainActivity.this);
-							SahaFileManager.deleteUserDirs();
-							Toast.makeText(MainActivity.this,
-									"All users deleted.", Toast.LENGTH_SHORT)
-									.show();
-						}
-					});
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					SahaUserDatabase.deleteAllUsers();
+					SahaFileManager.deleteUserDirs();
+					Toast.makeText(MainActivity.this,
+							"All users deleted.", Toast.LENGTH_SHORT)
+							.show();
+				}
+			});
 			dialog.setNegativeButton(R.string.cancel, null);
 			dialog.show();
 			return true;
@@ -143,8 +144,7 @@ public class MainActivity extends RoboFragmentActivity {
 			startActivity(new Intent(MainActivity.this, RegisterActivity.class));
 			return true;
 		case R.id.action_train:
-			List<User> trainUsers = SahaUserDatabase
-					.getAllUsers(MainActivity.this);
+			List<User> trainUsers = SahaUserDatabase.getAllUsers();
 			UsersFaces uf = SahaFileManager.getAllUsersFaceImages(trainUsers);
 			// eventBus.post(new
 			// FaceRecognitionEvents.TrainRecognizerRequest(uf));

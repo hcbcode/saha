@@ -5,7 +5,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.hardware.Camera.Face;
@@ -57,8 +56,6 @@ FaceDetectionHandler {
 	@Inject
 	private FaceRecognizer faceRecognizer;
 	@Inject
-	private Application context;
-	@Inject
 	private Bus eventBus;
 	@Inject
 	private SahaSystemState systemState;
@@ -88,8 +85,7 @@ FaceDetectionHandler {
 			eventBus.post(new UserIdentificationEvents.AnonymousUserDetected());
 			userAnonymousCount = 1;
 		} else {
-			User user = SahaUserDatabase
-					.getUserFromId(context, predictedUserId);
+			User user = SahaUserDatabase.getUserFromId(predictedUserId);
 			if (user != null) {
 				Log.d("USER", "user detected: " + user.getName());
 				eventBus.post(new UserIdentificationEvents.RegisteredUserDetected(
