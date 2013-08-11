@@ -272,6 +272,15 @@ public final class SahaFileManager {
 	}
 
 	/**
+	 * Get face images for a user
+	 */
+	public static String[] getUserFaceImages(User user) {
+		File userFaceDir = getUserFaceDir(user);
+		String[] images = userFaceDir.list();
+		return images;
+	}
+
+	/**
 	 * Get a representation of all the users and paths to their face images
 	 * 
 	 * @param users
@@ -347,6 +356,18 @@ public final class SahaFileManager {
 		return String.format("%s/%s/%s", getSahaRoot().getAbsolutePath(),
 				FileSystem.HAAR_CLASSIFIERS_DIR,
 				FileSystem.HAAR_FACE_CLASSIFIER);
+	}
+
+	/**
+	 * Delete a user directory
+	 */
+	public static void deleteUserDir(User user) {
+		File userDir = getUserDir(user);
+		try {
+			FileUtils.deleteDirectory(userDir);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

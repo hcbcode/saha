@@ -7,15 +7,17 @@
         android:showAsAction="always"
         android:title="@string/action_add_user"/>
     <item
+        android:id="@+id/action_edit_user"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:orderInCategory="1"
+        android:showAsAction="always"
+        android:visible="false"
+        android:title="@string/action_edit_user"/>
+    <item
         android:id="@+id/action_train"
         android:orderInCategory="2"
         android:showAsAction="never"
         android:title="@string/action_train"/>
-    <item
-        android:id="@+id/action_recognize"
-        android:orderInCategory="2"
-        android:showAsAction="never"
-        android:title="@string/action_recognize"/>
     <item
         android:id="@+id/action_list_users"
         android:orderInCategory="4"

@@ -1,6 +1,7 @@
 package com.hcb.saha.internal.ui.activity;
 
 import roboguice.activity.RoboFragmentActivity;
+import roboguice.inject.ContentView;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import com.squareup.otto.Bus;
  * 
  * @author Andreas Borglin
  */
+@ContentView(R.layout.activity_register)
 public class RegisterActivity extends RoboFragmentActivity implements
 FaceDetectionFragmentHandler, UserCreatedHandler {
 
@@ -39,7 +41,6 @@ FaceDetectionFragmentHandler, UserCreatedHandler {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_register);
 		eventBus.register(this);
 
 		int userId = 0;

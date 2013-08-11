@@ -3,6 +3,7 @@ package com.hcb.saha.internal.ui.activity;
 import java.util.List;
 
 import roboguice.activity.RoboFragmentActivity;
+import roboguice.inject.ContentView;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,17 +19,19 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.inject.Inject;
 import com.hcb.saha.R;
+import com.hcb.saha.internal.core.SahaSystemState.State;
 import com.hcb.saha.internal.data.db.SahaUserDatabase;
 import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.data.model.User;
 import com.hcb.saha.internal.data.model.UsersFaces;
 import com.hcb.saha.internal.event.LifecycleEvents;
-import com.hcb.saha.internal.service.RemoteStorageService;
+import com.hcb.saha.internal.facerec.FaceRecognizer;
 import com.hcb.saha.internal.ui.fragment.HomeCarouselFragment;
 import com.hcb.saha.internal.ui.fragment.HomeUserNearFragment;
 import com.hcb.saha.internal.ui.fragment.HomeUserPersonalisedFragment;
 import com.hcb.saha.internal.ui.view.ViewUtil;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 /**
  * Main activity.
@@ -36,12 +39,17 @@ import com.squareup.otto.Bus;
  * @author Andreas Borglin
  * @author Steven Hadley
  */
+@ContentView(R.layout.activity_main)
 public class MainActivity extends RoboFragmentActivity {
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 
 	@Inject
 	private Bus eventBus;
+	@Inject
+	private FaceRecognizer faceRecognizer;
+
+	private MenuItem editUserItem;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +59,6 @@ public class MainActivity extends RoboFragmentActivity {
 		ViewUtil.keepActivityAwake(this);
 		ViewUtil.goFullScreen(this);
 		ViewUtil.customiseActionBar(this);
-
-		setContentView(R.layout.activity_main);
 
 		// OpenCV can't read assets, so need to copy over to sdcard
 		SahaFileManager.copyClassifierToSdCard(this.getAssets());
@@ -83,9 +89,31 @@ public class MainActivity extends RoboFragmentActivity {
 		eventBus.unregister(this);
 	}
 
+	@Subscribe
+	public void onSystemStateChanged(final LifecycleEvents.SystemStateChangedEvent event) {
+		runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				State state = event.getState();
+				switch (state) {
+				case REGISTERED_USER: {
+					editUserItem.setVisible(true);
+					break;
+				}
+				default: {
+					editUserItem.setVisible(false);
+					break;
+				}
+				}
+			}
+		});
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
+		editUserItem = menu.findItem(R.id.action_edit_user);
 		return true;
 	}
 
@@ -132,15 +160,13 @@ public class MainActivity extends RoboFragmentActivity {
 		case R.id.action_add_user:
 			startActivity(new Intent(MainActivity.this, RegisterActivity.class));
 			return true;
+		case R.id.action_edit_user:
+			startActivity(new Intent(MainActivity.this, UserActivity.class));
+			return true;
 		case R.id.action_train:
 			List<User> trainUsers = SahaUserDatabase.getAllUsers();
 			UsersFaces uf = SahaFileManager.getAllUsersFaceImages(trainUsers);
-			// eventBus.post(new
-			// FaceRecognitionEvents.TrainRecognizerRequest(uf));
-			return true;
-		case R.id.action_recognize:
-			// startActivity(new Intent(MainActivity.this,
-			// IdentificationActivity.class));
+			faceRecognizer.trainRecognizer(uf.getUserIds(), uf.getUserImageFaces(), null);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

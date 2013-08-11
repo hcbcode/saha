@@ -43,6 +43,11 @@
             android:label="@string/register"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".internal.ui.activity.UserActivity"
+            android:label="@string/action_edit_user"
+            android:screenOrientation="portrait" >
+        </activity>
         <service android:name=".internal.service.RemoteStorageService"/>
         <meta-data android:name="com.crashlytics.ApiKey" android:value="2acdc4d55cca21fed7dbf004fa224848a2fdb419"/>
   

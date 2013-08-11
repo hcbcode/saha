@@ -41,7 +41,7 @@ public final class SahaConfig {
 	}
 
 	public static final class Registration {
-		public static final int NUM_FACE_PICS_REQUIRED = 3;
+		public static final int NUM_FACE_PICS_REQUIRED = 10;
 	}
 
 	// NOTE: If you change these, make sure to update facerec.cpp as well!

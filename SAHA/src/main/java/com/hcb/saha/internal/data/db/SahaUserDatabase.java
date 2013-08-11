@@ -85,6 +85,12 @@ public final class SahaUserDatabase {
 		return id;
 	}
 
+	public static void deleteUser(User user) {
+		SQLiteDatabase db = getSahaOpenHelper().getWritableDatabase();
+		db.execSQL("delete from " + USERS_TABLE + " where " + UsersColumns.ID_FIELD + " = " + user.getId() + ";");
+		db.close();
+	}
+
 	public static void deleteAllUsers() {
 		SQLiteDatabase db = getSahaOpenHelper().getWritableDatabase();
 		db.execSQL("delete from " + USERS_TABLE + ";");

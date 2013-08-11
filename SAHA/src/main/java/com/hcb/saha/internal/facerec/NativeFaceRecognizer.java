@@ -16,7 +16,7 @@ import com.squareup.otto.Subscribe;
  * requests on a separate thread managed by a looper and a handler. Requests
  * comes in via the event bus and are placed on the handler messaging queue for
  * synchronous in-order request handling.
- *
+ * 
  * @author Andreas Borglin
  */
 public class NativeFaceRecognizer implements FaceRecognizer {
@@ -90,7 +90,9 @@ public class NativeFaceRecognizer implements FaceRecognizer {
 	}
 
 	@Override
-	public void trainRecognizer(final int[] userIds, final String[][] usersFaces, final FaceRecognitionEventHandler eventHandler) {
+	public void trainRecognizer(final int[] userIds,
+			final String[][] usersFaces,
+			final FaceRecognitionEventHandler eventHandler) {
 		handler.post(new Runnable() {
 
 			@Override
@@ -98,7 +100,9 @@ public class NativeFaceRecognizer implements FaceRecognizer {
 				Log.d(TAG, "Training recognizer...");
 				nativeTrainRecognizer(userIds, usersFaces, FACE_REC_MODEL_PATH,
 						CLASSIFIER_PATH, wrapperRef);
-				eventHandler.onRecognizerTrainingCompleted();
+				if (eventHandler != null) {
+					eventHandler.onRecognizerTrainingCompleted();
+				}
 			}
 		});
 	}
