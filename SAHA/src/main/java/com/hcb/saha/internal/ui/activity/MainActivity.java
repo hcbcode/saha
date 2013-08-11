@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -113,8 +114,11 @@ public class MainActivity extends RoboFragmentActivity {
 			showHomeUserNear();
 			return true;
 		case R.id.action_list_users:
-			// startActivity(new Intent(MainActivity.this,
-			// UsersActivity.class));
+			//startActivity(new Intent(MainActivity.this, UsersActivity.class));
+			List<User> users = SahaUserDatabase.getAllUsers(this);
+			for (User user : users) {
+				Log.d("USER", "User: " + user.getName());
+			}
 			return true;
 		case R.id.action_delete_users:
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);

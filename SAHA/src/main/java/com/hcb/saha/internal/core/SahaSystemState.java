@@ -1,8 +1,7 @@
 package com.hcb.saha.internal.core;
 
 import android.app.Application;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeech.OnInitListener;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -21,6 +20,8 @@ import com.squareup.otto.Subscribe;
  */
 @Singleton
 public final class SahaSystemState {
+
+	private static final String TAG = SahaSystemState.class.getSimpleName();
 
 	public static enum State {
 		SLEEPING, // Device is in sleep mode (sensors, camera, etc off)
@@ -42,8 +43,9 @@ public final class SahaSystemState {
 		eventBus.register(this);
 		currentState = State.DETECTION;
 	}
-	
+
 	private void updateState(State state) {
+		Log.d(TAG, "System state updated: " + state.name());
 		currentState = state;
 		eventBus.post(new LifecycleEvents.SystemStateChangedEvent(currentState));
 	}
@@ -71,15 +73,17 @@ public final class SahaSystemState {
 		updateState(State.DETECTION);
 		currentUser = null;
 	}
-	
+
 	@Subscribe
-	public void onRegistrationInitiated(LifecycleEvents.RegistrationInitiatedEvent event) {
+	public void onRegistrationInitiated(
+			LifecycleEvents.RegistrationInitiatedEvent event) {
 		updateState(State.REGISTRATION);
 		currentUser = null;
 	}
-	
+
 	@Subscribe
-	public void onRegistrationCompleted(LifecycleEvents.RegistrationCompletedEvent event) {
+	public void onRegistrationCompleted(
+			LifecycleEvents.RegistrationCompletedEvent event) {
 		currentUser = event.getUser();
 		updateState(State.REGISTERED_USER);
 	}
@@ -90,5 +94,17 @@ public final class SahaSystemState {
 
 	public User getCurrentUser() {
 		return currentUser;
+	}
+
+	public boolean inDetectionMode() {
+		return currentState == State.DETECTION;
+	}
+
+	public boolean inAnonymousUserMode() {
+		return currentState == State.ANONYMOUS_USER;
+	}
+
+	public boolean inRegisteredUserMode() {
+		return currentState == State.REGISTERED_USER;
 	}
 }

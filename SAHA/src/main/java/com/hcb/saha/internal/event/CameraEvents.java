@@ -21,6 +21,9 @@ public class CameraEvents {
 
 	}
 
+	/**
+	 * Event sent when a face is detected when in idle/detection mode
+	 */
 	public static final class FaceDetectedEvent {
 		private Face[] faces;
 
@@ -33,6 +36,9 @@ public class CameraEvents {
 		}
 	}
 
+	/**
+	 * Event sent when a face is available again after being detected (in user mode)
+	 */
 	public static final class FaceAvailableEvent {
 		private int faceWidth;
 		private int faceHeight;
@@ -51,6 +57,9 @@ public class CameraEvents {
 		}
 	}
 	
+	/**
+	 * Event sent when the face disappears from camera while in user mode
+	 */
 	public static final class FaceDisappearedEvent {
 		
 	}

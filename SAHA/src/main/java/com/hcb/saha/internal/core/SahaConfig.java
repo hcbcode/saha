@@ -12,6 +12,10 @@ public final class SahaConfig {
 
 	public static final String BUGSENSE_KEY = "1f39dbab";
 
+	public static final class System {
+		public static final int USER_TIMEOUT_SECONDS = 10;
+	}
+
 	public static final class Database {
 		public static final String NAME = "saha.db";
 		public static final int VERSION = 1;
@@ -49,7 +53,7 @@ public final class SahaConfig {
 		public static final int CASCADE_OUTPUT_FACE_WIDTH = 200;
 		public static final int CASCADE_OUTPUT_FACE_HEIGHT = 200;
 	}
-	
+
 	public static final class Sensor {
 		public static final int LIGHT_CHANGE_THRESHOLD = 5;
 		public static final int LIGHT_COUNT_THROTTLE = 10;

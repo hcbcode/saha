@@ -1,7 +1,5 @@
 package com.hcb.saha.internal.core;
 
-import android.util.Log;
-
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Provides;
@@ -27,21 +25,21 @@ public class SahaModule implements Module {
 
 	@Override
 	public void configure(Binder binder) {
-		
+
 		// Core
 		binder.bind(SahaSystemState.class).asEagerSingleton();
 
 		// External
 		binder.bind(AccountsManager.class).asEagerSingleton();
-		
+
 		// Face recognition
-				binder.bind(FaceRecognizer.class).to(NativeFaceRecognizer.class)
-						.asEagerSingleton();
-		
+		binder.bind(FaceRecognizer.class).to(NativeFaceRecognizer.class)
+		.asEagerSingleton();
+
 		// Services
 		binder.bind(TextToSpeechService.class).asEagerSingleton();
 		binder.bind(DataPersistenceService.class).asEagerSingleton();
-		
+
 		// Source providers
 		binder.bind(FaceDetectionHandler.class).to(FaceIdentificationProvider.class).asEagerSingleton();
 		binder.bind(VoiceIdentificationProvider.class).asEagerSingleton();
