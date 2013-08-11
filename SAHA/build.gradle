@@ -16,13 +16,14 @@ apply plugin: 'eclipse'
 repositories {
     mavenCentral()
     maven {url repoNexusThirdParty }
+	maven {url repoCrashlytics }
 }
 
 dependencies {
     compile "com.google.guava:guava:$depGuavaVersion"
     compile "com.squareup:otto:$depOttoVersion"
     compile "org.roboguice:roboguice:$depRoboguiceVersion"
-    compile "com.bugsense.trace:bugsense:$depBugsenseTraceVersion"
+    compile "com.crashlytics.android:crashlytics:$depCrashlyticsVersion"
 	compile "commons-io:commons-io:$depCommonsIOVersion"
 	compile ("com.google.apis:google-api-services-storage:$depGcsAPIVersion") {
 		exclude module: 'httpclient'

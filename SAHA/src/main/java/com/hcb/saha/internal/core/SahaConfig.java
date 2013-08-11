@@ -10,8 +10,6 @@ public final class SahaConfig {
 	private SahaConfig() {
 	}
 
-	public static final String BUGSENSE_KEY = "1f39dbab";
-
 	public static final class System {
 		public static final int USER_TIMEOUT_SECONDS = 10;
 	}

@@ -98,7 +98,8 @@ public class VoiceCommandProvider implements OnInitListener, RecognitionListener
 
 		String textToSpeak = null;
 		for (String val : values) {
-			if (val.equalsIgnoreCase("nexus")) {
+			Log.d("BLE", val);
+			if (val.equalsIgnoreCase("nexus") || val.equalsIgnoreCase("saha")) {
 				textToSpeak = "Saha at your command";
 				break;
 			} else if (val.equalsIgnoreCase("who am i")) {

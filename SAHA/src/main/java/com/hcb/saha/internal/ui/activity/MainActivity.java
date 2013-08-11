@@ -6,6 +6,7 @@ import roboguice.activity.RoboFragmentActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -14,11 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.bugsense.trace.BugSenseHandler;
+import com.crashlytics.android.Crashlytics;
 import com.google.inject.Inject;
 import com.hcb.saha.R;
-import com.hcb.saha.config.EnvConfig;
-import com.hcb.saha.internal.core.SahaConfig;
 import com.hcb.saha.internal.data.db.SahaUserDatabase;
 import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.data.model.User;
@@ -47,6 +46,7 @@ public class MainActivity extends RoboFragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		enableCrashReporting();
 
 		ViewUtil.keepActivityAwake(this);
 		ViewUtil.goFullScreen(this);
@@ -63,24 +63,16 @@ public class MainActivity extends RoboFragmentActivity {
 		showHomeUserNear();
 	}
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		if (EnvConfig.USE_REPORTING) {
-			BugSenseHandler.initAndStartSession(this, SahaConfig.BUGSENSE_KEY);
-		}
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-		if (EnvConfig.USE_REPORTING) {
-			BugSenseHandler.closeSession(this);
+	/*
+	 * If device is NOT connected via USB to a computer, enable crash reports
+	 */
+	private void enableCrashReporting() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction("android.hardware.usb.action.USB_STATE");
+		Intent intent = registerReceiver(null, filter);
+		boolean connected = intent.getBooleanExtra("connected", false);
+		if (!connected) {
+			Crashlytics.start(this);
 		}
 	}
 
