@@ -1,13 +1,11 @@
 package com.hcb.saha.internal.data.fs;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -27,7 +25,7 @@ import com.hcb.saha.internal.data.model.UsersFaces;
 
 /**
  * Manages the Saha file system directories and files
- *
+ * 
  * @author Andreas Borglin
  */
 public final class SahaFileManager {
@@ -55,7 +53,7 @@ public final class SahaFileManager {
 
 	/**
 	 * Get a top level directory in SAHA root
-	 *
+	 * 
 	 * @param dirName
 	 *            The top level directory
 	 */
@@ -75,15 +73,13 @@ public final class SahaFileManager {
 		return getTopLevelDir(FileSystem.TMP_DIR);
 	}
 
-	
 	/**
 	 * Get the events directory for event collection files
 	 */
 	public static File getEventsDir() {
 		return getTopLevelDir(FileSystem.EVENTS_DIR);
 	}
-	
-	
+
 	/**
 	 * Get the directory for haar cascade classifiers
 	 */
@@ -100,7 +96,7 @@ public final class SahaFileManager {
 
 	/**
 	 * Get the user directory for a user
-	 *
+	 * 
 	 * @param user
 	 *            the user directory name
 	 */
@@ -114,7 +110,7 @@ public final class SahaFileManager {
 
 	/**
 	 * Get the face image directory for a user
-	 *
+	 * 
 	 * @param user
 	 *            the user
 	 */
@@ -129,12 +125,11 @@ public final class SahaFileManager {
 
 	/**
 	 * Get an output stream for writing a new face image for a user
-	 *
+	 * 
 	 * @param user
 	 *            the user
 	 */
-	public static File getFileForNewFaceImage(User user)
-			throws IOException {
+	public static File getFileForNewFaceImage(User user) throws IOException {
 		File userFaceDir = getUserFaceDir(user);
 		// Find the first available index
 		int curNumFiles = userFaceDir.list().length;
@@ -145,12 +140,13 @@ public final class SahaFileManager {
 	}
 
 	/**
-	 * Persist a face bitmap to file
-	 * TODO Should this logic be here?
-	 * @param bitmap The face bitmap
+	 * Persist a face bitmap to file TODO Should this logic be here?
+	 * 
+	 * @param bitmap
+	 *            The face bitmap
 	 */
 	public static String persistFaceBitmap(Bitmap bitmap, User user) {
-		
+
 		try {
 			File output = null;
 			if (user == null) {
@@ -174,23 +170,26 @@ public final class SahaFileManager {
 		}
 		return null;
 	}
+
 	/**
-	 * Appends event (JSON String) to the event data file
-	 * String should be a JSON representation of @SensorData object
-	 * If event data file does not exist it will create it
-	 * If event data file reaches 1MB it will be copied to a unique filename in the same directory
-	 * ready for upload and a new file will be created
+	 * Appends event (JSON String) to the event data file String should be a
+	 * JSON representation of @SensorData object If event data file does not
+	 * exist it will create it If event data file reaches 1MB it will be copied
+	 * to a unique filename in the same directory ready for upload and a new
+	 * file will be created
+	 * 
 	 * @param event
-	 *  
+	 * 
 	 */
-	public static boolean appendEvent(String event){
+	public static boolean appendEvent(String event) {
 		File eventsDir = getEventsDir();
 
 		File file = new File(eventsDir, FileSystem.EVENTS_DATA_FILE);
 
-		if (file.exists() && FileUtils.sizeOf(file) > 1024*200){
+		if (file.exists() && FileUtils.sizeOf(file) > 1024 * 200) {
 			Log.d(TAG, "Creating new events file");
-			File newFile = new File(eventsDir, FileSystem.EVENTS_DATA_FILE + "-" + System.currentTimeMillis() + ".upload");
+			File newFile = new File(eventsDir, FileSystem.EVENTS_DATA_FILE
+					+ "-" + System.currentTimeMillis() + ".upload");
 			try {
 				FileUtils.moveFile(file, newFile);
 			} catch (IOException e) {
@@ -199,7 +198,7 @@ public final class SahaFileManager {
 			}
 		}
 
-		if (!file.exists()){
+		if (!file.exists()) {
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
@@ -220,19 +219,19 @@ public final class SahaFileManager {
 	}
 
 	/**
-	 * Returns list of absolute locations for all
-	 * event collection files that match the upload pattern
-	 *
+	 * Returns list of absolute locations for all event collection files that
+	 * match the upload pattern
+	 * 
 	 */
-	public static List<String> getEventFilesForUpload(){
+	public static List<String> getEventFilesForUpload() {
 
 		File eventsDir = getEventsDir();
 
 		List<String> fileLocations = new ArrayList<String>();
-		String[] files = eventsDir.list( new SuffixFileFilter(".upload"));
-		for (int i=0; i<files.length;i++){
-			String location = String.format("%s/%s/%s", getSahaRoot().getAbsolutePath(),
-					FileSystem.EVENTS_DIR, files[i]);
+		String[] files = eventsDir.list(new SuffixFileFilter(".upload"));
+		for (int i = 0; i < files.length; i++) {
+			String location = String.format("%s/%s/%s", getSahaRoot()
+					.getAbsolutePath(), FileSystem.EVENTS_DIR, files[i]);
 			Log.d(TAG, location);
 			fileLocations.add(location);
 		}
@@ -241,12 +240,13 @@ public final class SahaFileManager {
 
 	/**
 	 * Deletes the file specified by absolute fileLocation
+	 * 
 	 * @param fileLocation
 	 */
-	public static void deleteUploadedFile(String fileLocation){
+	public static void deleteUploadedFile(String fileLocation) {
 		FileUtils.deleteQuietly(new File(fileLocation));
 	}
-	
+
 	/**
 	 * Get the file for the temporary image used for face identification
 	 */
@@ -273,7 +273,7 @@ public final class SahaFileManager {
 
 	/**
 	 * Get a representation of all the users and paths to their face images
-	 *
+	 * 
 	 * @param users
 	 *            List of all users
 	 */

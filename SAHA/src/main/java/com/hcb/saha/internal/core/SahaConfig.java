@@ -2,7 +2,7 @@ package com.hcb.saha.internal.core;
 
 /**
  * Main configuration file
- *
+ * 
  * @author Andreas Borglin
  */
 public final class SahaConfig {
@@ -32,7 +32,7 @@ public final class SahaConfig {
 		public static final String HAAR_FACE_CLASSIFIER = "faceclassifier.xml";
 		public static final String EVENTS_DIR = "events";
 		public static final String EVENTS_DATA_FILE = "events.dat";
-		
+
 	}
 
 	public static final class Assets {
