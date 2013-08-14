@@ -38,10 +38,5 @@
         android:orderInCategory="7"
         android:showAsAction="never"
         android:title="2. Show User Near"/>
-    <item
-        android:id="@+id/action_show_user_personalised"
-        android:orderInCategory="8"
-        android:showAsAction="never"
-        android:title="3. Show User Personalised"/>
 
 </menu>

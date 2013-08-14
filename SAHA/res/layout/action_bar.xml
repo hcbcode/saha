@@ -6,17 +6,21 @@
     android:focusable="false" >
 
     <ImageView
-        android:id="@+id/action_bar_photo"
+        android:id="@+id/action_bar_wifi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_action_photo" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/action_bar_photo"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:src="@drawable/ic_action_wifi" />
+
+    <SurfaceView
+        android:id="@+id/surface"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/action_bar_wifi"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" />
 
 </RelativeLayout>

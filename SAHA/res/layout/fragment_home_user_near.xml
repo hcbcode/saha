@@ -2,99 +2,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_background"
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/android_red_dark"
-        android:orientation="horizontal"
-        android:padding="20dp" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Anon User Screen"
-            android:textColor="@android:color/white"
-            android:textSize="20sp" />
-    </RelativeLayout>
-
     <LinearLayout
+        style="@style/Widget"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/android_red_light"
-        android:orientation="horizontal"
-        android:padding="20dp" >
+        android:orientation="horizontal" >
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" >
-
-            <TextView
-                android:id="@+id/user_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/anonymous"
-                android:textColor="@android:color/white"
-                android:textSize="20sp" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" >
-
-            <SurfaceView
-                android:id="@+id/surface"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </RelativeLayout>
+        <FrameLayout
+            android:id="@+id/frag1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </LinearLayout>
 
     <LinearLayout
+        style="@style/Widget"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:baselineAligned="false"
         android:orientation="horizontal" >
 
-        <LinearLayout
-            android:id="@+id/light_measure_panel"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/android_blue_light"
-            android:padding="20dp" >
+        <FrameLayout
+            android:id="@+id/frag2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/light_val"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="No Light"
-                android:textColor="@android:color/white"
-                android:textSize="30sp" />
-        </LinearLayout>
+    <LinearLayout
+        style="@style/Widget"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal" >
 
-        <LinearLayout
-            android:id="@+id/face_measure_panel"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/android_blue_dark"
-            android:padding="20dp" >
-
-            <TextView
-                android:id="@+id/face_val"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="No Face"
-                android:textColor="@android:color/white"
-                android:textSize="40sp" />
-        </LinearLayout>
+        <FrameLayout
+            android:id="@+id/frag3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </LinearLayout>
 
 </LinearLayout>

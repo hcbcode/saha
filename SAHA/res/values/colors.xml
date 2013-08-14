@@ -1,16 +1,10 @@
 <resources>
 
-    <color name="android_red_dark">#FF4444</color>
-    <color name="android_red_light">#CC0000</color>
-    <color name="android_green_light">#99CC00</color>
-    <color name="android_green_dark">#669900</color>
-    <color name="android_blue_light">#33B5E5</color>
-    <color name="android_blue_dark">#0099CC</color>
-
-    <!-- Home screen refactored. FIXME: -->
-    <color name="home_screen_blue">#2cb1e1</color>
-    
+    <color name="widget_background_light">#33B5E5</color>
+    <color name="widget_background_very_light">#a8dff4</color>
+    <color name="widget_background_dark">#0099CC</color>
+    <color name="main_background">#0099CC</color>
     <!-- 1st 2 hex from 00 to FF. 00 = fully trans, FF fully opaque, 80 50% trans -->
-    <color name="content_view_background">#80a8dff4</color>
+    <color name="widget_background">#8033B5E5</color>
 
 </resources>

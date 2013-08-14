@@ -5,13 +5,15 @@ import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
 /**
+ * To get around the fact you can set the scroll duration and hence speed via an
+ * API. Thanks stackoverflow.
  * 
  * @author Steven Hadley
  * 
  */
 public class FixedSpeedScroller extends Scroller {
 
-	private static final int DURATION_MILLIS = 1000;
+	private static final int DURATION_MILLIS = 3000;
 
 	public FixedSpeedScroller(Context context) {
 		super(context);

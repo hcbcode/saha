@@ -11,22 +11,30 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 
 import com.hcb.saha.R;
+import com.hcb.saha.internal.ui.fragment.widget.EventFragment;
+import com.hcb.saha.internal.ui.fragment.widget.NewsFragment;
+import com.hcb.saha.internal.ui.fragment.widget.WeatherFragment;
+import com.hcb.saha.internal.ui.fragment.widget.WidgetFragment.StateType;
 import com.hcb.saha.internal.ui.view.DepthPageTransformer;
 import com.hcb.saha.internal.ui.view.FixedSpeedScroller;
 
 public class HomeCarouselFragment extends RoboFragment {
 
-	int NUM_PAGES = 6;
+	private static final String TAG = HomeCarouselFragment.class
+			.getSimpleName();
+
+	private static final int NUM_PAGES = 3;
 
 	private PagerAdapter pagerAdapter;
 
-	@InjectView(R.id.pager)
+	@InjectView(R.id.home_carousel_pager)
 	private ViewPager pager;
 
 	private Handler animationHandler = new Handler();
@@ -49,6 +57,7 @@ public class HomeCarouselFragment extends RoboFragment {
 		pager.setPageTransformer(true, new DepthPageTransformer());
 
 		try {
+			// Only way to override scroller speed.
 			FixedSpeedScroller scroller = new FixedSpeedScroller(
 					pager.getContext(), new AccelerateInterpolator());
 			Field mScroller = ViewPager.class.getDeclaredField("mScroller");
@@ -56,14 +65,14 @@ public class HomeCarouselFragment extends RoboFragment {
 			mScroller.set(pager, scroller);
 
 		} catch (Exception e) {
-			// FIXME fix it
-			e.printStackTrace();
+			Log.e(TAG, "Can't set scroller speed", e);
 		}
 
 		animationHandler.post(animationStep);
 	}
 
 	/**
+	 * Data adapter for Pager.
 	 * 
 	 * @author Steven Hadley
 	 * 
@@ -75,7 +84,19 @@ public class HomeCarouselFragment extends RoboFragment {
 
 		@Override
 		public Fragment getItem(int position) {
-			return HomeCarouselItemFragment.create(position);
+
+			// FIXME: use a list of cached fragments
+			switch (position) {
+			case 0:
+				return WeatherFragment.create(StateType.FULL);
+			case 1:
+				return NewsFragment.create(StateType.FULL);
+			case 2:
+				return EventFragment.create(StateType.FULL);
+			default:
+				return WeatherFragment.create(StateType.FULL);
+			}
+
 		}
 
 		@Override
@@ -85,13 +106,14 @@ public class HomeCarouselFragment extends RoboFragment {
 	}
 
 	/**
+	 * Transition content fragments.
 	 * 
 	 * @author Steven Hadley
 	 * 
 	 */
 	private class AnimationStep implements Runnable {
 
-		private static final int PAGER_DELAY_MILLIS = 5000;
+		private static final int PAGER_DELAY_MILLIS = 30000;
 
 		@Override
 		public void run() {

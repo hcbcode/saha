@@ -3,6 +3,12 @@ package com.hcb.saha.internal.ui.view;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
+/**
+ * Thanks Google.
+ * 
+ * @author Steven Hadley
+ * 
+ */
 public class ZoomOutPageTransformer implements ViewPager.PageTransformer {
 	private static float MIN_SCALE = 0.85f;
 	private static float MIN_ALPHA = 0.5f;
