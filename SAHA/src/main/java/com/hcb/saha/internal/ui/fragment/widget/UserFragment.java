@@ -94,7 +94,7 @@ public class UserFragment extends WidgetFragment {
 
 	@Subscribe
 	public void onAccountsQueried(AccountEvents.QueryAccountsResult accounts) {
-		// FIXME: Just picking first one
+		// FIXME: Just picking first one should not be from here but from user object
 		eventBus.post(new QueryEmailRequest(accounts.getNames()[0], this
 				.getActivity()));
 		emailAddress.setText(accounts.getNames()[0]);
