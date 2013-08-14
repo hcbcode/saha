@@ -83,12 +83,12 @@ public class UserRegistrationFragment extends RoboFragment {
 					dialog.setPositiveButton(R.string.ok,
 							new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog,
-								int which) {
-							handler.onUserCreated(user);
-						}
-					});
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									handler.onUserCreated(user);
+								}
+							});
 					dialog.show();
 
 				} else {

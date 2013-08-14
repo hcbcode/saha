@@ -16,7 +16,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.hcb.saha.internal.core.SahaExceptions.CameraNotActiveException;
 import com.hcb.saha.internal.event.CameraEvents;
-import com.hcb.saha.internal.ui.fragment.FaceDetectionFragment.FaceDetectionFragmentHandler;
 import com.hcb.saha.internal.utils.CameraUtils;
 import com.hcb.saha.internal.utils.CameraUtils.FaceDetectionHandler;
 import com.hcb.saha.internal.utils.CameraUtils.FacePictureTakenHandler;

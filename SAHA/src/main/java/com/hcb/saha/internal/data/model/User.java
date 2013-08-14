@@ -2,7 +2,7 @@ package com.hcb.saha.internal.data.model;
 
 /**
  * Represents a user
- *
+ * 
  * @author Andreas Borglin
  */
 public class User {

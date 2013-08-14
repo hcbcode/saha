@@ -24,12 +24,15 @@ import com.squareup.otto.Bus;
 
 /**
  * Voice command provider using built in Android speech services
+ * 
  * @author Andreas Borglin
  */
 @Singleton
-public class VoiceCommandProvider implements OnInitListener, RecognitionListener {
+public class VoiceCommandProvider implements OnInitListener,
+		RecognitionListener {
 
-	private static final String TAG = VoiceCommandProvider.class.getSimpleName();
+	private static final String TAG = VoiceCommandProvider.class
+			.getSimpleName();
 
 	@Inject
 	private SahaSystemState systemState;

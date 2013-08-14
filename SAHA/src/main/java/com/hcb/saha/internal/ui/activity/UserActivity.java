@@ -22,6 +22,7 @@ import com.hcb.saha.internal.data.model.User;
 
 /**
  * Activity representing the current user
+ * 
  * @author Andreas Borglin
  */
 @ContentView(R.layout.activity_user)
@@ -46,17 +47,18 @@ public class UserActivity extends RoboActivity {
 		final User user = systemState.getCurrentUser();
 		if (user == null) {
 			finish();
-		}
-		else {
+		} else {
 			userName.setText(getString(R.string.user_name, user.getName()));
 			String[] images = SahaFileManager.getUserFaceImages(user);
-			userNumPhotos.setText(getString(R.string.user_num_photos, images.length));
+			userNumPhotos.setText(getString(R.string.user_num_photos,
+					images.length));
 
 			userAddPhotos.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(UserActivity.this, RegisterActivity.class);
+					Intent intent = new Intent(UserActivity.this,
+							RegisterActivity.class);
 					intent.putExtra(RegisterActivity.USER_ID, user.getId());
 					startActivity(intent);
 				}
@@ -66,21 +68,25 @@ public class UserActivity extends RoboActivity {
 
 				@Override
 				public void onClick(View v) {
-					AlertDialog.Builder dialog = new AlertDialog.Builder(UserActivity.this);
+					AlertDialog.Builder dialog = new AlertDialog.Builder(
+							UserActivity.this);
 					dialog.setTitle(R.string.delete_users_title);
 					dialog.setMessage(R.string.delete_users_message);
 					dialog.setPositiveButton(R.string.ok,
 							new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							SahaUserDatabase.deleteUser(user);
-							SahaFileManager.deleteUserDir(user);
-							Toast.makeText(UserActivity.this,
-									"User " + user.getName() + " deleted!", Toast.LENGTH_SHORT)
-									.show();
-						}
-					});
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									SahaUserDatabase.deleteUser(user);
+									SahaFileManager.deleteUserDir(user);
+									Toast.makeText(
+											UserActivity.this,
+											"User " + user.getName()
+													+ " deleted!",
+											Toast.LENGTH_SHORT).show();
+								}
+							});
 					dialog.setNegativeButton(R.string.cancel, null);
 					dialog.show();
 				}

@@ -2,6 +2,7 @@ package com.hcb.saha.internal.core;
 
 /**
  * Saha defined exceptions
+ * 
  * @author Andreas Borglin
  */
 public class SahaExceptions {

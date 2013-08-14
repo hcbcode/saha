@@ -4,6 +4,7 @@ import com.hcb.saha.internal.data.model.User;
 
 /**
  * User identification events
+ * 
  * @author Andreas Borglin
  */
 public class UserIdentificationEvents {

@@ -19,7 +19,7 @@ import com.hcb.saha.internal.data.model.User;
 
 /**
  * Saha user database handler
- *
+ * 
  * @author Andreas Borglin
  */
 @Singleton
@@ -87,7 +87,8 @@ public final class SahaUserDatabase {
 
 	public static void deleteUser(User user) {
 		SQLiteDatabase db = getSahaOpenHelper().getWritableDatabase();
-		db.execSQL("delete from " + USERS_TABLE + " where " + UsersColumns.ID_FIELD + " = " + user.getId() + ";");
+		db.execSQL("delete from " + USERS_TABLE + " where "
+				+ UsersColumns.ID_FIELD + " = " + user.getId() + ";");
 		db.close();
 	}
 

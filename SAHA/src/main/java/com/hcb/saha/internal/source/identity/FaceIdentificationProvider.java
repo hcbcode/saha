@@ -34,7 +34,7 @@ import com.squareup.otto.Bus;
  */
 @Singleton
 public class FaceIdentificationProvider implements FaceRecognitionEventHandler,
-FaceDetectionHandler {
+		FaceDetectionHandler {
 
 	private static final String TAG = FaceIdentificationProvider.class
 			.getSimpleName();

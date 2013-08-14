@@ -5,7 +5,7 @@ import android.app.Application;
 
 /**
  * Saha Application instance
- *
+ * 
  * @author Andreas Borglin
  */
 public class SahaApplication extends Application {

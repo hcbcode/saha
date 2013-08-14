@@ -27,7 +27,7 @@ import com.squareup.otto.Bus;
  */
 @ContentView(R.layout.activity_register)
 public class RegisterActivity extends RoboFragmentActivity implements
-FaceDetectionFragmentHandler, UserCreatedHandler {
+		FaceDetectionFragmentHandler, UserCreatedHandler {
 
 	public static final String USER_ID = "userId";
 	@Inject
@@ -51,8 +51,8 @@ FaceDetectionFragmentHandler, UserCreatedHandler {
 			userRegistrationFragment = new UserRegistrationFragment();
 			userRegistrationFragment.setUserCreatedHandler(this);
 			getSupportFragmentManager().beginTransaction()
-			.add(R.id.register_layout, userRegistrationFragment)
-			.commit();
+					.add(R.id.register_layout, userRegistrationFragment)
+					.commit();
 		} else {
 			User user = SahaUserDatabase.getUserFromId(userId);
 			startFaceRegistration(user, false);
@@ -79,11 +79,11 @@ FaceDetectionFragmentHandler, UserCreatedHandler {
 		faceDetectionFragment.setCurrentUser(user);
 		if (replace) {
 			getSupportFragmentManager().beginTransaction()
-			.replace(R.id.register_layout, faceDetectionFragment)
-			.commit();
+					.replace(R.id.register_layout, faceDetectionFragment)
+					.commit();
 		} else {
 			getSupportFragmentManager().beginTransaction()
-			.add(R.id.register_layout, faceDetectionFragment).commit();
+					.add(R.id.register_layout, faceDetectionFragment).commit();
 		}
 
 	}
@@ -98,20 +98,20 @@ FaceDetectionFragmentHandler, UserCreatedHandler {
 		UsersFaces usersFaces = SahaFileManager
 				.getAllUsersFaceImages(SahaUserDatabase.getAllUsers());
 		Toast.makeText(this, "Training recognizer...", Toast.LENGTH_SHORT)
-		.show();
+				.show();
 		faceReognizer.trainRecognizer(usersFaces.getUserIds(),
 				usersFaces.getUserImageFaces(),
 				new FaceRecognitionEventHandler() {
 
-			@Override
-			public void onRecognizerTrainingCompleted() {
-			}
+					@Override
+					public void onRecognizerTrainingCompleted() {
+					}
 
-			@Override
-			public void onPredictionCompleted(int predictedUserId) {
+					@Override
+					public void onPredictionCompleted(int predictedUserId) {
 
-			}
-		});
+					}
+				});
 
 		finish();
 	}

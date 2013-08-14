@@ -4,11 +4,11 @@ import android.hardware.Camera.Face;
 
 /**
  * Camera events
- *
+ * 
  * @author Andreas Borglin
  */
 public class CameraEvents {
-	
+
 	public static final class CameraActivatedEvent {
 
 	}
@@ -37,7 +37,8 @@ public class CameraEvents {
 	}
 
 	/**
-	 * Event sent when a face is available again after being detected (in user mode)
+	 * Event sent when a face is available again after being detected (in user
+	 * mode)
 	 */
 	public static final class FaceAvailableEvent {
 		private int faceWidth;
@@ -56,11 +57,11 @@ public class CameraEvents {
 			return faceHeight;
 		}
 	}
-	
+
 	/**
 	 * Event sent when the face disappears from camera while in user mode
 	 */
 	public static final class FaceDisappearedEvent {
-		
+
 	}
 }

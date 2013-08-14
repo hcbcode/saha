@@ -12,9 +12,9 @@ import com.hcb.saha.internal.core.DeviceManager;
 
 /**
  * Common UI stuff that can be re-used across views.
- *
+ * 
  * @author Steven Hadley
- *
+ * 
  */
 public final class ViewUtil {
 
@@ -24,7 +24,7 @@ public final class ViewUtil {
 
 	/**
 	 * Full screen and low profile.
-	 *
+	 * 
 	 * @param activity
 	 */
 	public static void goFullScreen(Activity activity) {
@@ -39,7 +39,7 @@ public final class ViewUtil {
 			 * reappear immediately. When this happens, both this flag and
 			 * SYSTEM_UI_FLAG_FULLSCREEN will be cleared automatically, so that
 			 * both elements reappear at the same time.
-			 *
+			 * 
 			 * Would have to use http://www.42gears.com/surelock/
 			 */
 		}
@@ -47,7 +47,7 @@ public final class ViewUtil {
 
 	/**
 	 * Keeps activity awake.
-	 *
+	 * 
 	 * @param activity
 	 */
 	public static void keepActivityAwake(Activity activity) {
@@ -56,7 +56,7 @@ public final class ViewUtil {
 
 	/**
 	 * Setup common SAHA action bar.
-	 *
+	 * 
 	 * @param activity
 	 */
 	public static void customiseActionBar(Activity activity) {

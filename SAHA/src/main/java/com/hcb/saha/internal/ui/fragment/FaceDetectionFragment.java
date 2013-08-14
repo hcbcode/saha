@@ -36,7 +36,7 @@ public class FaceDetectionFragment extends RoboFragment implements
 
 	private static final String TAG = FaceDetectionFragment.class
 			.getSimpleName();
-	
+
 	public static interface FaceDetectionFragmentHandler {
 		void onFaceRegistrationCompleted();
 	}
@@ -71,12 +71,13 @@ public class FaceDetectionFragment extends RoboFragment implements
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		
+
 		cameraProcessor.setFaceDetectionHandler(this);
 		cameraProcessor.startCamera(surfaceView);
 	}
-	
-	public void setFaceDetectionFragmentHandler(FaceDetectionFragmentHandler handler) {
+
+	public void setFaceDetectionFragmentHandler(
+			FaceDetectionFragmentHandler handler) {
 		this.handler = handler;
 	}
 
@@ -115,8 +116,7 @@ public class FaceDetectionFragment extends RoboFragment implements
 				e.printStackTrace();
 				// TODO handle
 			}
-		}
-		else {
+		} else {
 			cameraProcessor.tearDownCamera();
 			// TODO temp hack
 			cameraProcessor.revertToOriginalHandler();

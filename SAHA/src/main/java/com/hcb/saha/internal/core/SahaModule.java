@@ -40,19 +40,21 @@ public class SahaModule implements Module {
 
 		// Face recognition
 		binder.bind(FaceRecognizer.class).to(NativeFaceRecognizer.class)
-		.asEagerSingleton();
+				.asEagerSingleton();
 
 		// Services
 		binder.bind(TextToSpeechService.class).asEagerSingleton();
 		binder.bind(DataPersistenceService.class).asEagerSingleton();
 
 		// Source providers
-		binder.bind(FaceDetectionHandler.class).to(FaceIdentificationProvider.class).asEagerSingleton();
+		binder.bind(FaceDetectionHandler.class)
+				.to(FaceIdentificationProvider.class).asEagerSingleton();
 		binder.bind(LightSensorProvider.class).asEagerSingleton();
 		binder.bind(VoiceCommandProvider.class).asEagerSingleton();
 
 		// Manual external class bindings
-		binder.bind(SpeechRecognizer.class).toProvider(SpeechRecognizerProvider.class).in(Singleton.class);
+		binder.bind(SpeechRecognizer.class)
+				.toProvider(SpeechRecognizerProvider.class).in(Singleton.class);
 		binder.requestStaticInjection(SahaUserDatabase.class);
 	}
 
@@ -65,7 +67,8 @@ public class SahaModule implements Module {
 	/**
 	 * Provider for Android SpeechRecognizer
 	 */
-	public static class SpeechRecognizerProvider implements Provider<SpeechRecognizer> {
+	public static class SpeechRecognizerProvider implements
+			Provider<SpeechRecognizer> {
 
 		@Inject
 		private Application context;

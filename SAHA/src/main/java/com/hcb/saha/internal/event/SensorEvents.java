@@ -2,19 +2,21 @@ package com.hcb.saha.internal.event;
 
 /**
  * Sensor events
+ * 
  * @author Andreas Borglin
  */
 public class SensorEvents {
 
 	public static enum SensorType {
-		MOVEMENT(1), LIGHT(2), TEMPERATURE(3), HUMIDITY(4), PRESSURE(5), PROXIMITY(6);
-		
+		MOVEMENT(1), LIGHT(2), TEMPERATURE(3), HUMIDITY(4), PRESSURE(5), PROXIMITY(
+				6);
+
 		private int id;
-		
+
 		private SensorType(int id) {
 			this.id = id;
 		}
-		
+
 		public int getId() {
 			return id;
 		}
@@ -50,8 +52,7 @@ public class SensorEvents {
 
 	public static final class SensorDetectionEvent extends SensorEvent {
 
-		public SensorDetectionEvent(SensorType sensorType,
-				float[] sensorValues) {
+		public SensorDetectionEvent(SensorType sensorType, float[] sensorValues) {
 			super(sensorType, sensorValues);
 		}
 
