@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -25,7 +26,7 @@ import com.hcb.saha.internal.data.db.SahaUserDatabase;
 import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.data.model.User;
 import com.hcb.saha.internal.data.model.UsersFaces;
-import com.hcb.saha.internal.event.LifecycleEvents;
+import com.hcb.saha.internal.event.SystemEvents;
 import com.hcb.saha.internal.facerec.FaceRecognizer;
 import com.hcb.saha.internal.processor.CameraProcessor;
 import com.hcb.saha.internal.ui.fragment.HomeCarouselFragment;
@@ -74,8 +75,10 @@ public class MainActivity extends RoboFragmentActivity {
 		// OpenCV can't read assets, so need to copy over to sdcard
 		SahaFileManager.copyClassifierToSdCard(this.getAssets());
 
+		PreferenceManager.setDefaultValues(this, R.xml.debug_preferences, false);
+
 		eventBus.register(this);
-		eventBus.post(new LifecycleEvents.MainActivityCreated());
+		eventBus.post(new SystemEvents.MainActivityCreated());
 
 		showHomeCarousel();
 	}
@@ -104,13 +107,12 @@ public class MainActivity extends RoboFragmentActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 		cameraProcessor.tearDownCamera();
-		eventBus.post(new LifecycleEvents.MainActivityDestroyed());
+		eventBus.post(new SystemEvents.MainActivityDestroyed());
 		eventBus.unregister(this);
 	}
 
 	@Subscribe
-	public void onSystemStateChanged(
-			final LifecycleEvents.SystemStateChangedEvent event) {
+	public void onSystemStateChanged(final SystemEvents.SystemStateChangedEvent event) {
 		runOnUiThread(new Runnable() {
 
 			@Override
@@ -172,15 +174,15 @@ public class MainActivity extends RoboFragmentActivity {
 			dialog.setMessage(R.string.delete_users_message);
 			dialog.setPositiveButton(R.string.ok,
 					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							SahaUserDatabase.deleteAllUsers();
-							SahaFileManager.deleteUserDirs();
-							Toast.makeText(MainActivity.this,
-									"All users deleted.", Toast.LENGTH_SHORT)
-									.show();
-						}
-					});
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					SahaUserDatabase.deleteAllUsers();
+					SahaFileManager.deleteUserDirs();
+					Toast.makeText(MainActivity.this,
+							"All users deleted.", Toast.LENGTH_SHORT)
+							.show();
+				}
+			});
 			dialog.setNegativeButton(R.string.cancel, null);
 			dialog.show();
 			return true;
@@ -195,6 +197,9 @@ public class MainActivity extends RoboFragmentActivity {
 			UsersFaces uf = SahaFileManager.getAllUsersFaceImages(trainUsers);
 			faceRecognizer.trainRecognizer(uf.getUserIds(),
 					uf.getUserImageFaces(), null);
+			return true;
+		case R.id.action_debug_settings:
+			startActivity(new Intent(MainActivity.this, DebugActivity.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -222,7 +227,7 @@ public class MainActivity extends RoboFragmentActivity {
 					.beginTransaction()
 					.setCustomAnimations(R.animator.anim_from_middle,
 							R.animator.anim_to_middle)
-					.replace(fragmentToReplace, newFragment, fragmentTag);
+							.replace(fragmentToReplace, newFragment, fragmentTag);
 			transaction.commit();
 		}
 	}

@@ -38,5 +38,10 @@
         android:orderInCategory="7"
         android:showAsAction="never"
         android:title="2. Show User Near"/>
+    <item
+        android:id="@+id/action_debug_settings"
+        android:orderInCategory="9"
+        android:showAsAction="never"
+        android:title="Debug settings"/>
 
 </menu>

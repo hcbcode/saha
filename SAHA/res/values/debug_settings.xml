@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="system_settings_title">System</string>
+    <string name="system_user_timeout_key">key_user_timeout</string>
+    <string name="system_user_timeout_title">User inactivity timeout</string>
+    <string name="system_user_timeout_summary">Number of seconds</string>
+    <string name="system_user_timeout_default">10</string>
+
+    <string-array name="user_timeout_keys">
+        <item>Never</item>
+        <item>1 second</item>
+        <item>5 seconds</item>
+        <item>10 seconds</item>
+        <item>15 seconds</item>
+        <item>20 seconds</item>
+        <item>30 seconds</item>
+        <item>1 minute</item>
+        <item>5 minutes</item>
+    </string-array>
+    <string-array name="user_timeout_values">
+        <item>0</item>
+        <item>1</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>30</item>
+        <item>60</item>
+        <item>300</item>
+    </string-array>
+    
+    <string name="sensor_screen_key">key_sensor_screen</string>
+    <string name="sensor_screen_title">Sensors</string>
+    <string name="sensor_screen_summary">Sensors configuration</string>
+    
+    <string name="sensor_throttle_key">key_sensor_throttle</string>
+    <string name="sensor_throttle_title">Sensor throttle</string>
+    <string name="sensor_throttle_summary">Sensor throttle value</string>
+    <string name="sensor_throttle_default">10</string>
+    
+    <string name="sensor_threshold_key">key_sensor_threshold</string>
+    <string name="sensor_threshold_title">Sensor threshold</string>
+    <string name="sensor_threshold_summary">Sensor threshold value</string>
+    <string name="sensor_threshold_default">3</string>
+
+</resources>

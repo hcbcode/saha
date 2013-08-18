@@ -18,7 +18,6 @@ import com.hcb.saha.internal.service.DataPersistenceService;
 import com.hcb.saha.internal.service.TextToSpeechService;
 import com.hcb.saha.internal.source.identity.FaceIdentificationProvider;
 import com.hcb.saha.internal.source.sensor.LightSensorProvider;
-import com.hcb.saha.internal.source.trigger.VoiceCommandProvider;
 import com.hcb.saha.internal.utils.CameraUtils.FaceDetectionHandler;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
@@ -35,6 +34,7 @@ public class SahaModule implements Module {
 
 		// Core
 		binder.bind(SahaSystemState.class).asEagerSingleton();
+		binder.bind(SahaRuntimeConfig.class).in(Singleton.class);
 
 		// External
 		binder.bind(AccountsManager.class).asEagerSingleton();
@@ -52,7 +52,7 @@ public class SahaModule implements Module {
 		binder.bind(FaceDetectionHandler.class)
 				.to(FaceIdentificationProvider.class).asEagerSingleton();
 		binder.bind(LightSensorProvider.class).asEagerSingleton();
-		binder.bind(VoiceCommandProvider.class).asEagerSingleton();
+		//binder.bind(VoiceCommandProvider.class).asEagerSingleton();
 
 		// Manual external class bindings
 		binder.bind(SpeechRecognizer.class)

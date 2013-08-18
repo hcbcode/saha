@@ -14,6 +14,7 @@ import com.hcb.saha.internal.ui.fragment.widget.EventFragment;
 import com.hcb.saha.internal.ui.fragment.widget.NewsFragment;
 import com.hcb.saha.internal.ui.fragment.widget.WeatherFragment;
 import com.hcb.saha.internal.ui.fragment.widget.WidgetFragment.StateType;
+import com.hcb.saha.internal.event.SystemEvents;
 import com.squareup.otto.Bus;
 
 public class HomeUserNearFragment extends RoboFragment {

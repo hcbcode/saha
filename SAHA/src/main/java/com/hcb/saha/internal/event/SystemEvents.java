@@ -1,14 +1,15 @@
 package com.hcb.saha.internal.event;
 
+import com.hcb.saha.internal.core.SahaRuntimeConfig;
 import com.hcb.saha.internal.core.SahaSystemState.State;
 import com.hcb.saha.internal.data.model.User;
 
 /**
- * Life cycle related events
+ * System related events
  * 
  * @author Andreas Borglin
  */
-public class LifecycleEvents {
+public class SystemEvents {
 
 	public static class MainActivityCreated {
 
@@ -43,6 +44,24 @@ public class LifecycleEvents {
 
 		public State getState() {
 			return state;
+		}
+	}
+
+	public static class SystemSettingChangedEvent {
+		private SahaRuntimeConfig runtimeConfig;
+		private String settingKey;
+
+		public SystemSettingChangedEvent(SahaRuntimeConfig rc, String sk) {
+			this.runtimeConfig = rc;
+			this.settingKey = sk;
+		}
+
+		public SahaRuntimeConfig getRuntimeConfig() {
+			return runtimeConfig;
+		}
+
+		public String getSettingKey() {
+			return settingKey;
 		}
 	}
 

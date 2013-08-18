@@ -7,7 +7,7 @@ import android.util.Log;
 import com.google.inject.Inject;
 import com.hcb.saha.internal.core.SahaConfig;
 import com.hcb.saha.internal.data.fs.SahaFileManager;
-import com.hcb.saha.internal.event.LifecycleEvents;
+import com.hcb.saha.internal.event.SystemEvents;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -60,7 +60,7 @@ public class NativeFaceRecognizer implements FaceRecognizer {
 	 * Initialise the recogniser with a persisted data model
 	 */
 	@Subscribe
-	public void initRecognizer(LifecycleEvents.MainActivityCreated event) {
+	public void initRecognizer(SystemEvents.MainActivityCreated event) {
 		handler.post(new Runnable() {
 
 			@Override
@@ -77,7 +77,7 @@ public class NativeFaceRecognizer implements FaceRecognizer {
 	 * Close the recognizer and delete any references to it
 	 */
 	@Subscribe
-	public void closeRecognizer(LifecycleEvents.MainActivityDestroyed event) {
+	public void closeRecognizer(SystemEvents.MainActivityDestroyed event) {
 		handler.post(new Runnable() {
 
 			@Override

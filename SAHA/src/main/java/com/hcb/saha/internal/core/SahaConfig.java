@@ -11,7 +11,7 @@ public final class SahaConfig {
 	}
 
 	public static final class System {
-		public static final int USER_TIMEOUT_SECONDS = 10;
+		//public static final int USER_TIMEOUT_SECONDS = 10;
 	}
 
 	public static final class Database {
@@ -57,6 +57,5 @@ public final class SahaConfig {
 	public static final class Sensor {
 		public static final int LIGHT_CHANGE_THRESHOLD = 3;
 		public static final int LIGHT_COUNT_THROTTLE = 10;
-
 	}
 }

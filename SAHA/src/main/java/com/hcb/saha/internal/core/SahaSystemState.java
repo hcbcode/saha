@@ -7,14 +7,14 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.hcb.saha.R;
 import com.hcb.saha.internal.data.model.User;
-import com.hcb.saha.internal.event.LifecycleEvents;
+import com.hcb.saha.internal.event.SystemEvents;
 import com.hcb.saha.internal.event.TextSpeechEvents;
 import com.hcb.saha.internal.event.UserIdentificationEvents;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 /**
- * Early implementation of a system state TODO a lot
+ * Early implementation of a system state
  * 
  * @author Andreas Borglin
  */
@@ -47,7 +47,7 @@ public final class SahaSystemState {
 	private void updateState(State state) {
 		Log.d(TAG, "System state updated: " + state.name());
 		currentState = state;
-		eventBus.post(new LifecycleEvents.SystemStateChangedEvent(currentState));
+		eventBus.post(new SystemEvents.SystemStateChangedEvent(currentState));
 	}
 
 	@Subscribe
@@ -76,14 +76,14 @@ public final class SahaSystemState {
 
 	@Subscribe
 	public void onRegistrationInitiated(
-			LifecycleEvents.RegistrationInitiatedEvent event) {
+			SystemEvents.RegistrationInitiatedEvent event) {
 		updateState(State.REGISTRATION);
 		currentUser = null;
 	}
 
 	@Subscribe
 	public void onRegistrationCompleted(
-			LifecycleEvents.RegistrationCompletedEvent event) {
+			SystemEvents.RegistrationCompletedEvent event) {
 		currentUser = event.getUser();
 		updateState(State.REGISTERED_USER);
 	}

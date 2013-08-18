@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:key="pref_key_system_settings"
+        android:title="@string/system_settings_title" >
+        <ListPreference
+            android:defaultValue="@string/system_user_timeout_default"
+            android:dialogTitle="@string/system_user_timeout_title"
+            android:entries="@array/user_timeout_keys"
+            android:entryValues="@array/user_timeout_values"
+            android:key="@string/system_user_timeout_key"
+            android:summary="@string/system_user_timeout_summary"
+            android:title="@string/system_user_timeout_title" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="pref_key_sensor_settings"
+        android:title="@string/sensor_screen_title" >
+        <PreferenceScreen
+            android:key="@string/sensor_screen_key"
+            android:persistent="false"
+            android:summary="@string/sensor_screen_summary"
+            android:title="@string/sensor_screen_title" >
+            <EditTextPreference
+                android:key="@string/sensor_threshold_key"
+                android:summary="@string/sensor_threshold_summary"
+                android:title="@string/sensor_threshold_title"
+                android:defaultValue="@string/sensor_threshold_default" />
+            <EditTextPreference
+                android:key="@string/sensor_throttle_key"
+                android:summary="@string/sensor_throttle_summary"
+                android:title="@string/sensor_throttle_title"
+                android:defaultValue="@string/sensor_throttle_default" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+</PreferenceScreen>

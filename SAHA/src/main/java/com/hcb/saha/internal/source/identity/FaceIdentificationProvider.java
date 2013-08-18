@@ -12,13 +12,15 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.hcb.saha.internal.core.SahaConfig;
+import com.hcb.saha.R;
 import com.hcb.saha.internal.core.SahaExceptions.CameraNotActiveException;
+import com.hcb.saha.internal.core.SahaRuntimeConfig;
 import com.hcb.saha.internal.core.SahaSystemState;
 import com.hcb.saha.internal.data.db.SahaUserDatabase;
 import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.data.model.User;
 import com.hcb.saha.internal.event.CameraEvents;
+import com.hcb.saha.internal.event.SystemEvents;
 import com.hcb.saha.internal.event.UserIdentificationEvents;
 import com.hcb.saha.internal.facerec.FaceRecognizer;
 import com.hcb.saha.internal.facerec.FaceRecognizer.FaceRecognitionEventHandler;
@@ -26,6 +28,7 @@ import com.hcb.saha.internal.processor.CameraProcessor;
 import com.hcb.saha.internal.utils.CameraUtils.FaceDetectionHandler;
 import com.hcb.saha.internal.utils.CameraUtils.FacePictureTakenHandler;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 /**
  * Responsible for identifying a face
@@ -56,21 +59,32 @@ public class FaceIdentificationProvider implements FaceRecognitionEventHandler,
 	@Inject
 	private FaceRecognizer faceRecognizer;
 	@Inject
-	private Bus eventBus;
-	@Inject
 	private SahaSystemState systemState;
+	private Bus eventBus;
 
 	private boolean predictUserOnFaceDetected;
 	private int userAnonymousCount;
+	private int userTimeout;
 
 	private ScheduledExecutorService scheduler;
 	private ScheduledFuture<?> scheduledFuture;
 	private FaceTimeoutHandler faceTimeoutHandler;
 
-	public FaceIdentificationProvider() {
+	@Inject
+	public FaceIdentificationProvider(SahaRuntimeConfig runtimeConfig, Bus eventBus) {
+		this.eventBus = eventBus;
 		predictUserOnFaceDetected = true;
 		scheduler = Executors.newSingleThreadScheduledExecutor();
 		faceTimeoutHandler = new FaceTimeoutHandler();
+		userTimeout = runtimeConfig.getInt(R.string.system_user_timeout_key);
+		eventBus.register(this);
+	}
+
+	@Subscribe
+	public void onSystemsSettingChanged(SystemEvents.SystemSettingChangedEvent event) {
+		// TODO: Check if this is the setting that has changed
+		userTimeout = event.getRuntimeConfig().getInt(R.string.system_user_timeout_key);
+		Log.d(TAG, "user timeout changed to: " + userTimeout);
 	}
 
 	@Override
@@ -145,12 +159,13 @@ public class FaceIdentificationProvider implements FaceRecognitionEventHandler,
 	@Override
 	public void onNoFaceDetected() {
 
+		// TODO: Add support for userTimeout being "Never"
 		if (scheduledFuture == null && systemState.inUserMode()) {
 			scheduledFuture = scheduler.schedule(faceTimeoutHandler,
-					SahaConfig.System.USER_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+					userTimeout, TimeUnit.SECONDS);
 			eventBus.post(new CameraEvents.FaceDisappearedEvent());
 			Log.d(TAG,
-					"Face disappeared - scheduling timeout and sending event");
+					"Face disappeared - scheduling timeout (" + userTimeout + " seconds) and sending event");
 		}
 	}
 }
