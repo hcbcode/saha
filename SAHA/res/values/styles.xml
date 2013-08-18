@@ -26,14 +26,14 @@
     </style>
 
     <style name="WidgetCompressedText">
-        <item name="android:textSize">25sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="WidgetFullText">
-        <item name="android:textSize">90sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
     <style name="WidgetFullTextTitle">

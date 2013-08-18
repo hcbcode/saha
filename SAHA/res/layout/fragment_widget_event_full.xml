@@ -16,16 +16,6 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="Events" />
-
-    <TextView
-        android:id="@+id/row2"
-        style="@style/WidgetFullText"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="3"
-        android:gravity="center"
         android:text="Time" />
 
     <DigitalClock
@@ -33,6 +23,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="3"
-        android:gravity="center" />
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="90sp" />
 
 </LinearLayout>

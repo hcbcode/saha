@@ -39,6 +39,8 @@ dependencies {
 	compile "com.fasterxml.jackson.core:jackson-databind:$depJacksonDatabindVersion"
 	compile files('libs/android-support-v4.jar')
     //compile project(':libProjects:OpenCVAndroid')
+	compile "com.squareup.retrofit:retrofit:$depRetrofitVersion"
+	compile "com.squareup.okhttp:okhttp:$depOkhttpVersion"
 }
 
 android {

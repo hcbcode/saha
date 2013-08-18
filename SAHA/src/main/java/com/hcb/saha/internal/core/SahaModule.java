@@ -10,6 +10,7 @@ import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.hcb.saha.external.AccountsManager;
+import com.hcb.saha.external.source.news.NewsComAuProvider;
 import com.hcb.saha.internal.data.db.SahaUserDatabase;
 import com.hcb.saha.internal.facerec.FaceRecognizer;
 import com.hcb.saha.internal.facerec.NativeFaceRecognizer;
@@ -37,6 +38,7 @@ public class SahaModule implements Module {
 
 		// External
 		binder.bind(AccountsManager.class).asEagerSingleton();
+		binder.bind(NewsComAuProvider.class).asEagerSingleton();
 
 		// Face recognition
 		binder.bind(FaceRecognizer.class).to(NativeFaceRecognizer.class)
