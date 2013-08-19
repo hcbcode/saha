@@ -16,7 +16,7 @@ import retrofit.mime.TypedOutput;
  * @author Steven Hadley
  * 
  */
-public class RssNewsConverter implements Converter {
+class RssNewsConverter implements Converter {
 
 	@Override
 	public Object fromBody(TypedInput body, Type type)

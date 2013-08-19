@@ -130,6 +130,9 @@ public class WeatherFragment extends WidgetFragment {
 	@Subscribe
 	public void onWeatherResult(WeatherEvents.WeatherResult result) {
 
+		// FIXME: Use better logic. Use date from result to work out tmrws
+		// weather.
+
 		if (null != result.getWeatherForecast().getMaxTemp()
 				&& result.getWeatherForecast().getMaxTemp().length() > 0) {
 

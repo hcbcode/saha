@@ -39,6 +39,7 @@ public class NewsComAuProvider implements Callback<List<RssItem>> {
 
 	@Subscribe
 	public void getNews(NewsEvents.HeadlineNewsRequest request) {
+		//FIXME: Caching
 		service.worldNews(this);
 	}
 

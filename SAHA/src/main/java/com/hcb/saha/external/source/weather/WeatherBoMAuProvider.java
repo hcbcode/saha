@@ -70,6 +70,7 @@ public class WeatherBoMAuProvider {
 
 	@Subscribe
 	public void getWeather(WeatherEvents.WeatherRequest request) {
+		// FIXME: Caching
 		new FetchWeather().execute(request);
 	}
 
@@ -137,6 +138,7 @@ public class WeatherBoMAuProvider {
 			while ((line = br.readLine()) != null) {
 				String[] values = line.split(DELIMITER);
 				if (params[0].getLocation().equals(values[1])) {
+					// FIXME: Get all fields.
 					forecast = new WeatherForecast()
 							.minTemp(values[TODAY_TEMP_MIN])
 							.maxTemp(values[TODAY_TEMP_MAX])
