@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.inject.Inject;
 import com.hcb.saha.R;
 import com.hcb.saha.internal.core.SahaSystemState;
@@ -64,8 +65,6 @@ public class MainActivity extends RoboFragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Crashlytics.start(this);
-		// FIXME: crap
 		enableCrashReporting();
 
 		ViewUtil.keepActivityAwake(this);
@@ -76,7 +75,7 @@ public class MainActivity extends RoboFragmentActivity {
 		SahaFileManager.copyClassifierToSdCard(this.getAssets());
 
 		PreferenceManager
-				.setDefaultValues(this, R.xml.debug_preferences, false);
+		.setDefaultValues(this, R.xml.debug_preferences, false);
 
 		eventBus.register(this);
 		eventBus.post(new SystemEvents.MainActivityCreated());
@@ -99,8 +98,9 @@ public class MainActivity extends RoboFragmentActivity {
 		Intent intent = registerReceiver(null, filter);
 		boolean connected = intent.getBooleanExtra("connected", false);
 		if (!connected) {
-			// Crashlytics.start(this);
-			// FIXME: Heap of crap
+			Crashlytics.start(this);
+			Toast.makeText(this, "Crashlytics started", Toast.LENGTH_SHORT)
+			.show();
 		}
 	}
 
@@ -176,15 +176,15 @@ public class MainActivity extends RoboFragmentActivity {
 			dialog.setMessage(R.string.delete_users_message);
 			dialog.setPositiveButton(R.string.ok,
 					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							SahaUserDatabase.deleteAllUsers();
-							SahaFileManager.deleteUserDirs();
-							Toast.makeText(MainActivity.this,
-									"All users deleted.", Toast.LENGTH_SHORT)
-									.show();
-						}
-					});
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					SahaUserDatabase.deleteAllUsers();
+					SahaFileManager.deleteUserDirs();
+					Toast.makeText(MainActivity.this,
+							"All users deleted.", Toast.LENGTH_SHORT)
+							.show();
+				}
+			});
 			dialog.setNegativeButton(R.string.cancel, null);
 			dialog.show();
 			return true;
@@ -229,7 +229,7 @@ public class MainActivity extends RoboFragmentActivity {
 					.beginTransaction()
 					.setCustomAnimations(R.animator.anim_from_middle,
 							R.animator.anim_to_middle)
-					.replace(fragmentToReplace, newFragment, fragmentTag);
+							.replace(fragmentToReplace, newFragment, fragmentTag);
 			transaction.commit();
 		}
 	}
