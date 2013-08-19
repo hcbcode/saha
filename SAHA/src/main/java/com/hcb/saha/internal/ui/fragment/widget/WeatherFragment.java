@@ -1,5 +1,7 @@
 package com.hcb.saha.internal.ui.fragment.widget;
 
+import javax.annotation.Nullable;
+
 import roboguice.inject.InjectView;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,6 +35,10 @@ public class WeatherFragment extends WidgetFragment {
 
 	@InjectView(R.id.row2)
 	private TextView tempMin;
+
+	@InjectView(R.id.row4)
+	@Nullable
+	private TextView forecast;
 
 	private int stateType;
 
@@ -123,9 +129,29 @@ public class WeatherFragment extends WidgetFragment {
 
 	@Subscribe
 	public void onWeatherResult(WeatherEvents.WeatherResult result) {
-		tempMax.setText("Max " + result.getWeatherForecast().getMaxTemp()
-				+ WeatherForecast.TEMP_UNIT);
-		tempMin.setText("Min " + result.getWeatherForecast().getMinTemp()
-				+ WeatherForecast.TEMP_UNIT);
+
+		if (null != result.getWeatherForecast().getMaxTemp()
+				&& result.getWeatherForecast().getMaxTemp().length() > 0) {
+
+			tempMax.setText("Max " + result.getWeatherForecast().getMaxTemp()
+					+ WeatherForecast.TEMP_UNIT);
+			tempMin.setText("Min " + result.getWeatherForecast().getMinTemp()
+					+ WeatherForecast.TEMP_UNIT);
+
+			if (null != forecast) {
+				forecast.setText(result.getWeatherForecast().getForecast());
+			}
+		} else {
+			tempMax.setText("Tmrw Max "
+					+ result.getWeatherForecast().getMaxTempPlus1()
+					+ WeatherForecast.TEMP_UNIT);
+			tempMin.setText("Tmrw Min "
+					+ result.getWeatherForecast().getMinTempPlus1()
+					+ WeatherForecast.TEMP_UNIT);
+
+			if (null != forecast) {
+				forecast.setText(result.getWeatherForecast().getForecastPlus1());
+			}
+		}
 	}
 }

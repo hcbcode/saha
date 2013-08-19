@@ -11,7 +11,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.hcb.saha.external.AccountsManager;
 import com.hcb.saha.external.source.news.NewsComAuProvider;
-import com.hcb.saha.external.source.weather.BOMAuProvider;
+import com.hcb.saha.external.source.weather.WeatherBoMAuProvider;
 import com.hcb.saha.internal.data.db.SahaUserDatabase;
 import com.hcb.saha.internal.facerec.FaceRecognizer;
 import com.hcb.saha.internal.facerec.NativeFaceRecognizer;
@@ -40,7 +40,7 @@ public class SahaModule implements Module {
 		// External
 		binder.bind(AccountsManager.class).asEagerSingleton();
 		binder.bind(NewsComAuProvider.class).asEagerSingleton();
-		binder.bind(BOMAuProvider.class).asEagerSingleton();
+		binder.bind(WeatherBoMAuProvider.class).asEagerSingleton();
 
 		// Face recognition
 		binder.bind(FaceRecognizer.class).to(NativeFaceRecognizer.class)
@@ -54,7 +54,7 @@ public class SahaModule implements Module {
 		binder.bind(FaceDetectionHandler.class)
 				.to(FaceIdentificationProvider.class).asEagerSingleton();
 		binder.bind(LightSensorProvider.class).asEagerSingleton();
-		//binder.bind(VoiceCommandProvider.class).asEagerSingleton();
+		// binder.bind(VoiceCommandProvider.class).asEagerSingleton();
 
 		// Manual external class bindings
 		binder.bind(SpeechRecognizer.class)
