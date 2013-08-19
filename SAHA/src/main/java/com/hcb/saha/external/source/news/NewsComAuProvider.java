@@ -22,6 +22,7 @@ import com.squareup.otto.Subscribe;
 public class NewsComAuProvider implements Callback<List<RssItem>> {
 
 	private static final String NEWS_COM_AU_WEIRD_TRUE_FREAKY = "News.com.au, Weird True Freaky";
+	private static final String NEWS_COM_AU_WORLD = "News.com.au, World";
 	private static final String HTTP_FEEDS_FEEDBURNER_COM = "http://feeds.feedburner.com";
 	private Bus eventBus;
 	private NewsComAuInterface service;
@@ -38,13 +39,13 @@ public class NewsComAuProvider implements Callback<List<RssItem>> {
 
 	@Subscribe
 	public void getNews(NewsEvents.HeadlineNewsRequest request) {
-		service.weirdTrueFreakyNews(this);
+		service.worldNews(this);
 	}
 
 	@Override
 	public void success(List<RssItem> t, Response response) {
 		eventBus.post(new NewsEvents.HeadlineNewsResult(t.get(0),
-				NEWS_COM_AU_WEIRD_TRUE_FREAKY));
+				NEWS_COM_AU_WORLD));
 
 	}
 

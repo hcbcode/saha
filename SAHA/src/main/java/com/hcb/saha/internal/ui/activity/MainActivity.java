@@ -75,7 +75,8 @@ public class MainActivity extends RoboFragmentActivity {
 		// OpenCV can't read assets, so need to copy over to sdcard
 		SahaFileManager.copyClassifierToSdCard(this.getAssets());
 
-		PreferenceManager.setDefaultValues(this, R.xml.debug_preferences, false);
+		PreferenceManager
+				.setDefaultValues(this, R.xml.debug_preferences, false);
 
 		eventBus.register(this);
 		eventBus.post(new SystemEvents.MainActivityCreated());
@@ -112,7 +113,8 @@ public class MainActivity extends RoboFragmentActivity {
 	}
 
 	@Subscribe
-	public void onSystemStateChanged(final SystemEvents.SystemStateChangedEvent event) {
+	public void onSystemStateChanged(
+			final SystemEvents.SystemStateChangedEvent event) {
 		runOnUiThread(new Runnable() {
 
 			@Override
@@ -174,15 +176,15 @@ public class MainActivity extends RoboFragmentActivity {
 			dialog.setMessage(R.string.delete_users_message);
 			dialog.setPositiveButton(R.string.ok,
 					new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					SahaUserDatabase.deleteAllUsers();
-					SahaFileManager.deleteUserDirs();
-					Toast.makeText(MainActivity.this,
-							"All users deleted.", Toast.LENGTH_SHORT)
-							.show();
-				}
-			});
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							SahaUserDatabase.deleteAllUsers();
+							SahaFileManager.deleteUserDirs();
+							Toast.makeText(MainActivity.this,
+									"All users deleted.", Toast.LENGTH_SHORT)
+									.show();
+						}
+					});
 			dialog.setNegativeButton(R.string.cancel, null);
 			dialog.show();
 			return true;
@@ -227,7 +229,7 @@ public class MainActivity extends RoboFragmentActivity {
 					.beginTransaction()
 					.setCustomAnimations(R.animator.anim_from_middle,
 							R.animator.anim_to_middle)
-							.replace(fragmentToReplace, newFragment, fragmentTag);
+					.replace(fragmentToReplace, newFragment, fragmentTag);
 			transaction.commit();
 		}
 	}

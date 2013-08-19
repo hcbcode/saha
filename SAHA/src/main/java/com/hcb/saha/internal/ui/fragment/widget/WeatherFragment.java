@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 import com.hcb.saha.R;
+import com.hcb.saha.external.source.weather.WeatherEvents;
+import com.hcb.saha.external.source.weather.WeatherForecast;
 import com.hcb.saha.internal.event.CameraEvents;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -21,14 +23,16 @@ import com.squareup.otto.Subscribe;
  */
 public class WeatherFragment extends WidgetFragment {
 
+	private static final String SYDNEY = "Sydney";
+
 	@Inject
 	private Bus eventBus;
 
 	@InjectView(R.id.row3)
-	private TextView temp;
+	private TextView tempMax;
 
 	@InjectView(R.id.row2)
-	private TextView location;
+	private TextView tempMin;
 
 	private int stateType;
 
@@ -41,6 +45,12 @@ public class WeatherFragment extends WidgetFragment {
 		eventBus.register(this);
 		stateType = getArguments().getInt(STATE_TYPE);
 		return getView(stateType, container, inflater);
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		eventBus.post(new WeatherEvents.WeatherRequest(SYDNEY));
 	}
 
 	@Override
@@ -67,29 +77,29 @@ public class WeatherFragment extends WidgetFragment {
 
 			// FIXME: Experimental. Just playing.
 			if (height < 1500 && height > 1300) {
-				temp.setTextSize(25);
-				location.setTextSize(25);
+				tempMax.setTextSize(25);
+				tempMin.setTextSize(25);
 			} else if (height < 1300 && height > 1100) {
-				temp.setTextSize(29);
-				location.setTextSize(29);
+				tempMax.setTextSize(29);
+				tempMin.setTextSize(29);
 			} else if (height < 1100 && height > 900) {
-				temp.setTextSize(33);
-				location.setTextSize(33);
+				tempMax.setTextSize(33);
+				tempMin.setTextSize(33);
 			} else if (height < 900 && height > 700) {
-				temp.setTextSize(37);
-				location.setTextSize(37);
+				tempMax.setTextSize(37);
+				tempMin.setTextSize(37);
 			} else if (height < 700 && height > 500) {
-				temp.setTextSize(50);
-				location.setTextSize(50);
+				tempMax.setTextSize(50);
+				tempMin.setTextSize(50);
 			} else if (height < 500 && height > 300) {
-				temp.setTextSize(52);
-				location.setTextSize(52);
+				tempMax.setTextSize(52);
+				tempMin.setTextSize(52);
 			} else if (height < 300 && height > 100) {
-				temp.setTextSize(53);
-				location.setTextSize(53);
+				tempMax.setTextSize(53);
+				tempMin.setTextSize(53);
 			} else if (height < 100) {
-				temp.setTextSize(54);
-				location.setTextSize(54);
+				tempMax.setTextSize(54);
+				tempMin.setTextSize(54);
 			}
 		}
 	}
@@ -103,5 +113,19 @@ public class WeatherFragment extends WidgetFragment {
 	public void onDestroyView() {
 		super.onDestroyView();
 		eventBus.unregister(this);
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		eventBus.post(new WeatherEvents.WeatherRequest(SYDNEY));
+	}
+
+	@Subscribe
+	public void onWeatherResult(WeatherEvents.WeatherResult result) {
+		tempMax.setText("Max " + result.getWeatherForecast().getMaxTemp()
+				+ WeatherForecast.TEMP_UNIT);
+		tempMin.setText("Min " + result.getWeatherForecast().getMinTemp()
+				+ WeatherForecast.TEMP_UNIT);
 	}
 }
