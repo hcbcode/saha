@@ -89,23 +89,23 @@ public class WeatherFragment extends WidgetFragment {
 				tempMax.setTextSize(29);
 				tempMin.setTextSize(29);
 			} else if (height < 1100 && height > 900) {
+				tempMax.setTextSize(30);
+				tempMin.setTextSize(30);
+			} else if (height < 900 && height > 700) {
+				tempMax.setTextSize(31);
+				tempMin.setTextSize(31);
+			} else if (height < 700 && height > 500) {
 				tempMax.setTextSize(33);
 				tempMin.setTextSize(33);
-			} else if (height < 900 && height > 700) {
+			} else if (height < 500 && height > 300) {
+				tempMax.setTextSize(35);
+				tempMin.setTextSize(35);
+			} else if (height < 300 && height > 100) {
 				tempMax.setTextSize(37);
 				tempMin.setTextSize(37);
-			} else if (height < 700 && height > 500) {
-				tempMax.setTextSize(50);
-				tempMin.setTextSize(50);
-			} else if (height < 500 && height > 300) {
-				tempMax.setTextSize(52);
-				tempMin.setTextSize(52);
-			} else if (height < 300 && height > 100) {
-				tempMax.setTextSize(53);
-				tempMin.setTextSize(53);
 			} else if (height < 100) {
-				tempMax.setTextSize(54);
-				tempMin.setTextSize(54);
+				tempMax.setTextSize(40);
+				tempMin.setTextSize(40);
 			}
 		}
 	}
@@ -133,8 +133,10 @@ public class WeatherFragment extends WidgetFragment {
 		// FIXME: Use better logic. Use date from result to work out tmrws
 		// weather.
 
-		if (null != result.getWeatherForecast().getMaxTemp()
-				&& result.getWeatherForecast().getMaxTemp().length() > 0) {
+		if ((null != result.getWeatherForecast().getMaxTemp() && result
+				.getWeatherForecast().getMaxTemp().length() > 0)
+				|| (null != result.getWeatherForecast().getMinTemp() && result
+						.getWeatherForecast().getMinTemp().length() > 0)) {
 
 			tempMax.setText("Max " + result.getWeatherForecast().getMaxTemp()
 					+ WeatherForecast.TEMP_UNIT);

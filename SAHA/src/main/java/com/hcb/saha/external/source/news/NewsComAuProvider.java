@@ -3,7 +3,9 @@
  */
 package com.hcb.saha.external.source.news;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -27,6 +29,10 @@ public class NewsComAuProvider implements Callback<List<RssItem>> {
 	private Bus eventBus;
 	private NewsComAuInterface service;
 
+	private ReentrantLock lock = new ReentrantLock();
+	private RssItem cachedRssItem;
+	private int cacheTime = 1000 * 60 * 60; // 1 hour
+
 	@Inject
 	public NewsComAuProvider(Bus eventBus) {
 		this.eventBus = eventBus;
@@ -39,15 +45,30 @@ public class NewsComAuProvider implements Callback<List<RssItem>> {
 
 	@Subscribe
 	public void getNews(NewsEvents.HeadlineNewsRequest request) {
-		//FIXME: Caching
-		service.worldNews(this);
+		// FIXME: Caching
+		lock.lock();
+		if (null == cachedRssItem
+				|| (null != cachedRssItem && (new Date().getTime() > (cachedRssItem
+						.getReadDate().getTime() + cacheTime)))) {
+			// too old
+			service.worldNews(this);
+		} else {
+			eventBus.post(new NewsEvents.HeadlineNewsResult(cachedRssItem,
+					NEWS_COM_AU_WORLD));
+
+		}
+		lock.unlock();
+
 	}
 
 	@Override
 	public void success(List<RssItem> t, Response response) {
-		eventBus.post(new NewsEvents.HeadlineNewsResult(t.get(0),
-				NEWS_COM_AU_WORLD));
-
+		lock.lock();
+		RssItem item = (t.get(0));
+		item.setReadDate(new Date());
+		cachedRssItem = item;
+		eventBus.post(new NewsEvents.HeadlineNewsResult(item, NEWS_COM_AU_WORLD));
+		lock.unlock();
 	}
 
 	@Override

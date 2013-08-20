@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
+import java.util.concurrent.locks.ReentrantLock;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -60,6 +62,10 @@ public class WeatherBoMAuProvider {
 	private static final String BOM_AU = "BOM AU";
 	private static final String DELIMITER = "#";
 
+	private ReentrantLock lock = new ReentrantLock();
+	private WeatherForecast cachedWeatherForecast;
+	private int cacheTime = 1000 * 60 * 60; // 1 hour
+
 	private Bus eventBus;
 
 	@Inject
@@ -70,8 +76,19 @@ public class WeatherBoMAuProvider {
 
 	@Subscribe
 	public void getWeather(WeatherEvents.WeatherRequest request) {
-		// FIXME: Caching
-		new FetchWeather().execute(request);
+		lock.lock();
+		if (null == cachedWeatherForecast
+				|| (null != cachedWeatherForecast && (new Date().getTime() > (cachedWeatherForecast
+						.getReadDate().getTime() + cacheTime)))) {
+			// too old
+			new FetchWeather().execute(request);
+		} else {
+			eventBus.post(new WeatherEvents.WeatherResult(
+					cachedWeatherForecast, BOM_AU));
+
+		}
+		lock.unlock();
+
 	}
 
 	private class FetchWeather extends
@@ -145,7 +162,14 @@ public class WeatherBoMAuProvider {
 							.forecast(values[TODAY_FORECAST])
 							.minTempPlus1(values[TODAY_TEMP_MIN_PLUS1])
 							.maxTempPlus1(values[TODAY_TEMP_MAX_PLUS1])
-							.forecastPlus1(values[TODAY_FORECAST_PLUS1]);
+							.forecastPlus1(values[TODAY_FORECAST_PLUS1])
+							.readDate(new Date());
+
+					lock.lock();
+					// cache it
+					cachedWeatherForecast = forecast;
+					lock.unlock();
+
 					break;
 				}
 			}
@@ -156,5 +180,4 @@ public class WeatherBoMAuProvider {
 		}
 		return forecast;
 	}
-
 }

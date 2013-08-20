@@ -1,6 +1,10 @@
 package com.hcb.saha.external.source.weather;
 
+import java.util.Date;
+
 public class WeatherForecast {
+
+	private Date readDate;
 
 	private String maxTemp;
 	private String minTemp;
@@ -63,6 +67,15 @@ public class WeatherForecast {
 
 	public WeatherForecast forecastPlus1(String forecastPlus1) {
 		this.forecastPlus1 = forecastPlus1;
+		return this;
+	}
+
+	public Date getReadDate() {
+		return readDate;
+	}
+
+	public WeatherForecast readDate(Date readDate) {
+		this.readDate = readDate;
 		return this;
 	}
 

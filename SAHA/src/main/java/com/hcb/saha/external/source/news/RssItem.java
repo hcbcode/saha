@@ -1,5 +1,7 @@
 package com.hcb.saha.external.source.news;
 
+import java.util.Date;
+
 /**
  * RSS POJO.
  * 
@@ -12,6 +14,7 @@ public class RssItem {
 	private String link;
 	private String pubDate;
 	private String description;
+	private Date readDate;
 
 	public String getTitle() {
 		return title;
@@ -49,6 +52,14 @@ public class RssItem {
 	public String toString() {
 		return "RssItem [title=" + title + ", link=" + link + ", pubDate="
 				+ pubDate + ", description=" + description + "]";
+	}
+
+	public Date getReadDate() {
+		return readDate;
+	}
+
+	public void setReadDate(Date readDate) {
+		this.readDate = readDate;
 	}
 
 	@Override
