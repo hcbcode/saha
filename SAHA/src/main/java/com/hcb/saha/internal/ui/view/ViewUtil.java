@@ -31,8 +31,11 @@ public final class ViewUtil {
 		activity.getWindow().addFlags(
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			activity.getWindow().getDecorView()
-					.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+			activity.getWindow()
+					.getDecorView()
+					.setSystemUiVisibility(
+							View.SYSTEM_UI_FLAG_LOW_PROFILE
+									| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 			/**
 			 * Android: There is a limitation: because navigation controls are
 			 * so important, the least user interaction will cause them to
