@@ -224,14 +224,13 @@ public class MainActivity extends RoboFragmentActivity {
 	}
 
 	/**
-	 * Synchronized to make sure the constant fliping that can sometimes happen
-	 * doesn't crash.
+	 * Boiler plate replace fragment.
 	 * 
 	 * @param fragmentTag
 	 * @param newFragment
 	 * @param fragmentToReplace
 	 */
-	private synchronized void replaceFragmentWithAnimation(String fragmentTag,
+	private void replaceFragmentWithAnimation(String fragmentTag,
 			Fragment newFragment, int fragmentToReplace) {
 		if (null == getSupportFragmentManager().findFragmentByTag(fragmentTag)) {
 			FragmentTransaction transaction = getSupportFragmentManager()
