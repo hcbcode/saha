@@ -1,9 +1,9 @@
 <resources>
 
     <!-- 1st 2 hex from 00 to FF. 00 = fully trans, FF fully opaque, 80 50% trans -->
-    <color name="widget_background">#80FFFFFF</color>
     <color name="widget_background_very_light">#40FFFFFF</color>
     <color name="widget_background_light">#60FFFFFF</color>
+    <color name="widget_background">#70FFFFFF</color>
     <color name="widget_background_dark">#CCFFFFFF</color>
     <color name="main_background">#0099CC</color>
 
