@@ -12,13 +12,14 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 import com.hcb.saha.R;
-import com.hcb.saha.external.source.weather.WeatherEvents;
-import com.hcb.saha.external.source.weather.WeatherForecast;
+import com.hcb.saha.external.weather.WeatherEvents;
+import com.hcb.saha.external.weather.WeatherForecast;
 import com.hcb.saha.internal.event.CameraEvents;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 /**
+ * Weather.
  * 
  * @author Steven Hadley
  * 
@@ -40,7 +41,7 @@ public class WeatherFragment extends WidgetFragment {
 	@Nullable
 	private TextView forecast;
 
-	private int stateType;
+	private StateType stateType;
 
 	public WeatherFragment() {
 	}
@@ -49,8 +50,9 @@ public class WeatherFragment extends WidgetFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		eventBus.register(this);
-		stateType = getArguments().getInt(STATE_TYPE);
-		return getView(stateType, container, inflater);
+		stateType = StateType.valueOf(getArguments().getString(STATE_TYPE));
+		return getView(getArguments().getString(STATE_TYPE), container,
+				inflater);
 	}
 
 	@Override
@@ -79,7 +81,7 @@ public class WeatherFragment extends WidgetFragment {
 	public void onFaceDetected(CameraEvents.FaceAvailableEvent event) {
 		int height = event.getFaceHeight();
 
-		if (stateType == StateType.COMPRESSED.getId()) {
+		if (stateType == StateType.COMPRESSED) {
 
 			// FIXME: Experimental. Just playing.
 			if (height < 1500 && height > 1300) {
@@ -135,13 +137,13 @@ public class WeatherFragment extends WidgetFragment {
 
 		if ((null != result.getWeatherForecast().getMaxTemp() && result
 				.getWeatherForecast().getMaxTemp().length() > 0)
-				|| (null != result.getWeatherForecast().getMinTemp() && result
+				&& (null != result.getWeatherForecast().getMinTemp() && result
 						.getWeatherForecast().getMinTemp().length() > 0)) {
 
 			tempMax.setText("Max " + result.getWeatherForecast().getMaxTemp()
-					+ WeatherForecast.TEMP_UNIT);
+					+ WeatherForecast.TEMPERATURE_DISPLAY_UNIT);
 			tempMin.setText("Min " + result.getWeatherForecast().getMinTemp()
-					+ WeatherForecast.TEMP_UNIT);
+					+ WeatherForecast.TEMPERATURE_DISPLAY_UNIT);
 
 			if (null != forecast) {
 				forecast.setText(result.getWeatherForecast().getForecast());
@@ -149,10 +151,10 @@ public class WeatherFragment extends WidgetFragment {
 		} else {
 			tempMax.setText("Tmrw Max "
 					+ result.getWeatherForecast().getMaxTempPlus1()
-					+ WeatherForecast.TEMP_UNIT);
+					+ WeatherForecast.TEMPERATURE_DISPLAY_UNIT);
 			tempMin.setText("Tmrw Min "
 					+ result.getWeatherForecast().getMinTempPlus1()
-					+ WeatherForecast.TEMP_UNIT);
+					+ WeatherForecast.TEMPERATURE_DISPLAY_UNIT);
 
 			if (null != forecast) {
 				forecast.setText(result.getWeatherForecast().getForecastPlus1());

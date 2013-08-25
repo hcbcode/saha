@@ -2,16 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_background"
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
     <LinearLayout
-        style="@style/Widget"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/widget_background_very_light"
+        android:background="@color/widget_background_dark"
         android:orientation="horizontal" >
 
         <FrameLayout
@@ -21,12 +19,12 @@
     </LinearLayout>
 
     <LinearLayout
-        style="@style/Widget"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="0dp"
         android:layout_marginTop="0dp"
         android:layout_weight="1"
+        android:background="@color/widget_background_very_light"
         android:orientation="horizontal" >
 
         <FrameLayout
@@ -36,7 +34,6 @@
     </LinearLayout>
 
     <LinearLayout
-        style="@style/Widget"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

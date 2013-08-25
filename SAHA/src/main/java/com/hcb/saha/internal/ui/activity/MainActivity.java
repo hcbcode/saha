@@ -30,9 +30,10 @@ import com.hcb.saha.internal.data.model.UsersFaces;
 import com.hcb.saha.internal.event.SystemEvents;
 import com.hcb.saha.internal.facerec.FaceRecognizer;
 import com.hcb.saha.internal.processor.CameraProcessor;
-import com.hcb.saha.internal.ui.fragment.HomeCarouselFragment;
+import com.hcb.saha.internal.ui.fragment.CarouselFragment;
 import com.hcb.saha.internal.ui.fragment.HomeUserNearFragment;
 import com.hcb.saha.internal.ui.fragment.HomeUserPersonalisedFragment;
+import com.hcb.saha.internal.ui.fragment.widget.WidgetFragment.StateType;
 import com.hcb.saha.internal.ui.view.ViewUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -75,7 +76,7 @@ public class MainActivity extends RoboFragmentActivity {
 		SahaFileManager.copyClassifierToSdCard(this.getAssets());
 
 		PreferenceManager
-		.setDefaultValues(this, R.xml.debug_preferences, false);
+				.setDefaultValues(this, R.xml.debug_preferences, false);
 
 		eventBus.register(this);
 		eventBus.post(new SystemEvents.MainActivityCreated());
@@ -100,7 +101,7 @@ public class MainActivity extends RoboFragmentActivity {
 		if (!connected) {
 			Crashlytics.start(this);
 			Toast.makeText(this, "Crashlytics started", Toast.LENGTH_SHORT)
-			.show();
+					.show();
 		}
 	}
 
@@ -176,15 +177,15 @@ public class MainActivity extends RoboFragmentActivity {
 			dialog.setMessage(R.string.delete_users_message);
 			dialog.setPositiveButton(R.string.ok,
 					new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					SahaUserDatabase.deleteAllUsers();
-					SahaFileManager.deleteUserDirs();
-					Toast.makeText(MainActivity.this,
-							"All users deleted.", Toast.LENGTH_SHORT)
-							.show();
-				}
-			});
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							SahaUserDatabase.deleteAllUsers();
+							SahaFileManager.deleteUserDirs();
+							Toast.makeText(MainActivity.this,
+									"All users deleted.", Toast.LENGTH_SHORT)
+									.show();
+						}
+					});
 			dialog.setNegativeButton(R.string.cancel, null);
 			dialog.show();
 			return true;
@@ -209,7 +210,7 @@ public class MainActivity extends RoboFragmentActivity {
 
 	private void showHomeCarousel() {
 		replaceFragmentWithAnimation("homecarousel",
-				new HomeCarouselFragment(), R.id.home);
+				CarouselFragment.create(StateType.FULL), R.id.home);
 	}
 
 	private void showHomeUserNear() {
@@ -222,14 +223,22 @@ public class MainActivity extends RoboFragmentActivity {
 				new HomeUserPersonalisedFragment(), R.id.home);
 	}
 
-	private void replaceFragmentWithAnimation(String fragmentTag,
+	/**
+	 * Synchronized to make sure the constant fliping that can sometimes happen
+	 * doesn't crash.
+	 * 
+	 * @param fragmentTag
+	 * @param newFragment
+	 * @param fragmentToReplace
+	 */
+	private synchronized void replaceFragmentWithAnimation(String fragmentTag,
 			Fragment newFragment, int fragmentToReplace) {
 		if (null == getSupportFragmentManager().findFragmentByTag(fragmentTag)) {
 			FragmentTransaction transaction = getSupportFragmentManager()
 					.beginTransaction()
 					.setCustomAnimations(R.animator.anim_from_middle,
 							R.animator.anim_to_middle)
-							.replace(fragmentToReplace, newFragment, fragmentTag);
+					.replace(fragmentToReplace, newFragment, fragmentTag);
 			transaction.commit();
 		}
 	}

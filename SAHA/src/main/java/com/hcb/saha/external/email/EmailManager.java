@@ -1,4 +1,4 @@
-package com.hcb.saha.external;
+package com.hcb.saha.external.email;
 
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -8,16 +8,15 @@ import android.os.Handler;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.hcb.saha.external.EmailEvents.QueryEmailResult;
+import com.hcb.saha.external.email.EmailEvents.QueryEmailResult;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 /**
  * 
+ * Only supports monitoring one email address
+ * 
  * @author steven hadley
- * 
- *         Only supports monitoring one email address.
- * 
  */
 @Singleton
 public class EmailManager {

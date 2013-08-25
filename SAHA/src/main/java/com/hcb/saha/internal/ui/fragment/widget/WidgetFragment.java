@@ -15,40 +15,47 @@ import android.view.ViewGroup;
 public abstract class WidgetFragment extends RoboFragment {
 
 	public static enum StateType {
-		FULL(1), COMPRESSED(2);
+		FULL(1, "FULL"), COMPRESSED(2, "COMPRESSED");
 
 		private int id;
+		private String name;
 
-		StateType(int id) {
+		StateType(int id, String name) {
 			this.id = id;
+			this.name = name;
 		}
 
-		int getId() {
+		public int getId() {
 			return id;
+		}
+
+		public String getName() {
+			return name;
 		}
 	}
 
-	protected final static String STATE_TYPE = null;
+	public final static String STATE_TYPE = "STATE_TYPE";
 
 	protected abstract int getFullLayout();
 
 	protected abstract int getCompressedLayout();
 
-	protected ViewGroup getView(int layout, ViewGroup container,
+	protected ViewGroup getView(String layout, ViewGroup container,
 			LayoutInflater inflater) {
 
-		if (0 == layout) {
-			// default it
-			layout = StateType.COMPRESSED.getId();
-		}
+		StateType stateType = StateType.valueOf(layout);
 
 		ViewGroup view = null;
-		switch (layout) {
-		case 1:
+		switch (stateType) {
+		case FULL:
 			view = (ViewGroup) inflater.inflate(getFullLayout(), container,
 					false);
 			break;
-		case 2:
+		case COMPRESSED:
+			view = (ViewGroup) inflater.inflate(getCompressedLayout(),
+					container, false);
+			break;
+		default:
 			view = (ViewGroup) inflater.inflate(getCompressedLayout(),
 					container, false);
 			break;
@@ -58,7 +65,7 @@ public abstract class WidgetFragment extends RoboFragment {
 
 	protected static Fragment addBundle(StateType state, Fragment fragment) {
 		Bundle args = new Bundle();
-		args.putInt(STATE_TYPE, state.getId());
+		args.putString(STATE_TYPE, state.getName());
 		fragment.setArguments(args);
 		return fragment;
 	}

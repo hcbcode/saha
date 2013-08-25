@@ -10,15 +10,16 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 import com.hcb.saha.R;
-import com.hcb.saha.external.AccountEvents;
-import com.hcb.saha.external.EmailEvents;
-import com.hcb.saha.external.EmailEvents.QueryEmailRequest;
-import com.hcb.saha.external.EmailManager;
+import com.hcb.saha.external.accounts.AccountEvents;
+import com.hcb.saha.external.email.EmailEvents;
+import com.hcb.saha.external.email.EmailManager;
+import com.hcb.saha.external.email.EmailEvents.QueryEmailRequest;
 import com.hcb.saha.internal.core.SahaSystemState;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 /**
+ * User specific data. In this case email.
  * 
  * @author Steven Hadley
  * 
@@ -27,19 +28,14 @@ public class UserFragment extends WidgetFragment {
 
 	@Inject
 	private Bus eventBus;
-
 	@InjectView(R.id.email_address_text)
 	private TextView emailAddress;
-
 	@InjectView(R.id.email_unread_count)
 	private TextView emailUnreadCount;
-
 	@InjectView(R.id.user)
 	private TextView user;
-
 	@Inject
 	private EmailManager emailManager;
-
 	@Inject
 	private SahaSystemState systemState;
 
@@ -60,7 +56,8 @@ public class UserFragment extends WidgetFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		eventBus.register(this);
-		return getView(getArguments().getInt(STATE_TYPE), container, inflater);
+		return getView(getArguments().getString(STATE_TYPE), container,
+				inflater);
 	}
 
 	@Override

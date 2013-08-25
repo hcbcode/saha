@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hcb.saha.external;
+package com.hcb.saha.external.email;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;

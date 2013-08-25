@@ -1,4 +1,4 @@
-package com.hcb.saha.external.source.weather;
+package com.hcb.saha.external.weather;
 
 /**
  * Event bus events.

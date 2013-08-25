@@ -1,4 +1,4 @@
-package com.hcb.saha.external.source.weather;
+package com.hcb.saha.external.weather;
 
 import java.util.Date;
 
@@ -14,7 +14,7 @@ public class WeatherForecast {
 	private String minTempPlus1;
 	private String forecastPlus1;
 
-	public final static String TEMP_UNIT = "\u2103";
+	public final static String TEMPERATURE_DISPLAY_UNIT = "\u2103";
 
 	public String getMaxTemp() {
 		return maxTemp;

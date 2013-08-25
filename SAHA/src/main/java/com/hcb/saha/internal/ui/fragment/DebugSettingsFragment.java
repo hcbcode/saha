@@ -7,6 +7,7 @@ import com.hcb.saha.R;
 
 /**
  * Debug settings fragment
+ * 
  * @author Andreas Borglin
  */
 public class DebugSettingsFragment extends PreferenceFragment {

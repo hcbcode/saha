@@ -1,4 +1,4 @@
-package com.hcb.saha.external.source.weather;
+package com.hcb.saha.external.weather;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -14,7 +14,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.inject.Inject;
-import com.hcb.saha.external.source.weather.WeatherEvents.WeatherRequest;
+import com.hcb.saha.external.weather.WeatherEvents.WeatherRequest;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 

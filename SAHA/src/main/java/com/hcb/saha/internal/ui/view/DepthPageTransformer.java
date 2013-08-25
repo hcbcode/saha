@@ -4,7 +4,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 /**
- * Thanks Google.
+ * Thanks Google this ViewPager transformer.
  * 
  * @author Steven Hadley
  * 

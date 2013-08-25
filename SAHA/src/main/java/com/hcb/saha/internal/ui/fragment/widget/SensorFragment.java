@@ -25,10 +25,8 @@ public class SensorFragment extends WidgetFragment {
 
 	@InjectView(R.id.face_val)
 	private TextView faceText;
-
 	@InjectView(R.id.light_val)
 	private TextView lightText;
-
 	@Inject
 	private Bus eventBus;
 
@@ -39,7 +37,8 @@ public class SensorFragment extends WidgetFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		eventBus.register(this);
-		return getView(getArguments().getInt(STATE_TYPE), container, inflater);
+		return getView(getArguments().getString(STATE_TYPE), container,
+				inflater);
 	}
 
 	@Override

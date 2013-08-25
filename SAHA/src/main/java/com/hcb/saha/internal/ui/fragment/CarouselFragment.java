@@ -21,29 +21,36 @@ import com.hcb.saha.R;
 import com.hcb.saha.internal.ui.fragment.widget.EventFragment;
 import com.hcb.saha.internal.ui.fragment.widget.NewsFragment;
 import com.hcb.saha.internal.ui.fragment.widget.WeatherFragment;
+import com.hcb.saha.internal.ui.fragment.widget.WidgetFragment;
 import com.hcb.saha.internal.ui.fragment.widget.WidgetFragment.StateType;
 import com.hcb.saha.internal.ui.view.DepthPageTransformer;
 import com.hcb.saha.internal.ui.view.FixedSpeedScroller;
 
-public class HomeCarouselFragment extends RoboFragment {
+/**
+ * Rotatest widgets through x-axis.
+ * 
+ * @author Steven Hadley
+ * 
+ */
+public class CarouselFragment extends RoboFragment {
 
-	private static final String TAG = HomeCarouselFragment.class
-			.getSimpleName();
-
+	private static final String TAG = CarouselFragment.class.getSimpleName();
 	private static final int NUM_PAGES = 3;
-
 	private PagerAdapter pagerAdapter;
-
+	private StateType stateType;
 	@InjectView(R.id.home_carousel_pager)
 	private ViewPager pager;
-
 	private Handler animationHandler = new Handler();
 	private AnimationStep animationStep = new AnimationStep();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_home_carousel,
+		stateType = StateType.valueOf(getArguments().getString(
+				WidgetFragment.STATE_TYPE)
+				+ "");
+
+		View view = inflater.inflate(R.layout.fragment_carousel,
 				container, false);
 		return view;
 	}
@@ -68,7 +75,8 @@ public class HomeCarouselFragment extends RoboFragment {
 			Log.e(TAG, "Can't set scroller speed", e);
 		}
 
-		animationHandler.post(animationStep);
+		animationHandler.postDelayed(animationStep,
+				AnimationStep.PAGER_DELAY_MILLIS);
 	}
 
 	/**
@@ -84,19 +92,22 @@ public class HomeCarouselFragment extends RoboFragment {
 
 		@Override
 		public Fragment getItem(int position) {
-
-			// FIXME: use a list of cached fragments
+			Fragment f = null;
 			switch (position) {
 			case 0:
-				return WeatherFragment.create(StateType.FULL);
+				f = WeatherFragment.create(stateType);
+				break;
 			case 1:
-				return NewsFragment.create(StateType.FULL);
+				f = NewsFragment.create(stateType);
+				break;
 			case 2:
-				return EventFragment.create(StateType.FULL);
+				f = EventFragment.create(stateType);
+				break;
 			default:
-				return WeatherFragment.create(StateType.FULL);
+				f = WeatherFragment.create(stateType);
+				break;
 			}
-
+			return f;
 		}
 
 		@Override
@@ -113,10 +124,11 @@ public class HomeCarouselFragment extends RoboFragment {
 	 */
 	private class AnimationStep implements Runnable {
 
-		private static final int PAGER_DELAY_MILLIS = 30000;
+		private static final int PAGER_DELAY_MILLIS = 5000;
 
 		@Override
 		public void run() {
+			// FIXME: This just jumps back to 0 and doesn't scroll
 			if (pager.getCurrentItem() == NUM_PAGES - 1) {
 				pager.setCurrentItem(0, false);
 			} else {
@@ -125,6 +137,20 @@ public class HomeCarouselFragment extends RoboFragment {
 			animationHandler.postDelayed(animationStep, PAGER_DELAY_MILLIS);
 		}
 
+	}
+
+	/**
+	 * Use this factory to create the Carousel.
+	 * 
+	 * @param state
+	 * @return
+	 */
+	public static Fragment create(StateType state) {
+		Fragment fragment = new CarouselFragment();
+		Bundle args = new Bundle();
+		args.putString(WidgetFragment.STATE_TYPE, state.getName());
+		fragment.setArguments(args);
+		return fragment;
 	}
 
 }

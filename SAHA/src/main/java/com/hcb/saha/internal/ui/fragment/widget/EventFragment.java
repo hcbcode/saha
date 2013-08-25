@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.hcb.saha.R;
 
 /**
+ * Fragment displays any event data.
  * 
  * @author Steven Hadley
  * 
@@ -21,7 +22,8 @@ public class EventFragment extends WidgetFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		return getView(getArguments().getInt(STATE_TYPE), container, inflater);
+		return getView(getArguments().getString(STATE_TYPE), container,
+				inflater);
 	}
 
 	@Override

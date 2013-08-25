@@ -11,9 +11,14 @@ import android.view.ViewGroup;
 import com.hcb.saha.R;
 import com.hcb.saha.internal.ui.fragment.widget.SensorFragment;
 import com.hcb.saha.internal.ui.fragment.widget.UserFragment;
-import com.hcb.saha.internal.ui.fragment.widget.WeatherFragment;
 import com.hcb.saha.internal.ui.fragment.widget.WidgetFragment.StateType;
 
+/**
+ * This fragment is displayed when a user has been identified.
+ * 
+ * @author Steven Hadley
+ * 
+ */
 public class HomeUserPersonalisedFragment extends RoboFragment {
 
 	@Override
@@ -29,7 +34,7 @@ public class HomeUserPersonalisedFragment extends RoboFragment {
 		addFragment(transaction, R.id.frag1,
 				UserFragment.create(StateType.COMPRESSED));
 		addFragment(transaction, R.id.frag2,
-				WeatherFragment.create(StateType.COMPRESSED));
+				CarouselFragment.create(StateType.COMPRESSED));
 		addFragment(transaction, R.id.frag3,
 				SensorFragment.create(StateType.COMPRESSED));
 

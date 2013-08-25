@@ -1,4 +1,4 @@
-package com.hcb.saha.external;
+package com.hcb.saha.external.accounts;
 
 import java.io.IOException;
 
@@ -12,8 +12,8 @@ import android.app.Application;
 import android.util.Log;
 
 import com.google.inject.Inject;
-import com.hcb.saha.external.AccountEvents.QueryAccountsRequest;
-import com.hcb.saha.external.AccountEvents.QueryAccountsResult;
+import com.hcb.saha.external.accounts.AccountEvents.QueryAccountsRequest;
+import com.hcb.saha.external.accounts.AccountEvents.QueryAccountsResult;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 

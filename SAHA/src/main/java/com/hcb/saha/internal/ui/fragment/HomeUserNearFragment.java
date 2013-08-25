@@ -14,9 +14,14 @@ import com.hcb.saha.internal.ui.fragment.widget.EventFragment;
 import com.hcb.saha.internal.ui.fragment.widget.NewsFragment;
 import com.hcb.saha.internal.ui.fragment.widget.WeatherFragment;
 import com.hcb.saha.internal.ui.fragment.widget.WidgetFragment.StateType;
-import com.hcb.saha.internal.event.SystemEvents;
 import com.squareup.otto.Bus;
 
+/**
+ * This fragment is displayed when a face is detected but not yet identified.
+ * 
+ * @author Steven Hadley
+ * 
+ */
 public class HomeUserNearFragment extends RoboFragment {
 
 	@Inject

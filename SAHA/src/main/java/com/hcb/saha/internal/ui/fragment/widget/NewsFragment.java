@@ -10,11 +10,12 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 import com.hcb.saha.R;
-import com.hcb.saha.external.source.news.NewsEvents;
+import com.hcb.saha.external.news.NewsEvents;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 /**
+ * Displays the news.
  * 
  * @author Steven Hadley
  * 
@@ -23,16 +24,12 @@ public class NewsFragment extends WidgetFragment {
 
 	@Inject
 	private Bus eventBus;
-
 	@InjectView(R.id.row1)
 	private TextView newsTitle;
-
 	@InjectView(R.id.row2)
 	private TextView newsDescription;
-
 	@InjectView(R.id.row3)
 	private TextView newsPubDate;
-
 	@InjectView(R.id.row4)
 	private TextView newsSource;
 
@@ -43,7 +40,8 @@ public class NewsFragment extends WidgetFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		eventBus.register(this);
-		return getView(getArguments().getInt(STATE_TYPE), container, inflater);
+		return getView(getArguments().getString(STATE_TYPE), container,
+				inflater);
 	}
 
 	@Override

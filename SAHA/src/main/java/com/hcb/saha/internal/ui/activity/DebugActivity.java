@@ -7,6 +7,7 @@ import com.hcb.saha.internal.ui.fragment.DebugSettingsFragment;
 
 /**
  * Debug activity used for configuring app during runtime
+ * 
  * @author Andreas Borglin
  */
 public class DebugActivity extends RoboActivity {
@@ -16,7 +17,7 @@ public class DebugActivity extends RoboActivity {
 		super.onCreate(savedInstanceState);
 
 		getFragmentManager().beginTransaction()
-		.replace(android.R.id.content, new DebugSettingsFragment())
-		.commit();
+				.replace(android.R.id.content, new DebugSettingsFragment())
+				.commit();
 	}
 }

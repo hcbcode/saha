@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.hcb.saha.external.source.news;
+package com.hcb.saha.external.news;
 
 import java.util.Date;
 import java.util.List;
