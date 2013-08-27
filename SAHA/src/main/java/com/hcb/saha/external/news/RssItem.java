@@ -2,6 +2,8 @@ package com.hcb.saha.external.news;
 
 import java.util.Date;
 
+import android.net.Uri;
+
 /**
  * RSS POJO.
  * 
@@ -15,6 +17,7 @@ public class RssItem {
 	private String pubDate;
 	private String description;
 	private Date readDate;
+	private Uri image;
 
 	public String getTitle() {
 		return title;
@@ -40,6 +43,14 @@ public class RssItem {
 		this.pubDate = pubDate;
 	}
 
+	public Uri getImage() {
+		return this.image;
+	}
+
+	public void setImage(Uri image) {
+		this.image = image;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -48,62 +59,12 @@ public class RssItem {
 		this.description = description;
 	}
 
-	@Override
-	public String toString() {
-		return "RssItem [title=" + title + ", link=" + link + ", pubDate="
-				+ pubDate + ", description=" + description + "]";
-	}
-
 	public Date getReadDate() {
 		return readDate;
 	}
 
 	public void setReadDate(Date readDate) {
 		this.readDate = readDate;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((link == null) ? 0 : link.hashCode());
-		result = prime * result + ((pubDate == null) ? 0 : pubDate.hashCode());
-		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		RssItem other = (RssItem) obj;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (link == null) {
-			if (other.link != null)
-				return false;
-		} else if (!link.equals(other.link))
-			return false;
-		if (pubDate == null) {
-			if (other.pubDate != null)
-				return false;
-		} else if (!pubDate.equals(other.pubDate))
-			return false;
-		if (title == null) {
-			if (other.title != null)
-				return false;
-		} else if (!title.equals(other.title))
-			return false;
-		return true;
 	}
 
 }

@@ -51,16 +51,12 @@ public class MainActivity extends RoboFragmentActivity {
 
 	@Inject
 	private Bus eventBus;
-
 	@Inject
 	private FaceRecognizer faceRecognizer;
-
 	@Inject
 	private CameraProcessor cameraProcessor;
-
 	@Inject
 	private SahaSystemState systemState;
-
 	private MenuItem editUserItem;
 
 	@Override
@@ -232,13 +228,18 @@ public class MainActivity extends RoboFragmentActivity {
 	 */
 	private void replaceFragmentWithAnimation(String fragmentTag,
 			Fragment newFragment, int fragmentToReplace) {
-		if (null == getSupportFragmentManager().findFragmentByTag(fragmentTag)) {
-			FragmentTransaction transaction = getSupportFragmentManager()
-					.beginTransaction()
-					.setCustomAnimations(R.animator.anim_from_middle,
-							R.animator.anim_to_middle)
-					.replace(fragmentToReplace, newFragment, fragmentTag);
-			transaction.commit();
+		if (!isFinishing()) {
+			// In case we get an event that wants to update the UI after the
+			// Activity has paused
+			if (null == getSupportFragmentManager().findFragmentByTag(
+					fragmentTag)) {
+				FragmentTransaction transaction = getSupportFragmentManager()
+						.beginTransaction()
+						.setCustomAnimations(R.animator.anim_from_middle,
+								R.animator.anim_to_middle)
+						.replace(fragmentToReplace, newFragment, fragmentTag);
+				transaction.commit();
+			}
 		}
 	}
 

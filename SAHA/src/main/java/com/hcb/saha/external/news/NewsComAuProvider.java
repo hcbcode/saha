@@ -23,6 +23,7 @@ import com.squareup.otto.Subscribe;
  */
 public class NewsComAuProvider implements Callback<List<RssItem>> {
 
+	// FIXME: Extract URLs
 	private static final String NEWS_COM_AU_WEIRD_TRUE_FREAKY = "News.com.au, Weird True Freaky";
 	private static final String NEWS_COM_AU_WORLD = "News.com.au, World";
 	private static final String HTTP_FEEDS_FEEDBURNER_COM = "http://feeds.feedburner.com";
@@ -45,7 +46,6 @@ public class NewsComAuProvider implements Callback<List<RssItem>> {
 
 	@Subscribe
 	public void getNews(NewsEvents.HeadlineNewsRequest request) {
-		// FIXME: Caching
 		lock.lock();
 		if (null == cachedRssItem
 				|| (null != cachedRssItem && (new Date().getTime() > (cachedRssItem

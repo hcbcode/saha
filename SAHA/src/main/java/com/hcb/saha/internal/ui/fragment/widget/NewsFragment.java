@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.inject.Inject;
@@ -13,6 +14,7 @@ import com.hcb.saha.R;
 import com.hcb.saha.external.news.NewsEvents;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
 
 /**
  * Displays the news.
@@ -27,7 +29,7 @@ public class NewsFragment extends WidgetFragment {
 	@InjectView(R.id.row1)
 	private TextView newsTitle;
 	@InjectView(R.id.row2)
-	private TextView newsDescription;
+	private ImageView newsImage;
 	@InjectView(R.id.row3)
 	private TextView newsPubDate;
 	@InjectView(R.id.row4)
@@ -81,7 +83,8 @@ public class NewsFragment extends WidgetFragment {
 	@Subscribe
 	public void onNewsResult(NewsEvents.HeadlineNewsResult result) {
 		newsTitle.setText(result.getHeadline().getTitle());
-		newsDescription.setText(result.getHeadline().getDescription());
+		Picasso.with(this.getActivity()).load(result.getHeadline().getImage())
+				.into(newsImage);
 		newsPubDate.setText(result.getHeadline().getPubDate());
 		newsSource.setText(result.getSource());
 	}

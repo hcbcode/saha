@@ -47,11 +47,10 @@ public class CarouselFragment extends RoboFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		stateType = StateType.valueOf(getArguments().getString(
-				WidgetFragment.STATE_TYPE)
-				+ "");
+				WidgetFragment.STATE_TYPE));
 
-		View view = inflater.inflate(R.layout.fragment_carousel,
-				container, false);
+		View view = inflater.inflate(R.layout.fragment_carousel, container,
+				false);
 		return view;
 	}
 
@@ -75,8 +74,19 @@ public class CarouselFragment extends RoboFragment {
 			Log.e(TAG, "Can't set scroller speed", e);
 		}
 
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
 		animationHandler.postDelayed(animationStep,
 				AnimationStep.PAGER_DELAY_MILLIS);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		animationHandler.removeCallbacks(animationStep);
 	}
 
 	/**

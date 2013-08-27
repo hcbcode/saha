@@ -7,6 +7,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.net.Uri;
+
 /**
  * Generic RSS 2.0 parser.
  * 
@@ -43,6 +45,9 @@ public class RssParseHandler extends DefaultHandler {
 			parsingDdate = true;
 		} else if ("description".equals(qName)) {
 			parsingDescription = true;
+		} else if ("enclosure".equals(qName)) {
+			if (currentItem != null)
+				currentItem.setImage(Uri.parse(attributes.getValue("url")));
 		}
 	}
 

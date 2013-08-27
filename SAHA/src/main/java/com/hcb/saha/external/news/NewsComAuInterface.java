@@ -6,6 +6,9 @@ import retrofit.Callback;
 import retrofit.http.GET;
 
 interface NewsComAuInterface {
+
+	// FIXME: Extract URLs
+
 	@GET("/newscomauworldnewsndm")
 	void worldNews(Callback<List<RssItem>> cb);
 

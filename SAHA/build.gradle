@@ -41,6 +41,7 @@ dependencies {
     //compile project(':libProjects:OpenCVAndroid')
 	compile "com.squareup.retrofit:retrofit:$depRetrofitVersion"
 	compile "com.squareup.okhttp:okhttp:$depOkhttpVersion"
+	compile "com.squareup.picasso:picasso:$depPicassoVersion"
 }
 
 android {
