@@ -12,11 +12,11 @@
         android:layout_weight="4"
         android:ellipsize="end"
         android:gravity="center"
-        android:lines="4"
+        android:lines="3"
         android:singleLine="false"
         android:text="Loading..."
         android:textColor="@android:color/white"
-        android:textSize="60sp" />
+        android:textSize="50sp" />
 
     <ImageView
         android:id="@+id/row2"
