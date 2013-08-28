@@ -77,6 +77,7 @@ public class MainActivity extends RoboFragmentActivity {
 
 		eventBus.register(this);
 		eventBus.post(new SystemEvents.MainActivityCreated());
+		showHomeCarousel();
 	}
 
 	@Override
@@ -84,7 +85,6 @@ public class MainActivity extends RoboFragmentActivity {
 		super.onResume();
 		cameraProcessor.startCamera((SurfaceView) findViewById(R.id.surface));
 		active = true;
-		showHomeCarousel();
 	}
 
 	@Override
@@ -119,31 +119,35 @@ public class MainActivity extends RoboFragmentActivity {
 	@Subscribe
 	public void onSystemStateChanged(
 			final SystemEvents.SystemStateChangedEvent event) {
-		runOnUiThread(new Runnable() {
+		// FIXME: Does active fix
+		// https://crashlytics.com/hcbcode/android/apps/com.hcb.saha/issues/521e5ec2aa5760e29b4047d1
+		if (active) {
+			runOnUiThread(new Runnable() {
 
-			@Override
-			public void run() {
-				State state = event.getState();
+				@Override
+				public void run() {
+					State state = event.getState();
 
-				switch (state) {
-				case REGISTERED_USER: {
-					editUserItem.setVisible(true);
-					showHomeUserPersonalised();
-					break;
+					switch (state) {
+					case REGISTERED_USER: {
+						editUserItem.setVisible(true);
+						showHomeUserPersonalised();
+						break;
+					}
+					case ANONYMOUS_USER: {
+						editUserItem.setVisible(false);
+						showHomeUserNear();
+						break;
+					}
+					default: {
+						editUserItem.setVisible(false);
+						showHomeCarousel();
+						break;
+					}
+					}
 				}
-				case ANONYMOUS_USER: {
-					editUserItem.setVisible(false);
-					showHomeUserNear();
-					break;
-				}
-				default: {
-					editUserItem.setVisible(false);
-					showHomeCarousel();
-					break;
-				}
-				}
-			}
-		});
+			});
+		}
 	}
 
 	@Override
@@ -235,18 +239,14 @@ public class MainActivity extends RoboFragmentActivity {
 	 */
 	private void replaceFragmentWithAnimation(String fragmentTag,
 			Fragment newFragment, int fragmentToReplace) {
-		// FIXME: Does active fix
-		// https://crashlytics.com/hcbcode/android/apps/com.hcb.saha/issues/521e5ec2aa5760e29b4047d1
-		if (active) {
-			if (null == getSupportFragmentManager().findFragmentByTag(
-					fragmentTag)) {
-				FragmentTransaction transaction = getSupportFragmentManager()
-						.beginTransaction()
-						.setCustomAnimations(R.animator.anim_from_middle,
-								R.animator.anim_to_middle)
-						.replace(fragmentToReplace, newFragment, fragmentTag);
-				transaction.commit();
-			}
+
+		if (null == getSupportFragmentManager().findFragmentByTag(fragmentTag)) {
+			FragmentTransaction transaction = getSupportFragmentManager()
+					.beginTransaction()
+					.setCustomAnimations(R.animator.anim_from_middle,
+							R.animator.anim_to_middle)
+					.replace(fragmentToReplace, newFragment, fragmentTag);
+			transaction.commit();
 		}
 	}
 
