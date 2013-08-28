@@ -1,5 +1,7 @@
 package com.hcb.saha.internal.ui.fragment.widget;
 
+import javax.annotation.Nullable;
+
 import roboguice.inject.InjectView;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -31,8 +33,10 @@ public class NewsFragment extends WidgetFragment {
 	@InjectView(R.id.row2)
 	private ImageView newsImage;
 	@InjectView(R.id.row3)
+	@Nullable
 	private TextView newsPubDate;
 	@InjectView(R.id.row4)
+	@Nullable
 	private TextView newsSource;
 
 	public NewsFragment() {
@@ -85,7 +89,11 @@ public class NewsFragment extends WidgetFragment {
 		newsTitle.setText(result.getHeadline().getTitle());
 		Picasso.with(this.getActivity()).load(result.getHeadline().getImage())
 				.into(newsImage);
-		newsPubDate.setText(result.getHeadline().getPubDate());
-		newsSource.setText(result.getSource());
+		if (null != newsPubDate) {
+			newsPubDate.setText(result.getHeadline().getPubDate());
+		}
+		if (null != newsSource) {
+			newsSource.setText(result.getSource());
+		}
 	}
 }

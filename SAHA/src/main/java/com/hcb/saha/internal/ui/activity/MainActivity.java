@@ -226,8 +226,10 @@ public class MainActivity extends RoboFragmentActivity {
 	 * @param newFragment
 	 * @param fragmentToReplace
 	 */
-	private void replaceFragmentWithAnimation(String fragmentTag,
+	private synchronized void replaceFragmentWithAnimation(String fragmentTag,
 			Fragment newFragment, int fragmentToReplace) {
+		// FIXME: Does synchronized fix
+		// https://crashlytics.com/hcbcode/android/apps/com.hcb.saha/issues/521d0e33aa5760e29b3fd625?
 		if (!isFinishing()) {
 			// In case we get an event that wants to update the UI after the
 			// Activity has paused

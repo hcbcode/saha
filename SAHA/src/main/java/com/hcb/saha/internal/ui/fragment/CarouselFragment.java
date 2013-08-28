@@ -134,7 +134,7 @@ public class CarouselFragment extends RoboFragment {
 	 */
 	private class AnimationStep implements Runnable {
 
-		private static final int PAGER_DELAY_MILLIS = 5000;
+		private static final int PAGER_DELAY_MILLIS = 7000;
 
 		@Override
 		public void run() {
