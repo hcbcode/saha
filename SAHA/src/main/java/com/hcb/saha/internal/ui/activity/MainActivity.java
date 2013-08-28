@@ -58,6 +58,7 @@ public class MainActivity extends RoboFragmentActivity {
 	@Inject
 	private SahaSystemState systemState;
 	private MenuItem editUserItem;
+	private boolean active;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,14 +77,20 @@ public class MainActivity extends RoboFragmentActivity {
 
 		eventBus.register(this);
 		eventBus.post(new SystemEvents.MainActivityCreated());
-
-		showHomeCarousel();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		cameraProcessor.startCamera((SurfaceView) findViewById(R.id.surface));
+		active = true;
+		showHomeCarousel();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		active = false;
 	}
 
 	/*
@@ -226,13 +233,11 @@ public class MainActivity extends RoboFragmentActivity {
 	 * @param newFragment
 	 * @param fragmentToReplace
 	 */
-	private synchronized void replaceFragmentWithAnimation(String fragmentTag,
+	private void replaceFragmentWithAnimation(String fragmentTag,
 			Fragment newFragment, int fragmentToReplace) {
-		// FIXME: Does synchronized fix
-		// https://crashlytics.com/hcbcode/android/apps/com.hcb.saha/issues/521d0e33aa5760e29b3fd625?
-		if (!isFinishing()) {
-			// In case we get an event that wants to update the UI after the
-			// Activity has paused
+		// FIXME: Does active fix
+		// https://crashlytics.com/hcbcode/android/apps/com.hcb.saha/issues/521e5ec2aa5760e29b4047d1
+		if (active) {
 			if (null == getSupportFragmentManager().findFragmentByTag(
 					fragmentTag)) {
 				FragmentTransaction transaction = getSupportFragmentManager()
