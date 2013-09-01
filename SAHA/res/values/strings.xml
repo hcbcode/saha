@@ -4,6 +4,7 @@
     <!-- General -->
     <string name="app_name">SAHA</string>
     <string name="title_activity_face_detection">FaceDetectionActivity</string>
+    <string name="choose_account">Choose account</string>
     <string name="anonymous">Anonymous</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>

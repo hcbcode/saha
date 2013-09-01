@@ -30,7 +30,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".internal.ui.activity.MainActivity"
-            android:label=""
+            android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,7 +56,7 @@
         <activity
             android:name=".internal.ui.activity.GoogleAccountDialogActivity"
             android:excludeFromRecents="true"
-            android:label="@string/action_edit_user"
+            android:label="@string/choose_account"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" >
         </activity>
