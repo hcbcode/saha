@@ -1,22 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="10dp" >
+
+    <TextView
+        android:id="@+id/enter_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/reg_enter_first_name" />
 
     <EditText
         android:id="@+id/namefield"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/enter_name"
+        android:layout_marginTop="5dp"
         android:hint="@string/first_name"
-        android:inputType="textPersonName"
-     	/>
-    
-    <Button 
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/enter_surname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/namefield"
+        android:layout_marginTop="10dp"
+        android:text="@string/reg_enter_surname" />
+
+    <EditText
+        android:id="@+id/surnamefield"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/enter_surname"
+        android:layout_marginTop="5dp"
+        android:hint="@string/surname"
+        android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/attach_google_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/surnamefield"
+        android:layout_marginTop="20dp"
+        android:text="@string/attach_google_account" />
+
+    <TextView
+        android:id="@+id/attached_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/surnamefield"
+        android:layout_marginTop="20dp"
+        android:visibility="gone" />
+
+    <Button
         android:id="@+id/create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/register"
-        />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/next" />
 
-</LinearLayout>
+</RelativeLayout>

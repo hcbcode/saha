@@ -1,6 +1,5 @@
 package com.hcb.saha.internal.ui.activity;
 
-import roboguice.activity.RoboActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.app.AlertDialog;
@@ -22,11 +21,11 @@ import com.hcb.saha.internal.data.model.User;
 
 /**
  * Activity representing the current user
- * 
+ *
  * @author Andreas Borglin
  */
 @ContentView(R.layout.activity_user)
-public class UserActivity extends RoboActivity {
+public class UserActivity extends BaseFragmentActivity {
 
 	@InjectView(R.id.user_name)
 	private TextView userName;

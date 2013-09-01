@@ -5,6 +5,7 @@ import roboguice.inject.InjectView;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +14,17 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hcb.saha.R;
 import com.hcb.saha.internal.data.db.SahaUserDatabase;
 import com.hcb.saha.internal.data.model.User;
+import com.hcb.saha.internal.ui.activity.GoogleAccountDialogActivity;
 
 /**
  * Fragment for allowing a user to create a new "account"
- * 
+ *
  * @author Andreas Borglin
  */
 public class UserRegistrationFragment extends RoboFragment {
@@ -34,6 +37,10 @@ public class UserRegistrationFragment extends RoboFragment {
 	private EditText nameField;
 	@InjectView(R.id.create)
 	private Button createButton;
+	@InjectView(R.id.attach_google_account)
+	private Button attachGoogleAccountButton;
+	@InjectView(R.id.attached_account)
+	private TextView attachedAccount;
 
 	private UserCreatedHandler handler;
 
@@ -57,6 +64,15 @@ public class UserRegistrationFragment extends RoboFragment {
 		final InputMethodManager imm = (InputMethodManager) getActivity()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.showSoftInput(nameField, InputMethodManager.SHOW_IMPLICIT);
+
+		attachGoogleAccountButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				startActivityForResult(new Intent(getActivity(),
+						GoogleAccountDialogActivity.class), 1);
+			}
+		});
 
 		createButton.setOnClickListener(new OnClickListener() {
 
@@ -97,6 +113,20 @@ public class UserRegistrationFragment extends RoboFragment {
 				}
 			}
 		});
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (data != null) {
+			String account = data.getExtras().getString(
+					GoogleAccountDialogActivity.ACCOUNT_KEY);
+			if (account != null) {
+				attachGoogleAccountButton.setVisibility(View.GONE);
+				attachedAccount.setText(getString(
+						R.string.attached_google_account, account));
+				attachedAccount.setVisibility(View.VISIBLE);
+			}
+		}
 	}
 
 }

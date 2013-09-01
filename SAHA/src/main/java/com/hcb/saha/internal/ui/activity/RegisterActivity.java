@@ -1,9 +1,7 @@
 package com.hcb.saha.internal.ui.activity;
 
-import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
 import android.os.Bundle;
-import android.view.Menu;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
@@ -22,14 +20,15 @@ import com.squareup.otto.Bus;
 
 /**
  * Handles user registration process
- * 
+ *
  * @author Andreas Borglin
  */
 @ContentView(R.layout.activity_register)
-public class RegisterActivity extends RoboFragmentActivity implements
+public class RegisterActivity extends BaseFragmentActivity implements
 		FaceDetectionFragmentHandler, UserCreatedHandler {
 
 	public static final String USER_ID = "userId";
+	private static final String TAG = RegisterActivity.class.getSimpleName();
 	@Inject
 	private Bus eventBus;
 	@Inject
@@ -57,19 +56,13 @@ public class RegisterActivity extends RoboFragmentActivity implements
 			User user = SahaUserDatabase.getUserFromId(userId);
 			startFaceRegistration(user, false);
 		}
+
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		eventBus.unregister(this);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.face_detection, menu);
-		return true;
 	}
 
 	private void startFaceRegistration(User user, boolean replace) {

@@ -14,16 +14,18 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hcb.saha.external.weather.WeatherEvents.WeatherRequest;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 /**
  * Bureau Of Meterology Au.
- * 
+ *
  * @author Steven Hadley
- * 
+ *
  */
+@Singleton
 public class WeatherBoMAuProvider {
 
 	private static final String FTP_BOM_GOV_AU = "ftp://ftp2.bom.gov.au/anon/gen/fwo/IDA00001.dat";
@@ -123,8 +125,9 @@ public class WeatherBoMAuProvider {
 			byte[] response = readFully(in);
 			return new String(response, "UTF-8");
 		} finally {
-			if (in != null)
+			if (in != null) {
 				in.close();
+			}
 		}
 
 	}
@@ -140,7 +143,7 @@ public class WeatherBoMAuProvider {
 
 	/**
 	 * Parse dat file.
-	 * 
+	 *
 	 * @param params
 	 * @return
 	 */

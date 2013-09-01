@@ -2,8 +2,8 @@ package com.hcb.saha.internal.ui.activity;
 
 import java.util.List;
 
-import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,12 +40,12 @@ import com.squareup.otto.Subscribe;
 
 /**
  * Main activity.
- * 
+ *
  * @author Andreas Borglin
  * @author Steven Hadley
  */
 @ContentView(R.layout.activity_main)
-public class MainActivity extends RoboFragmentActivity {
+public class MainActivity extends BaseFragmentActivity {
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -65,9 +65,13 @@ public class MainActivity extends RoboFragmentActivity {
 		super.onCreate(savedInstanceState);
 		enableCrashReporting();
 
-		ViewUtil.keepActivityAwake(this);
-		ViewUtil.goFullScreen(this);
+		// Use low profile for main
+		ViewUtil.hideNavigation(this);
+		// Use customized actionbar for main
 		ViewUtil.customiseActionBar(this);
+
+		ActionBar actionBar = getActionBar();
+		Log.d(TAG, "ac view: " + actionBar.getCustomView());
 
 		// OpenCV can't read assets, so need to copy over to sdcard
 		SahaFileManager.copyClassifierToSdCard(this.getAssets());
@@ -142,6 +146,7 @@ public class MainActivity extends RoboFragmentActivity {
 					default: {
 						editUserItem.setVisible(false);
 						showHomeCarousel();
+						ViewUtil.hideNavigation(MainActivity.this);
 						break;
 					}
 					}
@@ -171,8 +176,7 @@ public class MainActivity extends RoboFragmentActivity {
 			showHomeUserNear();
 			return true;
 		case R.id.action_list_users:
-			// startActivity(new Intent(MainActivity.this,
-			// UsersActivity.class));
+			// FIXME Need an admin activity
 			List<User> users = SahaUserDatabase.getAllUsers();
 			for (User user : users) {
 				Log.d("USER", "User: " + user.getName());
@@ -232,7 +236,7 @@ public class MainActivity extends RoboFragmentActivity {
 
 	/**
 	 * Boiler plate replace fragment.
-	 * 
+	 *
 	 * @param fragmentTag
 	 * @param newFragment
 	 * @param fragmentToReplace

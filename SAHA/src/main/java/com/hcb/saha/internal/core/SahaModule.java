@@ -9,7 +9,7 @@ import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.hcb.saha.external.accounts.AccountsManager;
+import com.hcb.saha.external.accounts.AccountManagerImpl;
 import com.hcb.saha.external.news.NewsComAuProvider;
 import com.hcb.saha.external.weather.WeatherBoMAuProvider;
 import com.hcb.saha.internal.data.db.SahaUserDatabase;
@@ -20,12 +20,13 @@ import com.hcb.saha.internal.service.TextToSpeechService;
 import com.hcb.saha.internal.source.identity.FaceIdentificationProvider;
 import com.hcb.saha.internal.source.sensor.LightSensorProvider;
 import com.hcb.saha.internal.utils.CameraUtils.FaceDetectionHandler;
+import com.hcb.saha.shared.AccountManager;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
 /**
  * Guice module
- * 
+ *
  * @author Andreas Borglin
  */
 public class SahaModule implements Module {
@@ -38,7 +39,8 @@ public class SahaModule implements Module {
 		binder.bind(SahaRuntimeConfig.class).in(Singleton.class);
 
 		// External
-		binder.bind(AccountsManager.class).asEagerSingleton();
+		binder.bind(AccountManager.class).to(AccountManagerImpl.class)
+				.asEagerSingleton();
 		binder.bind(NewsComAuProvider.class).asEagerSingleton();
 		binder.bind(WeatherBoMAuProvider.class).asEagerSingleton();
 

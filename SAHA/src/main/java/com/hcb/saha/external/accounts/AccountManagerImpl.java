@@ -3,35 +3,40 @@ package com.hcb.saha.external.accounts;
 import java.io.IOException;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
+import android.app.Activity;
 import android.app.Application;
 import android.util.Log;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hcb.saha.external.accounts.AccountEvents.QueryAccountsRequest;
 import com.hcb.saha.external.accounts.AccountEvents.QueryAccountsResult;
+import com.hcb.saha.shared.AccountManager;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 /**
- * 
- * @author steven hadley
- * 
+ * Handles app wide account management
+ *
+ * FIXME This is broken - comms here should not be via req/resp over event bus
+ *
+ * @author Steven Hadley
  */
-public class AccountsManager {
+@Singleton
+public class AccountManagerImpl implements AccountManager {
 
-	private static final String TAG = AccountsManager.class.getSimpleName();
+	private static final String TAG = AccountManagerImpl.class.getSimpleName();
 
 	private Bus eventBus;
 	@Inject
 	private Application context;
 
 	@Inject
-	public AccountsManager(Bus eventBus) {
+	public AccountManagerImpl(Bus eventBus) {
 		this.eventBus = eventBus;
 		eventBus.register(this);
 	}
@@ -43,7 +48,7 @@ public class AccountsManager {
 
 	/**
 	 * This could easily be made to query FB, LinkedIn etc.
-	 * 
+	 *
 	 * @param ctx
 	 * @param observer
 	 */
@@ -54,7 +59,8 @@ public class AccountsManager {
 		final String ACCOUNT_TYPE_GOOGLE = "com.google";
 		final String[] FEATURES_MAIL = { "service_mail" };
 
-		AccountManager.get(context).getAccountsByTypeAndFeatures(
+		android.accounts.AccountManager.get(context)
+				.getAccountsByTypeAndFeatures(
 				ACCOUNT_TYPE_GOOGLE, FEATURES_MAIL,
 				new AccountManagerCallback<Account[]>() {
 					@Override
@@ -82,5 +88,14 @@ public class AccountsManager {
 			i++;
 		}
 		eventBus.post(new QueryAccountsResult(accnts));
+	}
+
+	@Override
+	public void addGoogleAccount(Activity activity) {
+		// FIXME
+		// android.accounts.AccountManager.get(context).addAccount("com.google",
+		// "ah", null, null, activity, new AccountManagerCallback<Bundle>() {
+		// } , handler)
+
 	}
 }

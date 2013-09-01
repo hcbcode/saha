@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.hcb.saha.external.news;
 
@@ -14,13 +14,15 @@ import retrofit.client.Response;
 import android.util.Log;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 /**
  * @author Steven Hadley
- * 
+ *
  */
+@Singleton
 public class NewsComAuProvider implements Callback<List<RssItem>> {
 
 	// FIXME: Extract URLs
