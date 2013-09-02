@@ -2,6 +2,8 @@ package com.hcb.saha.external.email;
 
 import java.util.concurrent.locks.ReentrantLock;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Handler;
@@ -98,6 +100,12 @@ public class EmailManager {
 		public void setName(String name) {
 			this.name = name;
 		}
+	}
+
+	public static void startGmailClient(Activity activity) {
+		Intent intent = activity.getPackageManager().getLaunchIntentForPackage(
+				GmailContract.AUTHORITY);
+		activity.startActivity(intent);
 	}
 
 }

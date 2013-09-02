@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -12,8 +13,8 @@ import com.google.inject.Inject;
 import com.hcb.saha.R;
 import com.hcb.saha.external.accounts.AccountEvents;
 import com.hcb.saha.external.email.EmailEvents;
-import com.hcb.saha.external.email.EmailManager;
 import com.hcb.saha.external.email.EmailEvents.QueryEmailRequest;
+import com.hcb.saha.external.email.EmailManager;
 import com.hcb.saha.internal.core.SahaSystemState;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -58,6 +59,17 @@ public class UserFragment extends WidgetFragment {
 		eventBus.register(this);
 		return getView(getArguments().getString(STATE_TYPE), container,
 				inflater);
+	}
+
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		view.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				EmailManager.startGmailClient(getActivity());
+			}
+		});
 	}
 
 	@Override
