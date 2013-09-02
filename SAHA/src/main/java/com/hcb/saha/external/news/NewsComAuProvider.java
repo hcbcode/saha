@@ -20,7 +20,7 @@ import com.squareup.otto.Subscribe;
 
 /**
  * @author Steven Hadley
- *
+ * 
  */
 @Singleton
 public class NewsComAuProvider implements Callback<List<RssItem>> {
@@ -76,7 +76,7 @@ public class NewsComAuProvider implements Callback<List<RssItem>> {
 	@Override
 	public void failure(RetrofitError error) {
 		Log.e(NewsComAuProvider.class.getSimpleName(), "Failed to get news: "
-				+ NEWS_COM_AU_WEIRD_TRUE_FREAKY, error);
+				+ NEWS_COM_AU_WORLD, error);
 	}
 
 }
