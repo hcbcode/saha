@@ -114,7 +114,7 @@ public class CarouselFragment extends RoboFragment {
 				f = EventFragment.create(stateType);
 				break;
 			default:
-				f = WeatherFragment.create(stateType);
+				f = NewsFragment.create(stateType);
 				break;
 			}
 			return f;

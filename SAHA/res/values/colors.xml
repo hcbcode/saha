@@ -6,5 +6,7 @@
     <color name="widget_background">#70FFFFFF</color>
     <color name="widget_background_dark">#CCFFFFFF</color>
     <color name="main_background">#0099CC</color>
+    <color name="grapefruit">#DC381F</color>
+    <color name="mint_green">#BDFCC9</color>
 
 </resources>

@@ -4,7 +4,9 @@ import javax.annotation.Nullable;
 
 import roboguice.inject.InjectView;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +40,9 @@ public class NewsFragment extends WidgetFragment {
 	@InjectView(R.id.row4)
 	@Nullable
 	private TextView newsSource;
+	private Handler newsHandler = new Handler();
+	private NewsRunner newsRunner = new NewsRunner();
+	private Picasso picasso;
 
 	public NewsFragment() {
 	}
@@ -46,14 +51,11 @@ public class NewsFragment extends WidgetFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		eventBus.register(this);
+		picasso = Picasso.with(this.getActivity());
+		// FIXME: make this a debug setting.
+		picasso.setDebugging(true);
 		return getView(getArguments().getString(STATE_TYPE), container,
 				inflater);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		eventBus.post(new NewsEvents.HeadlineNewsRequest());
 	}
 
 	@Override
@@ -75,7 +77,16 @@ public class NewsFragment extends WidgetFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		Log.d(getClass().getSimpleName(), "onResume");
 		eventBus.post(new NewsEvents.HeadlineNewsRequest());
+		newsHandler.postDelayed(newsRunner, NewsRunner.DELAY_MILLIS);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		Log.d(getClass().getSimpleName(), "onPause");
+		newsHandler.removeCallbacks(newsRunner);
 	}
 
 	@Override
@@ -87,13 +98,33 @@ public class NewsFragment extends WidgetFragment {
 	@Subscribe
 	public void onNewsResult(NewsEvents.HeadlineNewsResult result) {
 		newsTitle.setText(result.getHeadline().getTitle());
-		Picasso.with(this.getActivity()).load(result.getHeadline().getImage())
-				.into(newsImage);
+		newsImage.setImageDrawable(null);
+		picasso.load(result.getHeadline().getImage()).into(newsImage);
+
 		if (null != newsPubDate) {
 			newsPubDate.setText(result.getHeadline().getPubDate());
 		}
 		if (null != newsSource) {
 			newsSource.setText(result.getSource());
 		}
+	}
+
+	/**
+	 * Gets news stories every x minutes.
+	 * 
+	 * @author Steven Hadley
+	 * 
+	 */
+	private class NewsRunner implements Runnable {
+
+		// FIXME: debug setting
+		private static final int DELAY_MILLIS = 1000 * 60; // 1 min
+
+		@Override
+		public void run() {
+			eventBus.post(new NewsEvents.HeadlineNewsRequest());
+			newsHandler.postDelayed(newsRunner, DELAY_MILLIS);
+		}
+
 	}
 }

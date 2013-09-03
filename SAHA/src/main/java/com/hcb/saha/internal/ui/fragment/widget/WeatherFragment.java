@@ -4,7 +4,9 @@ import javax.annotation.Nullable;
 
 import roboguice.inject.InjectView;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,22 +28,24 @@ import com.squareup.otto.Subscribe;
  */
 public class WeatherFragment extends WidgetFragment {
 
+	// FIXME: Should come from a config/preference
 	private static final String SYDNEY = "Sydney";
 
 	@Inject
 	private Bus eventBus;
-
 	@InjectView(R.id.row3)
 	private TextView tempMax;
-
 	@InjectView(R.id.row2)
 	private TextView tempMin;
-
 	@InjectView(R.id.row4)
 	@Nullable
 	private TextView forecast;
-
+	@InjectView(R.id.row1)
+	@Nullable
+	private TextView title;
 	private StateType stateType;
+	private Handler weatherHandler = new Handler();
+	private WeatherRunner weatherRunner = new WeatherRunner();
 
 	public WeatherFragment() {
 	}
@@ -53,12 +57,6 @@ public class WeatherFragment extends WidgetFragment {
 		stateType = StateType.valueOf(getArguments().getString(STATE_TYPE));
 		return getView(getArguments().getString(STATE_TYPE), container,
 				inflater);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		eventBus.post(new WeatherEvents.WeatherRequest(SYDNEY));
 	}
 
 	@Override
@@ -126,7 +124,16 @@ public class WeatherFragment extends WidgetFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		Log.d(getClass().getSimpleName(), "onResume");
 		eventBus.post(new WeatherEvents.WeatherRequest(SYDNEY));
+		weatherHandler.postDelayed(weatherRunner, WeatherRunner.DELAY_MILLIS);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		Log.d(getClass().getSimpleName(), "onPause");
+		weatherHandler.removeCallbacks(weatherRunner);
 	}
 
 	@Subscribe
@@ -140,25 +147,59 @@ public class WeatherFragment extends WidgetFragment {
 				&& (null != result.getWeatherForecast().getMinTemp() && result
 						.getWeatherForecast().getMinTemp().length() > 0)) {
 
-			tempMax.setText("Max " + result.getWeatherForecast().getMaxTemp()
+			if (null != title) {
+				title.setText("Weather Today");
+			}
+			tempMax.setText("L: " + result.getWeatherForecast().getMaxTemp()
 					+ WeatherForecast.TEMPERATURE_DISPLAY_UNIT);
-			tempMin.setText("Min " + result.getWeatherForecast().getMinTemp()
+			tempMin.setText("H: " + result.getWeatherForecast().getMinTemp()
 					+ WeatherForecast.TEMPERATURE_DISPLAY_UNIT);
 
 			if (null != forecast) {
-				forecast.setText(result.getWeatherForecast().getForecast());
+				forecast.setText(result.getWeatherForecast()
+						.getTodaysDatePlus1DispalyFormat()
+						+ ", "
+						+ result.getWeatherForecast().getForecast());
 			}
+
 		} else {
-			tempMax.setText("Tmrw Max "
+			if (null != title) {
+				title.setText("Weather "
+						+ result.getWeatherForecast()
+								.getTodaysDatePlus1DispalyFormat());
+			}
+			tempMax.setText("H: "
 					+ result.getWeatherForecast().getMaxTempPlus1()
 					+ WeatherForecast.TEMPERATURE_DISPLAY_UNIT);
-			tempMin.setText("Tmrw Min "
+			tempMin.setText("L: "
 					+ result.getWeatherForecast().getMinTempPlus1()
 					+ WeatherForecast.TEMPERATURE_DISPLAY_UNIT);
 
 			if (null != forecast) {
-				forecast.setText(result.getWeatherForecast().getForecastPlus1());
+				forecast.setText(result.getWeatherForecast()
+						.getTodaysDatePlus1DispalyFormat()
+						+ ", "
+						+ result.getWeatherForecast().getForecastPlus1());
 			}
 		}
+	}
+
+	/**
+	 * Gets weather every x minutes.
+	 * 
+	 * @author Steven Hadley
+	 * 
+	 */
+	private class WeatherRunner implements Runnable {
+
+		// FIXME: debug setting
+		private static final int DELAY_MILLIS = 1000 * 60 * 60; // 1 hour
+
+		@Override
+		public void run() {
+			eventBus.post(new WeatherEvents.WeatherRequest(SYDNEY));
+			weatherHandler.postDelayed(weatherRunner, DELAY_MILLIS);
+		}
+
 	}
 }

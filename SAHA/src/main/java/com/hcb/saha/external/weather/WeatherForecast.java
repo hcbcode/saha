@@ -1,5 +1,7 @@
 package com.hcb.saha.external.weather;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class WeatherForecast {
@@ -13,6 +15,11 @@ public class WeatherForecast {
 	private String maxTempPlus1;
 	private String minTempPlus1;
 	private String forecastPlus1;
+
+	private Date forecastDate;
+
+	private String todaysDateDisplayFormat;
+	private String todaysDatePlus1DispalyFormat;
 
 	public final static String TEMPERATURE_DISPLAY_UNIT = "\u2103";
 
@@ -77,6 +84,30 @@ public class WeatherForecast {
 	public WeatherForecast readDate(Date readDate) {
 		this.readDate = readDate;
 		return this;
+	}
+
+	public Date getForecastDate() {
+		return forecastDate;
+	}
+
+	public WeatherForecast forecastDate(Date forecastDate) {
+		this.forecastDate = forecastDate;
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd LLL");
+		Calendar cal = Calendar.getInstance().getInstance();
+		cal.setTime(forecastDate);
+		todaysDateDisplayFormat = sdf.format(cal.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+		todaysDatePlus1DispalyFormat = sdf.format(cal.getTime());
+		return this;
+	}
+
+	public String getTodaysDateDisplayFormat() {
+		return todaysDateDisplayFormat;
+	}
+
+	public String getTodaysDatePlus1DispalyFormat() {
+		return todaysDatePlus1DispalyFormat;
 	}
 
 }

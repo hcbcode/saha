@@ -12,7 +12,8 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="Loading..." />
+        android:text="Loading..."
+        android:textColor="@color/mint_green" />
 
     <TextView
         android:id="@+id/row3"
@@ -22,7 +23,8 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="Loading..." />
+        android:text="Loading..."
+        android:textColor="@color/grapefruit" />
 
     <TextView
         android:id="@+id/row4"

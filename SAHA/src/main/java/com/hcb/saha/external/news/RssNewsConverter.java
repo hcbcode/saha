@@ -9,6 +9,7 @@ import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
+import android.util.Log;
 
 /**
  * Converts rss response to POJOs.
@@ -29,6 +30,8 @@ class RssNewsConverter implements Converter {
 			handler = new RssParseHandler();
 			saxParser.parse(body.in(), handler);
 		} catch (Exception e) {
+			Log.e(RssNewsConverter.class.getSimpleName(),
+					"Error parsing news RSS feed", e);
 			throw new ConversionException("News conversion error", e);
 		}
 

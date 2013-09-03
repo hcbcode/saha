@@ -22,7 +22,7 @@
         android:layout_weight="3"
         android:gravity="center"
         android:text="Loading..."
-        android:textColor="@android:color/white"
+        android:textColor="@color/mint_green"
         android:textSize="50sp" />
 
     <TextView
@@ -33,7 +33,7 @@
         android:layout_weight="3"
         android:gravity="center"
         android:text="Loading..."
-        android:textColor="@android:color/white"
+        android:textColor="@color/grapefruit"
         android:textSize="50sp" />
 
 </LinearLayout>

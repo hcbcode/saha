@@ -25,6 +25,8 @@ import com.squareup.otto.Subscribe;
 @Singleton
 public class NewsComAuProvider implements Callback<List<RssItem>> {
 
+	private static final String TAG = NewsComAuProvider.class.getSimpleName();
+
 	// FIXME: Extract URLs
 	private static final String NEWS_COM_AU_WEIRD_TRUE_FREAKY = "News.com.au, Weird True Freaky";
 	private static final String NEWS_COM_AU_WORLD = "News.com.au, World";
@@ -33,8 +35,9 @@ public class NewsComAuProvider implements Callback<List<RssItem>> {
 	private NewsComAuInterface service;
 
 	private ReentrantLock lock = new ReentrantLock();
-	private RssItem cachedRssItem;
-	private int cacheTime = 1000 * 60 * 60; // 1 hour
+	private List<RssItem> cachedRssItems;
+	private Date cacheTime;
+	private int cacheRetentionTime = 1000 * 60 * 60; // 1 hour
 
 	@Inject
 	public NewsComAuProvider(Bus eventBus) {
@@ -49,13 +52,15 @@ public class NewsComAuProvider implements Callback<List<RssItem>> {
 	@Subscribe
 	public void getNews(NewsEvents.HeadlineNewsRequest request) {
 		lock.lock();
-		if (null == cachedRssItem
-				|| (null != cachedRssItem && (new Date().getTime() > (cachedRssItem
-						.getReadDate().getTime() + cacheTime)))) {
-			// too old
+		if (null == cachedRssItems
+				|| (null != cachedRssItems && (new Date().getTime() > (cacheTime
+						.getTime() + cacheRetentionTime)))) {
+			Log.d(TAG, "Requesting news");
 			service.worldNews(this);
 		} else {
-			eventBus.post(new NewsEvents.HeadlineNewsResult(cachedRssItem,
+			Log.d(TAG, "Using cached news");
+			eventBus.post(new NewsEvents.HeadlineNewsResult(cachedRssItems
+					.get(newsItemSelector(cachedRssItems.size())),
 					NEWS_COM_AU_WORLD));
 
 		}
@@ -64,19 +69,32 @@ public class NewsComAuProvider implements Callback<List<RssItem>> {
 	}
 
 	@Override
-	public void success(List<RssItem> t, Response response) {
+	public void success(List<RssItem> items, Response response) {
+		Log.d(TAG, "Received news");
 		lock.lock();
-		RssItem item = (t.get(0));
-		item.setReadDate(new Date());
-		cachedRssItem = item;
-		eventBus.post(new NewsEvents.HeadlineNewsResult(item, NEWS_COM_AU_WORLD));
+		cacheTime = new Date();
+		cachedRssItems = items;
+		eventBus.post(new NewsEvents.HeadlineNewsResult(items
+				.get(newsItemSelector(items.size())), NEWS_COM_AU_WORLD));
 		lock.unlock();
 	}
 
 	@Override
 	public void failure(RetrofitError error) {
-		Log.e(NewsComAuProvider.class.getSimpleName(), "Failed to get news: "
-				+ NEWS_COM_AU_WORLD, error);
+		Log.e(TAG, "Failed to get news: " + NEWS_COM_AU_WORLD, error);
+	}
+
+	/**
+	 * Random news item selector between one and max.
+	 * 
+	 * @param count
+	 *            max value
+	 * @return
+	 */
+	private int newsItemSelector(int count) {
+		int number = (int) (Math.floor(Math.random() * count));
+		Log.d(TAG, "News item selected: " + number);
+		return number;
 	}
 
 }
