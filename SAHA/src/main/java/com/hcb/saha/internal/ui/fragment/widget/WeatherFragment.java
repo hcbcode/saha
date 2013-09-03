@@ -148,11 +148,11 @@ public class WeatherFragment extends WidgetFragment {
 						.getWeatherForecast().getMinTemp().length() > 0)) {
 
 			if (null != title) {
-				title.setText("Weather Today");
+				title.setText("Today");
 			}
-			tempMax.setText("L: " + result.getWeatherForecast().getMaxTemp()
+			tempMax.setText("High: " + result.getWeatherForecast().getMaxTemp()
 					+ WeatherForecast.TEMPERATURE_DISPLAY_UNIT);
-			tempMin.setText("H: " + result.getWeatherForecast().getMinTemp()
+			tempMin.setText("Low: " + result.getWeatherForecast().getMinTemp()
 					+ WeatherForecast.TEMPERATURE_DISPLAY_UNIT);
 
 			if (null != forecast) {
@@ -164,19 +164,19 @@ public class WeatherFragment extends WidgetFragment {
 
 		} else {
 			if (null != title) {
-				title.setText("Weather "
+				title.setText("Tomorrow "
 						+ result.getWeatherForecast()
 								.getTodaysDatePlus1DispalyFormat());
 			}
-			tempMax.setText("H: "
+			tempMax.setText("High: "
 					+ result.getWeatherForecast().getMaxTempPlus1()
 					+ WeatherForecast.TEMPERATURE_DISPLAY_UNIT);
-			tempMin.setText("L: "
+			tempMin.setText("Low: "
 					+ result.getWeatherForecast().getMinTempPlus1()
 					+ WeatherForecast.TEMPERATURE_DISPLAY_UNIT);
 
 			if (null != forecast) {
-				forecast.setText(result.getWeatherForecast()
+				forecast.setText("Tomorrow, "+ result.getWeatherForecast()
 						.getTodaysDatePlus1DispalyFormat()
 						+ ", "
 						+ result.getWeatherForecast().getForecastPlus1());
