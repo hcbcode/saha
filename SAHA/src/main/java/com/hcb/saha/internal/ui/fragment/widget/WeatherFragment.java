@@ -157,7 +157,7 @@ public class WeatherFragment extends WidgetFragment {
 
 			if (null != forecast) {
 				forecast.setText(result.getWeatherForecast()
-						.getTodaysDatePlus1DispalyFormat()
+						.getTodaysDateDisplayFormat()
 						+ ", "
 						+ result.getWeatherForecast().getForecast());
 			}
