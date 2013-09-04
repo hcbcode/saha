@@ -40,7 +40,7 @@ import com.squareup.otto.Subscribe;
 
 /**
  * Main activity.
- *
+ * 
  * @author Andreas Borglin
  * @author Steven Hadley
  */
@@ -123,8 +123,6 @@ public class MainActivity extends BaseFragmentActivity {
 	@Subscribe
 	public void onSystemStateChanged(
 			final SystemEvents.SystemStateChangedEvent event) {
-		// FIXME: Does active fix
-		// https://crashlytics.com/hcbcode/android/apps/com.hcb.saha/issues/521e5ec2aa5760e29b4047d1
 		if (active) {
 			runOnUiThread(new Runnable() {
 
@@ -236,7 +234,7 @@ public class MainActivity extends BaseFragmentActivity {
 
 	/**
 	 * Boiler plate replace fragment.
-	 *
+	 * 
 	 * @param fragmentTag
 	 * @param newFragment
 	 * @param fragmentToReplace
