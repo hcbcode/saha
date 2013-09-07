@@ -3,7 +3,8 @@
     android:id="@+id/user_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="10dp" >
 
     <TextView
         android:id="@+id/user_name"
@@ -13,18 +14,35 @@
     <TextView
         android:id="@+id/user_num_photos"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp" />
 
     <Button
         android:id="@+id/user_add_photos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="@string/user_add_photos" />
+
+    <Button
+        android:id="@+id/attach_google_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/attach_google_account" />
+
+    <TextView
+        android:id="@+id/attached_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/user_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="@string/user_delete" />
 
 </LinearLayout>

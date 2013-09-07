@@ -24,7 +24,7 @@ import com.squareup.otto.Bus;
 
 /**
  * Voice command provider using built in Android speech services
- * 
+ *
  * @author Andreas Borglin
  */
 @Singleton
@@ -108,7 +108,7 @@ public class VoiceCommandProvider implements OnInitListener,
 			} else if (val.equalsIgnoreCase("who am i")) {
 				User user = systemState.getCurrentUser();
 				if (user != null) {
-					textToSpeak = "You are " + user.getName();
+					textToSpeak = "You are " + user.toString();
 				} else {
 					textToSpeak = "You are anonymous";
 				}

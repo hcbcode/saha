@@ -2,7 +2,7 @@ package com.hcb.saha.internal.core;
 
 /**
  * Main configuration file
- * 
+ *
  * @author Andreas Borglin
  */
 public final class SahaConfig {
@@ -16,7 +16,7 @@ public final class SahaConfig {
 
 	public static final class Database {
 		public static final String NAME = "saha.db";
-		public static final int VERSION = 1;
+		public static final int VERSION = 2;
 	}
 
 	public static final class FileSystem {

@@ -16,16 +16,16 @@ import com.squareup.otto.Subscribe;
  * requests on a separate thread managed by a looper and a handler. Requests
  * comes in via the event bus and are placed on the handler messaging queue for
  * synchronous in-order request handling.
- * 
+ *
  * @author Andreas Borglin
  */
 public class NativeFaceRecognizer implements FaceRecognizer {
 
 	private static final String TAG = NativeFaceRecognizer.class
 			.getSimpleName();
-	private static final String FACE_REC_MODEL_PATH = SahaFileManager
+	private final String FACE_REC_MODEL_PATH = SahaFileManager
 			.getFaceRecModelPath();
-	private static final String CLASSIFIER_PATH = SahaFileManager
+	private final String CLASSIFIER_PATH = SahaFileManager
 			.getFaceClassifierPath();
 
 	static {

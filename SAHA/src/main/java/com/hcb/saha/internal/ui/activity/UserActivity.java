@@ -35,6 +35,10 @@ public class UserActivity extends BaseFragmentActivity {
 	private Button userAddPhotos;
 	@InjectView(R.id.user_delete)
 	private Button userDelete;
+	@InjectView(R.id.attach_google_account)
+	private Button attachGoogleAccountButton;
+	@InjectView(R.id.attached_account)
+	private TextView attachedAccount;
 
 	@Inject
 	private SahaSystemState systemState;
@@ -47,7 +51,7 @@ public class UserActivity extends BaseFragmentActivity {
 		if (user == null) {
 			finish();
 		} else {
-			userName.setText(getString(R.string.user_name, user.getName()));
+			userName.setText(getString(R.string.user_name, user.toString()));
 			String[] images = SahaFileManager.getUserFaceImages(user);
 			userNumPhotos.setText(getString(R.string.user_num_photos,
 					images.length));
@@ -81,7 +85,7 @@ public class UserActivity extends BaseFragmentActivity {
 									SahaFileManager.deleteUserDir(user);
 									Toast.makeText(
 											UserActivity.this,
-											"User " + user.getName()
+											"User " + user.toString()
 													+ " deleted!",
 											Toast.LENGTH_SHORT).show();
 								}
@@ -90,6 +94,45 @@ public class UserActivity extends BaseFragmentActivity {
 					dialog.show();
 				}
 			});
+
+			if (user.getGoogleAccount() == null) {
+				attachGoogleAccountButton
+						.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								startActivityForResult(new Intent(
+										UserActivity.this,
+										GoogleAccountDialogActivity.class), 1);
+							}
+						});
+			} else {
+				attachGoogleAccountButton.setVisibility(View.GONE);
+				attachedAccount.setText(getString(
+						R.string.attached_google_account,
+						user.getGoogleAccount()));
+				attachedAccount.setVisibility(View.VISIBLE);
+			}
+
+
+		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (data != null) {
+			String googleAccount = data.getExtras().getString(
+					GoogleAccountDialogActivity.ACCOUNT_KEY);
+			if (googleAccount != null) {
+				attachGoogleAccountButton.setVisibility(View.GONE);
+				attachedAccount.setText(getString(
+						R.string.attached_google_account, googleAccount));
+				attachedAccount.setVisibility(View.VISIBLE);
+
+				final User user = systemState.getCurrentUser();
+				user.setGoogleAccount(googleAccount);
+				SahaUserDatabase.updateUser(user);
+			}
 		}
 	}
 

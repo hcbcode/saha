@@ -2,26 +2,34 @@ package com.hcb.saha.internal.data.model;
 
 /**
  * Represents a user
- * 
+ *
  * @author Andreas Borglin
  */
 public class User {
 
+	public static User createUser(String firstName, String surname,
+			String googleAccount) {
+		User user = new User();
+		user.setFirstName(firstName);
+		user.setSurName(surname);
+		user.setGoogleAccount(googleAccount);
+		return user;
+	}
+
 	// Id maps directly to database id
 	private int id;
-	// Name as registered by user
-	private String name;
-	// User directory path on sdcard
-	private String directory;
+
+	// First name
+	private String firstName;
+
+	// Surname
+	private String surname;
+
+	// Attached Google account
+	private String googleAccount;
 
 	public User() {
 
-	}
-
-	public User(int id, String name, String directory) {
-		this.id = id;
-		this.name = name;
-		this.directory = directory;
 	}
 
 	public int getId() {
@@ -32,20 +40,37 @@ public class User {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getDirectory() {
-		return directory;
+	public String getSurName() {
+		return surname;
 	}
 
-	public void setDirectory(String directory) {
-		this.directory = directory;
+	public void setSurName(String surName) {
+		this.surname = surName;
+	}
+
+	public String getGoogleAccount() {
+		return googleAccount;
+	}
+
+	public void setGoogleAccount(String googleAccount) {
+		this.googleAccount = googleAccount;
+	}
+
+	public String getDirectoryId() {
+		return id + firstName;
+	}
+
+	@Override
+	public String toString() {
+		return firstName + " " + surname;
 	}
 
 }

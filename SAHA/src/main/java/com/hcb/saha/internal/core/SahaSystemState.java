@@ -15,7 +15,7 @@ import com.squareup.otto.Subscribe;
 
 /**
  * Early implementation of a system state
- * 
+ *
  * @author Andreas Borglin
  */
 @Singleton
@@ -57,7 +57,7 @@ public final class SahaSystemState {
 		updateState(State.REGISTERED_USER);
 		eventBus.post(new TextSpeechEvents.TextToSpeechRequest(context
 				.getString(R.string.user_recognized_speech,
-						currentUser.getName())));
+						currentUser.getFirstName())));
 	}
 
 	@Subscribe

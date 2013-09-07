@@ -39,7 +39,7 @@ import com.squareup.otto.Subscribe;
 
 /**
  * Main activity.
- * 
+ *
  * @author Andreas Borglin
  * @author Steven Hadley
  */
@@ -179,7 +179,7 @@ public class MainActivity extends BaseFragmentActivity {
 			// FIXME Need an admin activity
 			List<User> users = SahaUserDatabase.getAllUsers();
 			for (User user : users) {
-				Log.d("USER", "User: " + user.getName());
+				Log.d("USER", "User: " + user.toString());
 			}
 			return true;
 		case R.id.action_delete_users:
@@ -235,7 +235,7 @@ public class MainActivity extends BaseFragmentActivity {
 
 	/**
 	 * Boiler plate replace fragment.
-	 * 
+	 *
 	 * @param fragmentTag
 	 * @param newFragment
 	 * @param fragmentToReplace

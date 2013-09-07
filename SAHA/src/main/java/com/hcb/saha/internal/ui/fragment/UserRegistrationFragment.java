@@ -35,12 +35,16 @@ public class UserRegistrationFragment extends RoboFragment {
 
 	@InjectView(R.id.namefield)
 	private EditText nameField;
+	@InjectView(R.id.surnamefield)
+	private EditText surnameField;
 	@InjectView(R.id.create)
 	private Button createButton;
 	@InjectView(R.id.attach_google_account)
 	private Button attachGoogleAccountButton;
 	@InjectView(R.id.attached_account)
 	private TextView attachedAccount;
+
+	private String googleAccount;
 
 	private UserCreatedHandler handler;
 
@@ -79,18 +83,18 @@ public class UserRegistrationFragment extends RoboFragment {
 			@Override
 			public void onClick(View v) {
 
-				if (nameField.getText().length() < 2) {
+				if (nameField.getText().length() < 2
+						&& surnameField.getText().length() > 2) {
 					Toast.makeText(getActivity(),
-							"Name must be at least 2 characters",
+							"Name fields must be at least 2 characters",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
 
 				imm.hideSoftInputFromWindow(nameField.getWindowToken(), 0);
-				final User user = new User();
-				user.setName(nameField.getText().toString());
-				user.setDirectory(nameField.getText().toString().toLowerCase()
-						.trim());
+				final User user = User.createUser(nameField.getText()
+						.toString(), surnameField.getText().toString(),
+						googleAccount);
 				long userId = SahaUserDatabase.addUser(user);
 				if (userId >= 0) {
 					AlertDialog.Builder dialog = new AlertDialog.Builder(
@@ -118,12 +122,12 @@ public class UserRegistrationFragment extends RoboFragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (data != null) {
-			String account = data.getExtras().getString(
+			googleAccount = data.getExtras().getString(
 					GoogleAccountDialogActivity.ACCOUNT_KEY);
-			if (account != null) {
+			if (googleAccount != null) {
 				attachGoogleAccountButton.setVisibility(View.GONE);
 				attachedAccount.setText(getString(
-						R.string.attached_google_account, account));
+						R.string.attached_google_account, googleAccount));
 				attachedAccount.setVisibility(View.VISIBLE);
 			}
 		}

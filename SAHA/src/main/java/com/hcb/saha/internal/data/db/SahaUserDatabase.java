@@ -19,7 +19,7 @@ import com.hcb.saha.internal.data.model.User;
 
 /**
  * Saha user database handler
- * 
+ *
  * @author Andreas Borglin
  */
 @Singleton
@@ -37,8 +37,9 @@ public final class SahaUserDatabase {
 	private static final class UsersColumns implements BaseColumns {
 
 		public static final String ID_FIELD = BaseColumns._ID;
-		public static final String NAME_FIELD = "name";
-		public static final String DIRECTORY_FIELD = "dir";
+		public static final String FIRST_NAME_FIELD = "firstname";
+		public static final String SURNAME_FIELD = "surname";
+		public static final String GOOGLE_ACCOUNT_FIELD = "googleaccount";
 	}
 
 	private static SahaOpenHelper getSahaOpenHelper() {
@@ -74,11 +75,17 @@ public final class SahaUserDatabase {
 		return user;
 	}
 
+	private static ContentValues getContentValues(User user) {
+		ContentValues values = new ContentValues();
+		values.put(UsersColumns.FIRST_NAME_FIELD, user.getFirstName());
+		values.put(UsersColumns.SURNAME_FIELD, user.getSurName());
+		values.put(UsersColumns.GOOGLE_ACCOUNT_FIELD, user.getGoogleAccount());
+		return values;
+	}
+
 	public static long addUser(User user) {
 		SQLiteDatabase db = getSahaOpenHelper().getWritableDatabase();
-		ContentValues values = new ContentValues();
-		values.put(UsersColumns.NAME_FIELD, user.getName());
-		values.put(UsersColumns.DIRECTORY_FIELD, user.getDirectory());
+		ContentValues values = getContentValues(user);
 		long id = db.insert(USERS_TABLE, null, values);
 		user.setId((int) id);
 		db.close();
@@ -101,11 +108,21 @@ public final class SahaUserDatabase {
 	private static User getUserFromCursor(Cursor cursor) {
 		User user = new User();
 		user.setId(cursor.getInt(cursor.getColumnIndex(UsersColumns.ID_FIELD)));
-		user.setName(cursor.getString(cursor
-				.getColumnIndex(UsersColumns.NAME_FIELD)));
-		user.setDirectory(cursor.getString(cursor
-				.getColumnIndex(UsersColumns.DIRECTORY_FIELD)));
+		user.setFirstName(cursor.getString(cursor
+				.getColumnIndex(UsersColumns.FIRST_NAME_FIELD)));
+		user.setSurName(cursor.getString(cursor
+				.getColumnIndex(UsersColumns.SURNAME_FIELD)));
+		user.setGoogleAccount(cursor.getString(cursor
+				.getColumnIndex(UsersColumns.GOOGLE_ACCOUNT_FIELD)));
 		return user;
+	}
+
+	public static void updateUser(User user) {
+		SQLiteDatabase db = getSahaOpenHelper().getWritableDatabase();
+		ContentValues values = getContentValues(user);
+		db.update(USERS_TABLE, values,
+				UsersColumns.ID_FIELD + "="
+				+ user.getId(), null);
 	}
 
 	private static class SahaOpenHelper extends SQLiteOpenHelper {
@@ -119,8 +136,12 @@ public final class SahaUserDatabase {
 					.append(USERS_TABLE).append(" (")
 					.append(UsersColumns.ID_FIELD)
 					.append(" INTEGER PRIMARY KEY AUTOINCREMENT, ")
-					.append(UsersColumns.NAME_FIELD).append(" TEXT, ")
-					.append(UsersColumns.DIRECTORY_FIELD).append(" TEXT);")
+					.append(UsersColumns.FIRST_NAME_FIELD)
+					.append(" TEXT NOT NULL, ")
+					.append(UsersColumns.SURNAME_FIELD)
+					.append(" TEXT NOT NULL, ")
+					.append(UsersColumns.GOOGLE_ACCOUNT_FIELD)
+					.append(" TEXT);")
 					.toString();
 			db.execSQL(query);
 		}
@@ -132,7 +153,8 @@ public final class SahaUserDatabase {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			// TODO Not implemented
+			db.execSQL("DROP TABLE IF EXISTS " + USERS_TABLE);
+			onCreate(db);
 		}
 	}
 

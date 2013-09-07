@@ -32,7 +32,7 @@ import com.squareup.otto.Subscribe;
 
 /**
  * Responsible for identifying a face
- * 
+ *
  * @author Andreas Borglin
  */
 @Singleton
@@ -101,7 +101,7 @@ public class FaceIdentificationProvider implements FaceRecognitionEventHandler,
 		} else {
 			User user = SahaUserDatabase.getUserFromId(predictedUserId);
 			if (user != null) {
-				Log.d("USER", "user detected: " + user.getName());
+				Log.d("USER", "user detected: " + user.toString());
 				eventBus.post(new UserIdentificationEvents.RegisteredUserDetected(
 						user));
 				userAnonymousCount = -1;

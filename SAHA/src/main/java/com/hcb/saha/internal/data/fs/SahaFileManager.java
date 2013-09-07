@@ -12,12 +12,14 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 
+import android.app.Application;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
-import android.os.Environment;
 import android.util.Log;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.hcb.saha.internal.core.SahaConfig.Assets;
 import com.hcb.saha.internal.core.SahaConfig.FileSystem;
 import com.hcb.saha.internal.data.model.User;
@@ -25,12 +27,15 @@ import com.hcb.saha.internal.data.model.UsersFaces;
 
 /**
  * Manages the Saha file system directories and files
- * 
+ *
  * @author Andreas Borglin
  */
 public final class SahaFileManager {
 
 	private static final String TAG = SahaFileManager.class.getSimpleName();
+
+	@Inject
+	private static Provider<Application> contextProvider;
 
 	private SahaFileManager() {
 	}
@@ -39,21 +44,17 @@ public final class SahaFileManager {
 	 * Get the SAHA root folder on the sdcard
 	 */
 	public static File getSahaRoot() {
-		if (Environment.getExternalStorageState().equals(
-				Environment.MEDIA_MOUNTED)) {
-			File sdcard = Environment.getExternalStorageDirectory();
-			File sahaRoot = new File(sdcard, FileSystem.SAHA_ROOT_DIR);
-			if (!sahaRoot.exists()) {
-				sahaRoot.mkdir();
-			}
-			return sahaRoot;
+		File internal = contextProvider.get().getFilesDir();
+		File sahaRoot = new File(internal, FileSystem.SAHA_ROOT_DIR);
+		if (!sahaRoot.exists()) {
+			sahaRoot.mkdir();
 		}
-		return null;
+		return sahaRoot;
 	}
 
 	/**
 	 * Get a top level directory in SAHA root
-	 * 
+	 *
 	 * @param dirName
 	 *            The top level directory
 	 */
@@ -96,12 +97,12 @@ public final class SahaFileManager {
 
 	/**
 	 * Get the user directory for a user
-	 * 
+	 *
 	 * @param user
 	 *            the user directory name
 	 */
 	public static File getUserDir(User user) {
-		File userFile = new File(getUsersDir(), user.getDirectory());
+		File userFile = new File(getUsersDir(), user.getDirectoryId());
 		if (!userFile.exists()) {
 			userFile.mkdirs();
 		}
@@ -110,7 +111,7 @@ public final class SahaFileManager {
 
 	/**
 	 * Get the face image directory for a user
-	 * 
+	 *
 	 * @param user
 	 *            the user
 	 */
@@ -125,7 +126,7 @@ public final class SahaFileManager {
 
 	/**
 	 * Get an output stream for writing a new face image for a user
-	 * 
+	 *
 	 * @param user
 	 *            the user
 	 */
@@ -141,7 +142,7 @@ public final class SahaFileManager {
 
 	/**
 	 * Persist a face bitmap to file TODO Should this logic be here?
-	 * 
+	 *
 	 * @param bitmap
 	 *            The face bitmap
 	 */
@@ -177,9 +178,9 @@ public final class SahaFileManager {
 	 * exist it will create it If event data file reaches 1MB it will be copied
 	 * to a unique filename in the same directory ready for upload and a new
 	 * file will be created
-	 * 
+	 *
 	 * @param event
-	 * 
+	 *
 	 */
 	public static boolean appendEvent(String event) {
 		File eventsDir = getEventsDir();
@@ -221,7 +222,7 @@ public final class SahaFileManager {
 	/**
 	 * Returns list of absolute locations for all event collection files that
 	 * match the upload pattern
-	 * 
+	 *
 	 */
 	public static List<String> getEventFilesForUpload() {
 
@@ -240,7 +241,7 @@ public final class SahaFileManager {
 
 	/**
 	 * Deletes the file specified by absolute fileLocation
-	 * 
+	 *
 	 * @param fileLocation
 	 */
 	public static void deleteUploadedFile(String fileLocation) {
@@ -282,7 +283,7 @@ public final class SahaFileManager {
 
 	/**
 	 * Get a representation of all the users and paths to their face images
-	 * 
+	 *
 	 * @param users
 	 *            List of all users
 	 */

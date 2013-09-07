@@ -95,7 +95,7 @@ public class DataPersistenceService {
 				Secure.ANDROID_ID);
 		String user;
 		if (sahaSystemState.getCurrentUser() != null) {
-			user = sahaSystemState.getCurrentUser().getName();
+			user = sahaSystemState.getCurrentUser().getFirstName();
 		} else {
 			user = "System";
 		}

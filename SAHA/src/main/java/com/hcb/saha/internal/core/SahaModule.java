@@ -13,6 +13,7 @@ import com.hcb.saha.external.accounts.AccountManagerImpl;
 import com.hcb.saha.external.news.NewsComAuDao;
 import com.hcb.saha.external.weather.WeatherBoMAuDao;
 import com.hcb.saha.internal.data.db.SahaUserDatabase;
+import com.hcb.saha.internal.data.fs.SahaFileManager;
 import com.hcb.saha.internal.facerec.FaceRecognizer;
 import com.hcb.saha.internal.facerec.NativeFaceRecognizer;
 import com.hcb.saha.internal.service.DataPersistenceService;
@@ -33,6 +34,8 @@ public class SahaModule implements Module {
 
 	@Override
 	public void configure(Binder binder) {
+
+		binder.requestStaticInjection(SahaFileManager.class);
 
 		// Core
 		binder.bind(SahaSystemState.class).asEagerSingleton();

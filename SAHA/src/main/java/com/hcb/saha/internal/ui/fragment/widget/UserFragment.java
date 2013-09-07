@@ -16,14 +16,15 @@ import com.hcb.saha.external.email.EmailEvents;
 import com.hcb.saha.external.email.EmailEvents.QueryEmailRequest;
 import com.hcb.saha.external.email.EmailManager;
 import com.hcb.saha.internal.core.SahaSystemState;
+import com.hcb.saha.internal.data.model.User;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 /**
  * User specific data. In this case email.
- * 
+ *
  * @author Steven Hadley
- * 
+ *
  */
 public class UserFragment extends BaseWidgetFragment {
 
@@ -50,7 +51,7 @@ public class UserFragment extends BaseWidgetFragment {
 		// FIXME: This should not be done here
 		eventBus.post(new AccountEvents.QueryAccountsRequest());
 
-		user.setText("User: " + systemState.getCurrentUser().getName());
+		user.setText("User: " + systemState.getCurrentUser().toString());
 	}
 
 	@Override
@@ -109,11 +110,19 @@ public class UserFragment extends BaseWidgetFragment {
 
 	@Subscribe
 	public void onAccountsQueried(AccountEvents.QueryAccountsResult accounts) {
-		// FIXME: Just picking first one should not be from here but from user
-		// object
-		eventBus.post(new QueryEmailRequest(accounts.getNames()[0], this
+		User user = systemState.getCurrentUser();
+		String googleAccount = null;
+		if (user != null && user.getGoogleAccount() != null) {
+			googleAccount = user.getGoogleAccount();
+		} else if (accounts.getNames().length > 0) {
+			googleAccount = accounts.getNames()[0];
+		}
+
+		if (googleAccount != null) {
+			eventBus.post(new QueryEmailRequest(googleAccount, this
 				.getActivity()));
-		emailAddress.setText(accounts.getNames()[0]);
+			emailAddress.setText(googleAccount);
+		}
 	}
 
 	@Override
