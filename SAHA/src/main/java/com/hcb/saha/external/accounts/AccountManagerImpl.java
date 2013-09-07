@@ -7,23 +7,16 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
-import android.app.Activity;
 import android.app.Application;
 import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.hcb.saha.external.accounts.AccountEvents.QueryAccountsRequest;
-import com.hcb.saha.external.accounts.AccountEvents.QueryAccountsResult;
 import com.hcb.saha.shared.AccountManager;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 /**
  * Handles app wide account management
- * 
- * FIXME Create as a normal 'manager'
- * 
+ *
  * @author Steven Hadley
  */
 @Singleton
@@ -31,28 +24,17 @@ public class AccountManagerImpl implements AccountManager {
 
 	private static final String TAG = AccountManagerImpl.class.getSimpleName();
 
-	private Bus eventBus;
 	@Inject
 	private Application context;
 
-	@Inject
-	public AccountManagerImpl(Bus eventBus) {
-		this.eventBus = eventBus;
-		eventBus.register(this);
-	}
-
-	@Subscribe
-	public void queryAccounts(QueryAccountsRequest query) {
-		getGoogleAccounts();
-	}
-
 	/**
 	 * This could easily be made to query FB, LinkedIn etc.
-	 * 
+	 *
 	 * @param ctx
 	 * @param observer
 	 */
-	private void getGoogleAccounts() {
+	@Override
+	public void getGoogleAccounts(final AccountCallback callback) {
 
 		Log.d(TAG, "Get accounts");
 
@@ -81,27 +63,18 @@ public class AccountManagerImpl implements AccountManager {
 											"Got OperationCanceledException",
 											ae);
 								}
-								onAccountResults(accounts);
+								onAccountResults(accounts, callback);
 							}
 						}, null);
 	}
 
-	private void onAccountResults(Account[] accounts) {
+	private void onAccountResults(Account[] accounts, AccountCallback callback) {
 		String[] accnts = new String[accounts.length];
 		int i = 0;
 		for (Account acc : accounts) {
 			accnts[i] = acc.name;
 			i++;
 		}
-		eventBus.post(new QueryAccountsResult(accnts));
-	}
-
-	@Override
-	public void addGoogleAccount(Activity activity) {
-		// FIXME
-		// android.accounts.AccountManager.get(context).addAccount("com.google",
-		// "ah", null, null, activity, new AccountManagerCallback<Bundle>() {
-		// } , handler)
-
+		callback.onAccountsResults(accnts);
 	}
 }

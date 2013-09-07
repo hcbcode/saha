@@ -11,12 +11,13 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 import com.hcb.saha.R;
-import com.hcb.saha.external.accounts.AccountEvents;
 import com.hcb.saha.external.email.EmailEvents;
 import com.hcb.saha.external.email.EmailEvents.QueryEmailRequest;
 import com.hcb.saha.external.email.EmailManager;
 import com.hcb.saha.internal.core.SahaSystemState;
 import com.hcb.saha.internal.data.model.User;
+import com.hcb.saha.shared.AccountManager;
+import com.hcb.saha.shared.AccountManager.AccountCallback;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -40,6 +41,8 @@ public class UserFragment extends BaseWidgetFragment {
 	private EmailManager emailManager;
 	@Inject
 	private SahaSystemState systemState;
+	@Inject
+	private AccountManager accountManager;
 
 	public UserFragment() {
 	}
@@ -48,8 +51,13 @@ public class UserFragment extends BaseWidgetFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		// FIXME: This should not be done here
-		eventBus.post(new AccountEvents.QueryAccountsRequest());
+		accountManager.getGoogleAccounts(new AccountCallback() {
+
+			@Override
+			public void onAccountsResults(String[] accounts) {
+				handleAccountsResults(accounts);
+			}
+		});
 
 		user.setText("User: " + systemState.getCurrentUser().toString());
 	}
@@ -108,14 +116,13 @@ public class UserFragment extends BaseWidgetFragment {
 		});
 	}
 
-	@Subscribe
-	public void onAccountsQueried(AccountEvents.QueryAccountsResult accounts) {
+	private void handleAccountsResults(String[] accounts) {
 		User user = systemState.getCurrentUser();
 		String googleAccount = null;
 		if (user != null && user.getGoogleAccount() != null) {
 			googleAccount = user.getGoogleAccount();
-		} else if (accounts.getNames().length > 0) {
-			googleAccount = accounts.getNames()[0];
+		} else if (accounts.length > 0) {
+			googleAccount = accounts[0];
 		}
 
 		if (googleAccount != null) {

@@ -1,6 +1,5 @@
 package com.hcb.saha.shared;
 
-import android.app.Activity;
 
 /**
  * Interface for account management
@@ -9,6 +8,10 @@ import android.app.Activity;
  */
 public interface AccountManager {
 
-	void addGoogleAccount(Activity activity);
+	public interface AccountCallback {
+		void onAccountsResults(String[] accounts);
+	}
+
+	void getGoogleAccounts(AccountCallback callback);
 
 }

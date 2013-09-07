@@ -17,9 +17,9 @@ import android.widget.ListView;
 
 import com.google.inject.Inject;
 import com.hcb.saha.R;
-import com.hcb.saha.external.accounts.AccountEvents;
+import com.hcb.saha.shared.AccountManager;
+import com.hcb.saha.shared.AccountManager.AccountCallback;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 @ContentView(R.layout.activity_google_account_dialog)
 public class GoogleAccountDialogActivity extends RoboActivity implements
@@ -33,22 +33,13 @@ public class GoogleAccountDialogActivity extends RoboActivity implements
 	private Button createNewAccount;
 	@Inject
 	private Bus eventBus;
-
-
-	@Subscribe
-	public void onAccountResults(AccountEvents.QueryAccountsResult event) {
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, event.getNames());
-		listView.setAdapter(adapter);
-	}
+	@Inject
+	private AccountManager accountManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		eventBus.register(this);
-		// FIXME this model is broken - should not go via event bus...
-		eventBus.post(new AccountEvents.QueryAccountsRequest());
 		createNewAccount.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -71,6 +62,17 @@ public class GoogleAccountDialogActivity extends RoboActivity implements
 				result.putExtra(ACCOUNT_KEY, account);
 				setResult(RESULT_OK, result);
 				finish();
+			}
+		});
+
+		accountManager.getGoogleAccounts(new AccountCallback() {
+
+			@Override
+			public void onAccountsResults(String[] accounts) {
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+						GoogleAccountDialogActivity.this,
+						android.R.layout.simple_list_item_1, accounts);
+				listView.setAdapter(adapter);
 			}
 		});
 
