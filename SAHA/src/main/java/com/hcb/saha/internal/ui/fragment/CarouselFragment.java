@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -21,8 +21,8 @@ import com.hcb.saha.R;
 import com.hcb.saha.internal.ui.fragment.widget.EventFragment;
 import com.hcb.saha.internal.ui.fragment.widget.NewsFragment;
 import com.hcb.saha.internal.ui.fragment.widget.WeatherFragment;
-import com.hcb.saha.internal.ui.fragment.widget.WidgetFragment;
-import com.hcb.saha.internal.ui.fragment.widget.WidgetFragment.StateType;
+import com.hcb.saha.internal.ui.fragment.widget.BaseWidgetFragment;
+import com.hcb.saha.internal.ui.fragment.widget.BaseWidgetFragment.StateType;
 import com.hcb.saha.internal.ui.view.DepthPageTransformer;
 import com.hcb.saha.internal.ui.view.FixedSpeedScroller;
 
@@ -47,7 +47,7 @@ public class CarouselFragment extends RoboFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		stateType = StateType.valueOf(getArguments().getString(
-				WidgetFragment.STATE_TYPE));
+				BaseWidgetFragment.STATE_TYPE));
 
 		View view = inflater.inflate(R.layout.fragment_carousel, container,
 				false);
@@ -90,12 +90,14 @@ public class CarouselFragment extends RoboFragment {
 	}
 
 	/**
-	 * Data adapter for Pager.
+	 * Data adapter for Pager. If we have many more fragments switch to
+	 * FragmentStatePagerAdapter which destroys fragments ad reloads.
+	 * FragmentPagerAdapter keeps them in memory.
 	 * 
 	 * @author Steven Hadley
 	 * 
 	 */
-	private class CarouselAdapter extends FragmentStatePagerAdapter {
+	private class CarouselAdapter extends FragmentPagerAdapter {
 		public CarouselAdapter(FragmentManager fm) {
 			super(fm);
 		}
@@ -158,7 +160,7 @@ public class CarouselFragment extends RoboFragment {
 	public static Fragment create(StateType state) {
 		Fragment fragment = new CarouselFragment();
 		Bundle args = new Bundle();
-		args.putString(WidgetFragment.STATE_TYPE, state.getName());
+		args.putString(BaseWidgetFragment.STATE_TYPE, state.getName());
 		fragment.setArguments(args);
 		return fragment;
 	}

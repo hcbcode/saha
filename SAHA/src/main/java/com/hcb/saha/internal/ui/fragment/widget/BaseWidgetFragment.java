@@ -3,6 +3,7 @@ package com.hcb.saha.internal.ui.fragment.widget;
 import roboguice.fragment.RoboFragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -12,7 +13,7 @@ import android.view.ViewGroup;
  * @author Steven Hadley
  * 
  */
-public abstract class WidgetFragment extends RoboFragment {
+public abstract class BaseWidgetFragment extends RoboFragment {
 
 	public static enum StateType {
 		FULL(1, "FULL"), COMPRESSED(2, "COMPRESSED");
@@ -68,6 +69,24 @@ public abstract class WidgetFragment extends RoboFragment {
 		args.putString(STATE_TYPE, state.getName());
 		fragment.setArguments(args);
 		return fragment;
+	}
+
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		Log.d(getClass().getSimpleName(), "onDestroyView");
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		Log.d(getClass().getSimpleName(), "onResume");
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		Log.d(getClass().getSimpleName(), "onPause");
 	}
 
 }

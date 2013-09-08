@@ -26,7 +26,7 @@ import com.squareup.picasso.Picasso;
  * @author Steven Hadley
  * 
  */
-public class NewsFragment extends WidgetFragment {
+public class NewsFragment extends BaseWidgetFragment {
 
 	@Inject
 	private Bus eventBus;
@@ -68,16 +68,21 @@ public class NewsFragment extends WidgetFragment {
 		return R.layout.fragment_widget_news_compressed;
 	}
 
+	/**
+	 * Constructs the fragment with the required parameters.
+	 * 
+	 * @param state
+	 * @return fragment
+	 */
 	public static Fragment create(StateType state) {
 		Fragment fragment = new NewsFragment();
-		WidgetFragment.addBundle(state, fragment);
+		BaseWidgetFragment.addBundle(state, fragment);
 		return fragment;
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		Log.d(getClass().getSimpleName(), "onResume");
 		eventBus.post(new NewsEvents.HeadlineNewsRequest());
 		newsHandler.postDelayed(newsRunner, NewsRunner.DELAY_MILLIS);
 	}
@@ -85,7 +90,6 @@ public class NewsFragment extends WidgetFragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		Log.d(getClass().getSimpleName(), "onPause");
 		newsHandler.removeCallbacks(newsRunner);
 	}
 

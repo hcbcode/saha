@@ -13,7 +13,7 @@ import com.hcb.saha.R;
 import com.hcb.saha.internal.ui.fragment.widget.EventFragment;
 import com.hcb.saha.internal.ui.fragment.widget.NewsFragment;
 import com.hcb.saha.internal.ui.fragment.widget.WeatherFragment;
-import com.hcb.saha.internal.ui.fragment.widget.WidgetFragment.StateType;
+import com.hcb.saha.internal.ui.fragment.widget.BaseWidgetFragment.StateType;
 import com.squareup.otto.Bus;
 
 /**

@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.hcb.saha.R;
 import com.hcb.saha.internal.ui.fragment.widget.SensorFragment;
 import com.hcb.saha.internal.ui.fragment.widget.UserFragment;
-import com.hcb.saha.internal.ui.fragment.widget.WidgetFragment.StateType;
+import com.hcb.saha.internal.ui.fragment.widget.BaseWidgetFragment.StateType;
 
 /**
  * This fragment is displayed when a user has been identified.

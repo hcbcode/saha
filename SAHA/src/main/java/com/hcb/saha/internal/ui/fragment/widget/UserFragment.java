@@ -25,7 +25,7 @@ import com.squareup.otto.Subscribe;
  * @author Steven Hadley
  * 
  */
-public class UserFragment extends WidgetFragment {
+public class UserFragment extends BaseWidgetFragment {
 
 	@Inject
 	private Bus eventBus;
@@ -82,9 +82,15 @@ public class UserFragment extends WidgetFragment {
 		return R.layout.fragment_widget_user_compressed;
 	}
 
+	/**
+	 * Constructs the fragment with the required parameters.
+	 * 
+	 * @param state
+	 * @return fragment
+	 */
 	public static Fragment create(StateType state) {
 		Fragment fragment = new UserFragment();
-		WidgetFragment.addBundle(state, fragment);
+		BaseWidgetFragment.addBundle(state, fragment);
 		return fragment;
 	}
 

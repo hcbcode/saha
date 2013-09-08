@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,7 +32,7 @@ import com.hcb.saha.internal.processor.CameraProcessor;
 import com.hcb.saha.internal.ui.fragment.CarouselFragment;
 import com.hcb.saha.internal.ui.fragment.HomeUserNearFragment;
 import com.hcb.saha.internal.ui.fragment.HomeUserPersonalisedFragment;
-import com.hcb.saha.internal.ui.fragment.widget.WidgetFragment.StateType;
+import com.hcb.saha.internal.ui.fragment.widget.BaseWidgetFragment.StateType;
 import com.hcb.saha.internal.ui.view.ViewUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -63,7 +62,6 @@ public class MainActivity extends BaseFragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d(getClass().getSimpleName(), "onCreate()");
 		enableCrashReporting();
 
 		// Use low profile for main
@@ -88,7 +86,6 @@ public class MainActivity extends BaseFragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.d(getClass().getSimpleName(), "onResume()");
 		cameraProcessor.startCamera((SurfaceView) findViewById(R.id.surface));
 		active = true;
 	}
@@ -96,7 +93,6 @@ public class MainActivity extends BaseFragmentActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		Log.d(getClass().getSimpleName(), "onPause()");
 		active = false;
 	}
 
@@ -119,7 +115,6 @@ public class MainActivity extends BaseFragmentActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		Log.d(getClass().getSimpleName(), "onDestroy()");
 		cameraProcessor.tearDownCamera();
 		eventBus.post(new SystemEvents.MainActivityDestroyed());
 		eventBus.unregister(this);
@@ -225,18 +220,17 @@ public class MainActivity extends BaseFragmentActivity {
 	}
 
 	private void showHomeCarousel() {
-		replaceFragmentWithAnimation("homecarousel",
-				CarouselFragment.create(StateType.FULL), R.id.home);
+		replaceFragmentWithAnimation(CarouselFragment.create(StateType.FULL),
+				R.id.home);
 	}
 
 	private void showHomeUserNear() {
-		replaceFragmentWithAnimation("homeusernear",
-				new HomeUserNearFragment(), R.id.home);
+		replaceFragmentWithAnimation(new HomeUserNearFragment(), R.id.home);
 	}
 
 	private void showHomeUserPersonalised() {
-		replaceFragmentWithAnimation("homeuserpersonalised",
-				new HomeUserPersonalisedFragment(), R.id.home);
+		replaceFragmentWithAnimation(new HomeUserPersonalisedFragment(),
+				R.id.home);
 	}
 
 	/**
@@ -246,35 +240,18 @@ public class MainActivity extends BaseFragmentActivity {
 	 * @param newFragment
 	 * @param fragmentToReplace
 	 */
-	private void replaceFragmentWithAnimation(String fragmentTag,
-			Fragment newFragment, int fragmentToReplace) {
+	private void replaceFragmentWithAnimation(Fragment newFragment,
+			int fragmentToReplace) {
 
-		if (null == getSupportFragmentManager().findFragmentByTag(fragmentTag)) {
-			FragmentTransaction transaction = getSupportFragmentManager()
+		if (null == getSupportFragmentManager().findFragmentByTag(
+				newFragment.getClass().getSimpleName())) {
+			getSupportFragmentManager()
 					.beginTransaction()
 					.setCustomAnimations(R.animator.anim_from_middle,
 							R.animator.anim_to_middle)
-					.replace(fragmentToReplace, newFragment, fragmentTag);
-			transaction.commit();
+					.replace(fragmentToReplace, newFragment,
+							newFragment.getClass().getSimpleName()).commit();
 		}
-	}
-
-	@Override
-	public void onRestart() {
-		super.onRestart();
-		Log.d(getClass().getSimpleName(), "onRestart()");
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		Log.d(getClass().getSimpleName(), "onStart()");
-	}
-
-	@Override
-	public void onStop() {
-		Log.d(getClass().getSimpleName(), "onStop()");
-		super.onStop();
 	}
 
 }

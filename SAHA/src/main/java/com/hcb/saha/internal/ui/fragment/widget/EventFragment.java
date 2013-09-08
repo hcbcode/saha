@@ -14,7 +14,7 @@ import com.hcb.saha.R;
  * @author Steven Hadley
  * 
  */
-public class EventFragment extends WidgetFragment {
+public class EventFragment extends BaseWidgetFragment {
 
 	public EventFragment() {
 	}
@@ -36,9 +36,15 @@ public class EventFragment extends WidgetFragment {
 		return R.layout.fragment_widget_event_compressed;
 	}
 
+	/**
+	 * Constructs the fragment with the required parameters.
+	 * 
+	 * @param state
+	 * @return fragment
+	 */
 	public static Fragment create(StateType state) {
 		Fragment fragment = new EventFragment();
-		WidgetFragment.addBundle(state, fragment);
+		BaseWidgetFragment.addBundle(state, fragment);
 		return fragment;
 	}
 

@@ -21,7 +21,7 @@ import com.squareup.otto.Subscribe;
  * @author Steven Hadley
  * 
  */
-public class SensorFragment extends WidgetFragment {
+public class SensorFragment extends BaseWidgetFragment {
 
 	@InjectView(R.id.face_val)
 	private TextView faceText;
@@ -51,9 +51,15 @@ public class SensorFragment extends WidgetFragment {
 		return R.layout.fragment_widget_sensor_compressed;
 	}
 
+	/**
+	 * Constructs the fragment with the required parameters.
+	 * 
+	 * @param state
+	 * @return fragment
+	 */
 	public static Fragment create(StateType state) {
 		Fragment fragment = new SensorFragment();
-		WidgetFragment.addBundle(state, fragment);
+		BaseWidgetFragment.addBundle(state, fragment);
 		return fragment;
 	}
 

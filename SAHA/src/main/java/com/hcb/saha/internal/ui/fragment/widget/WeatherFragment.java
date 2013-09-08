@@ -26,7 +26,7 @@ import com.squareup.otto.Subscribe;
  * @author Steven Hadley
  * 
  */
-public class WeatherFragment extends WidgetFragment {
+public class WeatherFragment extends BaseWidgetFragment {
 
 	// FIXME: Should come from a config/preference
 	private static final String SYDNEY = "Sydney";
@@ -69,9 +69,15 @@ public class WeatherFragment extends WidgetFragment {
 		return R.layout.fragment_widget_weather_compressed;
 	}
 
+	/**
+	 * Constructs the fragment with the required parameters.
+	 * 
+	 * @param state
+	 * @return fragment
+	 */
 	public static Fragment create(StateType state) {
 		Fragment fragment = new WeatherFragment();
-		WidgetFragment.addBundle(state, fragment);
+		BaseWidgetFragment.addBundle(state, fragment);
 		return fragment;
 	}
 
@@ -124,7 +130,6 @@ public class WeatherFragment extends WidgetFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		Log.d(getClass().getSimpleName(), "onResume");
 		eventBus.post(new WeatherEvents.WeatherRequest(SYDNEY));
 		weatherHandler.postDelayed(weatherRunner, WeatherRunner.DELAY_MILLIS);
 	}
@@ -132,7 +137,6 @@ public class WeatherFragment extends WidgetFragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		Log.d(getClass().getSimpleName(), "onPause");
 		weatherHandler.removeCallbacks(weatherRunner);
 	}
 
@@ -176,9 +180,9 @@ public class WeatherFragment extends WidgetFragment {
 					+ WeatherForecast.TEMPERATURE_DISPLAY_UNIT);
 
 			if (null != forecast) {
-				forecast.setText("Tomorrow, "+ result.getWeatherForecast()
-						.getTodaysDatePlus1DispalyFormat()
-						+ ", "
+				forecast.setText("Tomorrow, "
+						+ result.getWeatherForecast()
+								.getTodaysDatePlus1DispalyFormat() + ", "
 						+ result.getWeatherForecast().getForecastPlus1());
 			}
 		}
