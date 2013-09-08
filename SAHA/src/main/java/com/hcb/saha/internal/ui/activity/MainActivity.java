@@ -63,6 +63,7 @@ public class MainActivity extends BaseFragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d(getClass().getSimpleName(), "onCreate()");
 		enableCrashReporting();
 
 		// Use low profile for main
@@ -87,6 +88,7 @@ public class MainActivity extends BaseFragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		Log.d(getClass().getSimpleName(), "onResume()");
 		cameraProcessor.startCamera((SurfaceView) findViewById(R.id.surface));
 		active = true;
 	}
@@ -94,6 +96,7 @@ public class MainActivity extends BaseFragmentActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		Log.d(getClass().getSimpleName(), "onPause()");
 		active = false;
 	}
 
@@ -101,6 +104,7 @@ public class MainActivity extends BaseFragmentActivity {
 	 * If device is NOT connected via USB to a computer, enable crash reports
 	 */
 	private void enableCrashReporting() {
+		Log.d(getClass().getSimpleName(), "enableCrashReporting()");
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.hardware.usb.action.USB_STATE");
 		Intent intent = registerReceiver(null, filter);
@@ -115,6 +119,7 @@ public class MainActivity extends BaseFragmentActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		Log.d(getClass().getSimpleName(), "onDestroy()");
 		cameraProcessor.tearDownCamera();
 		eventBus.post(new SystemEvents.MainActivityDestroyed());
 		eventBus.unregister(this);
@@ -123,6 +128,7 @@ public class MainActivity extends BaseFragmentActivity {
 	@Subscribe
 	public void onSystemStateChanged(
 			final SystemEvents.SystemStateChangedEvent event) {
+		Log.d(getClass().getSimpleName(), "onSystemStateChanged()");
 		if (active) {
 			runOnUiThread(new Runnable() {
 
@@ -155,6 +161,7 @@ public class MainActivity extends BaseFragmentActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		Log.d(getClass().getSimpleName(), "onCreateOptionsMenu()");
 		getMenuInflater().inflate(R.menu.main, menu);
 		editUserItem = menu.findItem(R.id.action_edit_user);
 		return true;
@@ -250,6 +257,24 @@ public class MainActivity extends BaseFragmentActivity {
 					.replace(fragmentToReplace, newFragment, fragmentTag);
 			transaction.commit();
 		}
+	}
+
+	@Override
+	public void onRestart() {
+		super.onRestart();
+		Log.d(getClass().getSimpleName(), "onRestart()");
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		Log.d(getClass().getSimpleName(), "onStart()");
+	}
+
+	@Override
+	public void onStop() {
+		Log.d(getClass().getSimpleName(), "onStop()");
+		super.onStop();
 	}
 
 }

@@ -61,6 +61,9 @@ public class EmailManager {
 
 		// relies on old cursor being garbage collected and the observer
 		// becoming unreachable and hence garbage collected.
+		// FIXME: Don't keep creating observers. Unregister previous if for
+		// another email address. If same don't register again. If new then do
+		// register.
 		Observer observer = new Observer(null);
 		observer.setName(email.getName());
 		labelsCursor.registerContentObserver(observer);

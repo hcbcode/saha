@@ -21,9 +21,9 @@ import com.squareup.otto.Subscribe;
 
 /**
  * Handles app wide account management
- *
- * FIXME This is broken - comms here should not be via req/resp over event bus
- *
+ * 
+ * FIXME Create as a normal 'manager'
+ * 
  * @author Steven Hadley
  */
 @Singleton
@@ -48,7 +48,7 @@ public class AccountManagerImpl implements AccountManager {
 
 	/**
 	 * This could easily be made to query FB, LinkedIn etc.
-	 *
+	 * 
 	 * @param ctx
 	 * @param observer
 	 */
@@ -60,24 +60,30 @@ public class AccountManagerImpl implements AccountManager {
 		final String[] FEATURES_MAIL = { "service_mail" };
 
 		android.accounts.AccountManager.get(context)
-				.getAccountsByTypeAndFeatures(
-				ACCOUNT_TYPE_GOOGLE, FEATURES_MAIL,
-				new AccountManagerCallback<Account[]>() {
-					@Override
-					public void run(AccountManagerFuture<Account[]> future) {
-						Account[] accounts = null;
-						try {
-							accounts = future.getResult();
-						} catch (OperationCanceledException oce) {
-							Log.e(TAG, "Got OperationCanceledException", oce);
-						} catch (IOException ioe) {
-							Log.e(TAG, "Got OperationCanceledException", ioe);
-						} catch (AuthenticatorException ae) {
-							Log.e(TAG, "Got OperationCanceledException", ae);
-						}
-						onAccountResults(accounts);
-					}
-				}, null);
+				.getAccountsByTypeAndFeatures(ACCOUNT_TYPE_GOOGLE,
+						FEATURES_MAIL, new AccountManagerCallback<Account[]>() {
+							@Override
+							public void run(
+									AccountManagerFuture<Account[]> future) {
+								Account[] accounts = null;
+								try {
+									accounts = future.getResult();
+								} catch (OperationCanceledException oce) {
+									Log.e(TAG,
+											"Got OperationCanceledException",
+											oce);
+								} catch (IOException ioe) {
+									Log.e(TAG,
+											"Got OperationCanceledException",
+											ioe);
+								} catch (AuthenticatorException ae) {
+									Log.e(TAG,
+											"Got OperationCanceledException",
+											ae);
+								}
+								onAccountResults(accounts);
+							}
+						}, null);
 	}
 
 	private void onAccountResults(Account[] accounts) {

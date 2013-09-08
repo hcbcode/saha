@@ -14,15 +14,15 @@ public class NewsEvents {
 
 	public static class HeadlineNewsResult {
 
-		private RssItem item;
+		private NewsItem item;
 		private String source;
 
-		public HeadlineNewsResult(RssItem item, String source) {
+		public HeadlineNewsResult(NewsItem item, String source) {
 			this.item = item;
 			this.source = source;
 		}
 
-		public RssItem getHeadline() {
+		public NewsItem getHeadline() {
 			return item;
 		}
 

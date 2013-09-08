@@ -17,18 +17,18 @@ import android.net.Uri;
  */
 public class RssParseHandler extends DefaultHandler {
 
-	private List<RssItem> rssItems;
-	private RssItem currentItem;
+	private List<NewsItem> rssItems;
+	private NewsItem currentItem;
 	private boolean parsingTitle;
 	private boolean parsingDescription;
 	private boolean parsingLink;
 	private boolean parsingDdate;
 
 	public RssParseHandler() {
-		rssItems = new ArrayList<RssItem>();
+		rssItems = new ArrayList<NewsItem>();
 	}
 
-	public List<RssItem> getItems() {
+	public List<NewsItem> getItems() {
 		return rssItems;
 	}
 
@@ -36,7 +36,7 @@ public class RssParseHandler extends DefaultHandler {
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
 		if ("item".equals(qName)) {
-			currentItem = new RssItem();
+			currentItem = new NewsItem();
 		} else if ("title".equals(qName)) {
 			parsingTitle = true;
 		} else if ("link".equals(qName)) {

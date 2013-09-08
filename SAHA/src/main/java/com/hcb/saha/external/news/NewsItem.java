@@ -5,12 +5,12 @@ import java.util.Date;
 import android.net.Uri;
 
 /**
- * RSS POJO.
+ * News Model
  * 
  * @author Steven Hadley
  * 
  */
-public class RssItem {
+public class NewsItem {
 
 	private String title;
 	private String link;

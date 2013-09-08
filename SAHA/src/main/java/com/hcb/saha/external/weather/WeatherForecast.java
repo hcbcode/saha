@@ -4,6 +4,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Weather model.
+ * 
+ * @author Steven Hadley
+ * 
+ */
 public class WeatherForecast {
 
 	private Date readDate;

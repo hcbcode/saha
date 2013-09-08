@@ -5,14 +5,14 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.http.GET;
 
-interface NewsComAuInterface {
+interface NewsComAuClientInterface {
 
 	// FIXME: Extract URLs
 
 	@GET("/newscomauworldnewsndm")
-	void worldNews(Callback<List<RssItem>> cb);
+	void getWorldNews(Callback<List<NewsItem>> cb);
 
 	@GET("/newscomauwtfndm")
-	void weirdTrueFreakyNews(Callback<List<RssItem>> cb);
+	void getWeirdTrueFreakyNews(Callback<List<NewsItem>> cb);
 
 }

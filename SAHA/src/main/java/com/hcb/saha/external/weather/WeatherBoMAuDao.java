@@ -30,10 +30,9 @@ import com.squareup.otto.Subscribe;
  * 
  */
 @Singleton
-public class WeatherBoMAuProvider {
+public class WeatherBoMAuDao {
 
-	private static final String TAG = WeatherBoMAuProvider.class
-			.getSimpleName();
+	private static final String TAG = WeatherBoMAuDao.class.getSimpleName();
 
 	private static final String FTP_BOM_GOV_AU = "ftp://ftp2.bom.gov.au/anon/gen/fwo/IDA00001.dat";
 
@@ -78,7 +77,7 @@ public class WeatherBoMAuProvider {
 	private Bus eventBus;
 
 	@Inject
-	public WeatherBoMAuProvider(Bus eventBus) {
+	public WeatherBoMAuDao(Bus eventBus) {
 		this.eventBus = eventBus;
 		eventBus.register(this);
 	}
@@ -132,6 +131,8 @@ public class WeatherBoMAuProvider {
 	/**
 	 * Download and parse dat file.
 	 * 
+	 * TODO: Extract the ftp clientF bit and the data converter
+	 * 
 	 * @param params
 	 * @return
 	 */
@@ -139,8 +140,8 @@ public class WeatherBoMAuProvider {
 		Log.d(TAG, "Downloading weather");
 		WeatherForecast forecast = null;
 		try {
-			String result = WeatherBoMAuProvider.this.getData(new URL(
-					FTP_BOM_GOV_AU));
+			String result = WeatherBoMAuDao.this
+					.getData(new URL(FTP_BOM_GOV_AU));
 
 			BufferedReader br = new BufferedReader(new StringReader(result));
 			String line;

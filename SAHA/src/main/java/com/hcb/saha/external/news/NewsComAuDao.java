@@ -23,30 +23,30 @@ import com.squareup.otto.Subscribe;
  * 
  */
 @Singleton
-public class NewsComAuProvider implements Callback<List<RssItem>> {
+public class NewsComAuDao implements Callback<List<NewsItem>> {
 
-	private static final String TAG = NewsComAuProvider.class.getSimpleName();
+	private static final String TAG = NewsComAuDao.class.getSimpleName();
 
 	// FIXME: Extract URLs
 	private static final String NEWS_COM_AU_WEIRD_TRUE_FREAKY = "News.com.au, Weird True Freaky";
 	private static final String NEWS_COM_AU_WORLD = "News.com.au, World";
 	private static final String HTTP_FEEDS_FEEDBURNER_COM = "http://feeds.feedburner.com";
 	private Bus eventBus;
-	private NewsComAuInterface service;
+	private NewsComAuClientInterface restClient;
 
 	private ReentrantLock lock = new ReentrantLock();
-	private List<RssItem> cachedRssItems;
+	private List<NewsItem> cachedRssItems;
 	private Date cacheTime;
 	private int cacheRetentionTime = 1000 * 60 * 60; // 1 hour
 
 	@Inject
-	public NewsComAuProvider(Bus eventBus) {
+	public NewsComAuDao(Bus eventBus) {
 		this.eventBus = eventBus;
 		eventBus.register(this);
 		RestAdapter restAdapter = new RestAdapter.Builder()
 				.setServer(HTTP_FEEDS_FEEDBURNER_COM)
 				.setConverter(new RssNewsConverter()).build();
-		service = restAdapter.create(NewsComAuInterface.class);
+		restClient = restAdapter.create(NewsComAuClientInterface.class);
 	}
 
 	@Subscribe
@@ -56,7 +56,7 @@ public class NewsComAuProvider implements Callback<List<RssItem>> {
 				|| (null != cachedRssItems && (new Date().getTime() > (cacheTime
 						.getTime() + cacheRetentionTime)))) {
 			Log.d(TAG, "Requesting news");
-			service.worldNews(this);
+			restClient.getWorldNews(this);
 		} else {
 			Log.d(TAG, "Using cached news");
 			eventBus.post(new NewsEvents.HeadlineNewsResult(cachedRssItems
@@ -69,7 +69,7 @@ public class NewsComAuProvider implements Callback<List<RssItem>> {
 	}
 
 	@Override
-	public void success(List<RssItem> items, Response response) {
+	public void success(List<NewsItem> items, Response response) {
 		Log.d(TAG, "Received news");
 		lock.lock();
 		cacheTime = new Date();
